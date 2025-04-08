@@ -1,0 +1,60 @@
+[gd_scene load_steps=8 format=3 uid="uid://defrigbi7ac0e"]
+
+[ext_resource type="Script" uid="uid://brilo3cicayn0" path="res://scripts/player.gd" id="1_3vyb7"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g2els"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_u8vuu"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3vyb7"]
+albedo_color = Color(0.331605, 0.722723, 0.327628, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g2els"]
+albedo_color = Color(0.0962047, 0.0962048, 0.0962047, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qhqgy"]
+albedo_color = Color(0.753984, 0.753984, 0.753984, 1)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_dqkch"]
+height = 2.11713
+radius = 1.28564
+
+[node name="Player" type="CharacterBody3D"]
+collision_mask = 6
+script = ExtResource("1_3vyb7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_g2els")
+
+[node name="MeshInstance" type="CSGCombiner3D" parent="."]
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="MeshInstance"]
+mesh = SubResource("CapsuleMesh_u8vuu")
+material = SubResource("StandardMaterial3D_3vyb7")
+
+[node name="CSGMesh3D2" type="CSGMesh3D" parent="MeshInstance"]
+transform = Transform3D(0.37501, 0, 0, 0, 0.128672, 0, 0, 0, 0.405147, 0, 0.478918, -0.468011)
+mesh = SubResource("CapsuleMesh_u8vuu")
+material = SubResource("StandardMaterial3D_3vyb7")
+
+[node name="Gun" type="Node3D" parent="."]
+visible = false
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Gun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00368941, -0.0212402, -0.87177)
+size = Vector3(0.194275, 0.248535, 0.485474)
+material = SubResource("StandardMaterial3D_g2els")
+
+[node name="MiningLaser" type="Node3D" parent="."]
+visible = false
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="MiningLaser"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00368941, -0.0212402, -0.87177)
+size = Vector3(0.194275, 0.248535, 0.485474)
+material = SubResource("StandardMaterial3D_qhqgy")
+
+[node name="Cone" type="Area3D" parent="MiningLaser"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MiningLaser/Cone"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -3.47218e-08, -2.0844)
+shape = SubResource("CylinderShape3D_dqkch")

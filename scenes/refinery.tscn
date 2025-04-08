@@ -1,0 +1,58 @@
+[gd_scene load_steps=8 format=3 uid="uid://cvo6xil1jbbob"]
+
+[ext_resource type="Script" uid="uid://dk8r1cy5hbd17" path="res://scripts/refinery.gd" id="1_so7c3"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f1c0l"]
+size = Vector3(1, 1.25183, 1.28918)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_so7c3"]
+albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dilmw"]
+albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ncmc"]
+albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6upvt"]
+albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o834w"]
+albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
+
+[node name="Refinery" type="StaticBody3D"]
+script = ExtResource("1_so7c3")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625895, 0.144592)
+shape = SubResource("BoxShape3D_f1c0l")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.129953, 0)
+size = Vector3(1, 0.249512, 1)
+material = SubResource("StandardMaterial3D_so7c3")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.321693, 0.273965, 0.570865)
+size = Vector3(0.263672, 0.537903, 0.422333)
+material = SubResource("StandardMaterial3D_dilmw")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.271365, 0.523477, -0.0717082)
+radius = 0.158691
+height = 0.625854
+material = SubResource("StandardMaterial3D_0ncmc")
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.117259, 0.378488, -0.175302)
+radius = 0.290039
+height = 0.335876
+material = SubResource("StandardMaterial3D_6upvt")
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0766203, 0.731515, 0.203096)
+radius = 0.197266
+height = 1.04193
+material = SubResource("StandardMaterial3D_o834w")

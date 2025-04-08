@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://dmrcwwqgtkirs"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bj4v0"]
+albedo_color = Color(0.769718, 0.350424, 0.424662, 1)
+
+[node name="Ore" type="Node3D" groups=["ores"]]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.440383, 0, 0, 0, 0.440383, 0, 0, 0, 0.440383, 0, 0, 0)
+material = SubResource("StandardMaterial3D_bj4v0")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D/CSGSphere3D"]
+transform = Transform3D(0.22984, -0.21622, 0, 0.0797242, 0.623349, 0, 0, 0, 0.212704, -0.285003, 0.688929, 0.147974)
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="CSGCombiner3D/CSGSphere3D"]
+transform = Transform3D(-0.0251177, 0.0236292, -0.21143, 0.0797242, 0.623349, 0, 0.228464, -0.214925, -0.023245, 0.0684979, 0.469055, -0.0354856)
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="CSGCombiner3D/CSGSphere3D"]
+transform = Transform3D(-0.210817, 0.198324, 0.0847304, 0.0797242, 0.623349, 9.48832e-11, -0.0915567, 0.0861309, -0.195099, 0.275796, 0.584133, 0.162348)

@@ -1,0 +1,55 @@
+[gd_scene load_steps=9 format=3 uid="uid://ch0q4haku44k8"]
+
+[ext_resource type="Script" uid="uid://cxy7ilx8od5nf" path="res://scripts/head_quarters.gd" id="1_dwusy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e1ru4"]
+size = Vector3(1.69067, 1.04053, 1.29443)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e1ru4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dwusy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8mwka"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_snpo8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pc146"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ugq3g"]
+
+[node name="HeadQuarters" type="StaticBody3D"]
+script = ExtResource("1_dwusy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.143677, 0.529787, -0.147217)
+shape = SubResource("BoxShape3D_e1ru4")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.503614, 0)
+material = SubResource("StandardMaterial3D_e1ru4")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.615091, 0, 0, 0, 0.603544, 0, 0, 0, 0.469217, 0.398422, 0.307411, -0.567078)
+material = SubResource("StandardMaterial3D_dwusy")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.615091, 0, 0, 0, 0.603544, 0, 0, 0, 0.469217, -0.739136, 0.225226, 0)
+size = Vector3(0.821777, 0.727661, 1)
+material = SubResource("StandardMaterial3D_8mwka")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.615091, 0, 0, 0, 0.603544, 0, 0, 0, 0.469217, -0.428957, 1.11958, -0.124489)
+size = Vector3(0.142822, 0.459045, 0.174683)
+material = SubResource("StandardMaterial3D_snpo8")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.615091, 0, 0, 0, 0.603544, 0, 0, 0, 0.469217, -0.194779, 1.24213, 0.190047)
+size = Vector3(0.142822, 0.865143, 0.189941)
+material = SubResource("StandardMaterial3D_pc146")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.615091, 0, 0, 0, 0.603544, 0, 0, 0, 0.469217, 0.00257573, 1.06341, -0.332779)
+size = Vector3(0.142822, 0.272903, 0.224121)
+material = SubResource("StandardMaterial3D_ugq3g")

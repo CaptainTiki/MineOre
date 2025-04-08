@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bgkmuqb7tt182"]
+
+[ext_resource type="Script" uid="uid://cxbpunkap737p" path="res://scripts/bullet.gd" id="1_mkf8s"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_y25gk"]
+radius = 0.1
+
+[node name="Bullet" type="Area3D" groups=["bullets"]]
+collision_layer = 8
+collision_mask = 6
+script = ExtResource("1_mkf8s")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+transform = Transform3D(0.254524, 0, 0, 0, 0.255458, 0, 0, 0, 2.01506, 0, 0, 0)
+radius = 0.1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_y25gk")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

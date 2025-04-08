@@ -1,0 +1,43 @@
+[gd_scene load_steps=7 format=3 uid="uid://bvbaf18wci7b"]
+
+[ext_resource type="Script" uid="uid://bd6q8yvmy1c2d" path="res://scripts/gib.gd" id="1_kflpl"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_wfuys"]
+direction = Vector3(0, 0.5, 0)
+spread = 60.181
+initial_velocity_min = 6.0
+initial_velocity_max = 10.0
+scale_min = 0.5
+scale_max = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kflpl"]
+albedo_color = Color(0.711921, 0.108878, 6.257e-06, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_684cn"]
+material = SubResource("StandardMaterial3D_kflpl")
+radius = 0.1
+height = 0.2
+radial_segments = 8
+rings = 8
+
+[sub_resource type="SphereMesh" id="SphereMesh_5t77g"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u61qm"]
+albedo_color = Color(0.711921, 0.108878, 6.257e-06, 1)
+
+[node name="Gib" type="Node3D"]
+script = ExtResource("1_kflpl")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 50
+lifetime = 1.95
+one_shot = true
+explosiveness = 0.8
+randomness = 0.2
+process_material = SubResource("ParticleProcessMaterial_wfuys")
+draw_pass_1 = SubResource("SphereMesh_684cn")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="GPUParticles3D"]
+mesh = SubResource("SphereMesh_5t77g")
+material = SubResource("StandardMaterial3D_u61qm")
