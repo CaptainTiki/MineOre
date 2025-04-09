@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://covbpphyfrk4h"]
+[gd_scene load_steps=7 format=3 uid="uid://covbpphyfrk4h"]
 
 [ext_resource type="Script" uid="uid://btlf4jrdhoe1j" path="res://scripts/turret.gd" id="1_x3mc5"]
 
@@ -14,6 +14,9 @@ albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_485p4"]
 albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_x3mc5"]
+radius = 3.0
+
 [node name="Turret" type="StaticBody3D"]
 script = ExtResource("1_x3mc5")
 
@@ -21,21 +24,35 @@ script = ExtResource("1_x3mc5")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0765381, 0.328941, 0)
 shape = SubResource("BoxShape3D_fowog")
 
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+[node name="Base" type="Node3D" parent="."]
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGCombiner2" type="CSGCombiner3D" parent="Base"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Base/CSGCombiner2"]
 transform = Transform3D(0.6, 0, 0, 0, 0.315685, 0, 0, 0, 0.6, 0, 0.121366, 0)
 size = Vector3(1, 0.768433, 1)
 material = SubResource("StandardMaterial3D_x3mc5")
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D"]
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Base/CSGCombiner2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.326384, 0)
 radius = 0.0893555
 height = 0.18573
 material = SubResource("StandardMaterial3D_el7wl")
 
-[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="CSGCombiner3D"]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0.156593, 0.52044, 0)
+[node name="Weapon" type="Node3D" parent="."]
+
+[node name="Muzzle" type="Node3D" parent="Weapon"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.00390355, 0.497052, -0.57669)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Weapon"]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, -0.00390352, 0.52044, -0.173626)
 radius = 0.138672
 height = 0.597946
 material = SubResource("StandardMaterial3D_485p4")
+
+[node name="DetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = SubResource("SphereShape3D_x3mc5")

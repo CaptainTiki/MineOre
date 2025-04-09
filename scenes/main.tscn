@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://dphpdmx8vikda" path="res://scripts/camera_3d.gd" id="2_jyhfs"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_7dm0k"]
-size = Vector3(20, 0.2, 20)
+size = Vector3(100, 0.2, 100)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ig7tw"]
 albedo_color = Color(0.41598, 0.41598, 0.41598, 1)
@@ -26,6 +26,7 @@ script = ExtResource("2_jyhfs")
 [node name="GroundContainer" type="Node3D" parent="."]
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="GroundContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 use_collision = true
 collision_layer = 4
 collision_mask = 0

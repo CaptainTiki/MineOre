@@ -19,9 +19,7 @@ func take_damage(amount):
 		die()
 
 func die():
-	for i in 5:
-		var gib = gib_scene.instantiate()
-		gib.position = global_position
-		gib.velocity = Vector3(randf_range(-1, 1), randf_range(1, 3), randf_range(-1, 1))
-		get_tree().get_root().get_node("Main/Particles").add_child(gib)
+	var gib = preload("res://scenes/gib.tscn").instantiate()
+	gib.global_position = global_position
+	get_parent().add_child(gib)
 	queue_free()

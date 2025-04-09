@@ -1,64 +1,65 @@
 extends Node3D
 
-var ore_count = 0
-var base_hp = 100
-var ore_scene = preload("res://scenes/ore.tscn")
+@onready var player = $Player
+@onready var camera = $Camera
 var enemy_scene = preload("res://scenes/enemy.tscn")
-var refinery_scene = preload("res://scenes/refinery.tscn")
-var turret_scene = preload("res://scenes/turret.tscn")
+var ore_scene = preload("res://scenes/ore.tscn")
+var ground_size = Vector2(100, 100)
+# Enemy spawn variables
+var initial_spawn_delay = 3.0
+var min_spawn_delay = 0.33
+var ramp_duration = 60.0
+var time_elapsed = 0.0
+var spawn_timer = 0.0
+# Ore spawn variables
+var ore_spawn_rate = 5.0  # Seconds between ore spawns
+var max_ores = 20  # Max ores on map at once
+var ore_timer = 0.0
+
+var base_hp = 100
 
 func _ready():
-	$UI/VBoxContainer/RefineryButton.pressed.connect(_on_refinery_button_pressed)
-	$UI/VBoxContainer/TurretButton.pressed.connect(_on_turret_button_pressed)
-	spawn_ores(5)
-	$Player.connect("mined_ore", _on_player_mined_ore)
-	# Defer the set_player call until the Camera is fully ready
-	$Camera.set_player($Player)
-	#call_deferred("_setup_camera")
-
-func _setup_camera():
-	$Camera.set_player($Player)
+	camera.set_player(player)
+	spawn_ore()
+	spawn_ore()
+	spawn_ore()
 
 func _process(delta):
-	$UI/VBoxContainer/OreLabel.text = "Ore: %d" % ore_count
-	$UI/VBoxContainer/BaseHPLabel.text = "Base HP: %d" % base_hp
-	if base_hp <= 0:
-		get_tree().quit() # Simple game over for now
-
-	if randf() < 0.005: # Spawn enemies occasionally
+	time_elapsed += delta
+	spawn_timer += delta
+	ore_timer += delta
+	
+	# Enemy spawning
+	var t = clamp(time_elapsed / ramp_duration, 0.0, 1.0)
+	var current_spawn_delay = lerp(initial_spawn_delay, min_spawn_delay, t)
+	if spawn_timer >= current_spawn_delay:
 		spawn_enemy()
-
-func spawn_ores(n):
-	for i in n:
-		var ore = ore_scene.instantiate()
-		ore.position = Vector3(randf_range(-9, 9), 0.25, randf_range(-9, 9))
-		$Ores.add_child(ore)
+		spawn_timer = 0.0
+	
+	# Ore spawning
+	var ore_count = get_tree().get_nodes_in_group("ores").size()
+	if ore_timer >= ore_spawn_rate and ore_count < max_ores:
+		spawn_ore()
+		ore_timer = 0.0
 
 func spawn_enemy():
 	var enemy = enemy_scene.instantiate()
-	var edge = randi() % 4
+	var side = randi() % 4
 	var pos = Vector3.ZERO
-	if edge == 0: pos = Vector3(-10, 0.5, randf_range(-9, 9)) # Left
-	elif edge == 1: pos = Vector3(10, 0.5, randf_range(-9, 9)) # Right
-	elif edge == 2: pos = Vector3(randf_range(-9, 9), 0.5, -10) # Top
-	else: pos = Vector3(randf_range(-9, 9), 0.5, 10) # Bottom
-	enemy.position = pos
-	$Enemies.add_child(enemy)
+	match side:
+		0: pos = Vector3(randf_range(-ground_size.x/2, ground_size.x/2), 0, -ground_size.y/2)
+		1: pos = Vector3(ground_size.x/2, 0, randf_range(-ground_size.y/2, ground_size.y/2))
+		2: pos = Vector3(randf_range(-ground_size.x/2, ground_size.x/2), 0, ground_size.y/2)
+		3: pos = Vector3(-ground_size.x/2, 0, randf_range(-ground_size.y/2, ground_size.y/2))
+	enemy.global_position = pos
+	add_child(enemy)
 
-func _on_player_mined_ore():
-	ore_count += 10
-	spawn_ores(1)
-
-func _on_refinery_button_pressed():
-	if ore_count >= 50:
-		ore_count -= 50
-		var refinery = refinery_scene.instantiate()
-		refinery.position = $Player.position
-		$Buildings.add_child(refinery)
-
-func _on_turret_button_pressed():
-	if ore_count >= 30:
-		ore_count -= 30
-		var turret = turret_scene.instantiate()
-		turret.position = $Player.position
-		$Buildings.add_child(turret)
+func spawn_ore():
+	var ore = ore_scene.instantiate()
+	var pos = Vector3(
+		randf_range(-ground_size.x/2, ground_size.x/2),
+		0.2,
+		randf_range(-ground_size.y/2, ground_size.y/2)
+	)
+	ore.global_position = pos
+	add_child(ore)
