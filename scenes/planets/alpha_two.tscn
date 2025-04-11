@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://m6uuy28dyy0p"]
+[gd_scene load_steps=4 format=3 uid="uid://m6uuy28dyy0p"]
+
+[ext_resource type="Script" uid="uid://ccb51dxpbx4iu" path="res://scenes/planets/planet.gd" id="1_mb06c"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ls77k"]
 radius = 2.46218
@@ -7,6 +9,10 @@ radius = 2.46218
 albedo_color = Color(0.55487, 0.236975, 0.0895515, 1)
 
 [node name="AlphaTwo" type="Area3D"]
+script = ExtResource("1_mb06c")
+planet_name = "Alpha Two"
+level_path = "res://levels/level_a2.tscn"
+system_name = "Alpha"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_ls77k")

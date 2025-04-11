@@ -7,7 +7,7 @@ var health = 5
 @onready var interact_area = $InteractArea
 @onready var ui_panel = $UILayer/UIPanel
 @onready var deposit_label = $UILayer/UIPanel/DepositLabel
-@onready var camera = get_tree().get_root().get_node("Main/Level/Camera")
+@onready var camera = get_tree().get_root().get_node("Level/Camera")
 
 func _ready():
 	add_to_group("hq")

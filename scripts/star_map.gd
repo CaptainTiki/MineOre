@@ -2,18 +2,15 @@ extends Node3D
 
 @onready var camera = $Camera3D
 @onready var back_button = $UI/BackButton
-var systems = {
-	"Alpha": {"difficulty": "Easy", "planets": ["alpha_one", "alpha_two", "alpha_three"], "unlocked": true},
-	"Beta": {"difficulty": "Medium", "planets": ["beta_one", "beta_two"], "unlocked": false}
-}
-var planet_scenes = {
-	"alpha_one": preload("res://scenes/planets/alpha_one.tscn"),
-	"alpha_two": preload("res://scenes/planets/alpha_two.tscn"),
-	"alpha_three": preload("res://scenes/planets/alpha_three.tscn"),
-	"beta_one": preload("res://scenes/planets/beta_one.tscn"),
-	"beta_two": preload("res://scenes/planets/beta_two.tscn")
-}
-var completed_planets = []
+@onready var alpha_popup = $UI/AlphaPopup
+@onready var alpha_label = $UI/AlphaPopup/AlphaInfo/AlphaLabel
+@onready var beta_popup = $UI/BetaPopup
+@onready var beta_label = $UI/BetaPopup/BetaInfo/BetaLabel
+@onready var planet_tooltip = $UI/PlanetTooltip
+@onready var tooltip_label = $UI/PlanetTooltip/TooltipLabel
+@onready var systems_node = $Systems
+
+var systems = {}
 var selected_system = null
 var initial_camera_pos = Vector3(0, 0, 64)
 var target_zoom = Vector3(0, 0, 64)
@@ -23,54 +20,50 @@ var is_zoomed = false
 var is_zooming_out = false
 
 func _ready():
-	$Alpha.input_event.connect(_on_system_input.bind("Alpha"))
-	$Beta.input_event.connect(_on_system_input.bind("Beta"))
-	$Beta.visible = systems["Alpha"]["planets"].all(func(p): return completed_planets.has(p))
+	get_tree().paused = false
+	# Use existing systems in the scene tree
+	for system in systems_node.get_children():
+		var data = system.get_system_data()
+		systems[data["name"]] = data
+		system.input_event.connect(_on_system_input.bind(data["name"]))
+		system.mouse_entered.connect(_on_system_hover.bind(data["name"], true))
+		system.mouse_exited.connect(_on_system_hover.bind(data["name"], false))
+		# Keep all systems visible, no points-based hiding
+	
 	camera.global_position = initial_camera_pos
 	camera.rotation = Vector3(0, 0, 0)
 	target_zoom = initial_camera_pos
 	back_button.visible = false
 	back_button.pressed.connect(_on_back_pressed)
-	var alpha_mesh = $Alpha.get_node_or_null("Mesh")
-	var beta_mesh = $Beta.get_node_or_null("Mesh")
-	if alpha_mesh and alpha_mesh.material_override:
-		alpha_mesh.material_override.set_shader_parameter("opacity", 1.0)
-		print("Alpha opacity set to 1.0")
-	else:
-		print("Alpha Mesh or material_override null: ", alpha_mesh, " ", alpha_mesh.material_override if alpha_mesh else "N/A")
-	if beta_mesh and beta_mesh.material_override:
-		beta_mesh.material_override.set_shader_parameter("opacity", 1.0)
-		print("Beta opacity set to 1.0")
-	else:
-		print("Beta Mesh or material_override null: ", beta_mesh, " ", beta_mesh.material_override if beta_mesh else "N/A")
+	for system_name in systems:
+		update_system_ui(system_name)
+	planet_tooltip.visible = false
 	print("Camera start: ", camera.global_position, " Rotation: ", camera.rotation)
+	print("Paused: ", get_tree().paused)
+	print("Points: ", GameState.get_points())
+	print("Loaded systems: ", systems.keys())
 
 func _process(delta):
 	if selected_system and transition_timer < transition_duration:
 		transition_timer += delta
 		var t = transition_timer / transition_duration
-		var system_node = get_node(selected_system)
+		var system_node = systems_node.get_node(selected_system)
 		var mesh = system_node.get_node_or_null("Mesh")
 		if is_zoomed and not is_zooming_out:
 			camera.global_position = initial_camera_pos.lerp(target_zoom, t)
 			if mesh and mesh.material_override:
 				mesh.material_override.set_shader_parameter("opacity", 1.0 - t)
-				print("Zoom in ", selected_system, " T: ", t, " Opacity: ", 1.0 - t)
 			for planet in $Planets.get_children():
 				planet.scale = Vector3.ZERO.lerp(Vector3.ONE, t)
-				print("Planet ", planet.name, " scale: ", planet.scale)
 			if t >= 1.0:
 				system_node.visible = false
 				system_node.collision_layer = 0
-				print(selected_system, " zoomed in and hidden")
 		elif is_zooming_out:
 			camera.global_position = target_zoom.lerp(initial_camera_pos, t)
 			if mesh and mesh.material_override:
 				mesh.material_override.set_shader_parameter("opacity", t)
-				print("Zoom out ", selected_system, " T: ", t, " Opacity: ", t)
 			for planet in $Planets.get_children():
 				planet.scale = Vector3.ONE.lerp(Vector3.ZERO, t)
-				print("Planet ", planet.name, " scale: ", planet.scale)
 			if t >= 1.0:
 				for planet in $Planets.get_children():
 					planet.queue_free()
@@ -78,19 +71,63 @@ func _process(delta):
 				is_zooming_out = false
 				back_button.visible = false
 				selected_system = null
-				print(system_node.name, " zoomed out and restored")
+	
+	# Planet selection
+	if is_zoomed and Input.is_action_just_pressed("action"):
+		var planets = $Planets.get_children()
+		for planet in planets:
+			if planet.get_meta("hovered", false):
+				var data = planet.get_planet_data()
+				if GameState.get_points() < data["points_required"]:
+					print(data["name"], " locked—need ", data["points_required"], " points!")
+				else:
+					print("Selected planet: ", data["name"])
+					var level = load(data["level_path"]).instantiate()
+					get_tree().root.add_child(level)
+					level.assign_planet(data["name"])
+					get_tree().current_scene.queue_free()
+					get_tree().current_scene = level
+				break
+	
+	if planet_tooltip.visible:
+		var hovered = $Planets.get_children().filter(func(p): return p.get_meta("hovered", false))
+		if hovered.size() > 0:
+			update_planet_tooltip_position(hovered[0])
 
 func _on_system_input(_viewport, event, _shape_idx, _owner, _self, system_name):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if not systems[system_name]["unlocked"]:
-			print(system_name, " locked—complete previous system!")
+		if GameState.get_points() < systems[system_name]["points_required"]:
+			print(system_name, " locked—need ", systems[system_name]["points_required"], " points!")
 			return
 		selected_system = system_name
 		zoom_to_system()
-		print("Zooming to: ", target_zoom)
+
+func _on_system_hover(system_name, entered):
+	var popup = alpha_popup if system_name == "Alpha" else beta_popup
+	if entered and not is_zoomed:
+		update_system_ui(system_name)
+		var system_node = systems_node.get_node(system_name)
+		var screen_pos = camera.unproject_position(system_node.global_position + Vector3(0, 2, 0))
+		var popup_size = popup.size
+		popup.position = screen_pos - Vector2(popup_size.x / 2, popup_size.y + 25)
+		popup.popup()
+		print("Hover ", system_name, " - Popup visible: ", popup.visible)
+	else:
+		popup.hide()
+
+func update_system_ui(system_name):
+	var system = systems[system_name]
+	var label = alpha_label if system_name == "Alpha" else beta_label
+	var completed = system["planets"].filter(func(p): return GameState.is_planet_completed(p.instantiate().get_planet_data()["name"])).size()
+	var total = system["planets"].size()
+	var text = "%s\nDifficulty: %s\nProgress: %d/%d" % [system_name, system["difficulty"], completed, total]
+	if GameState.get_points() < system["points_required"]:
+		text += "\nLocked (Need %d points)" % system["points_required"]
+	label.text = text
+	print("UI updated for ", system_name, ": ", text)
 
 func zoom_to_system():
-	var system_node = get_node(selected_system)
+	var system_node = systems_node.get_node(selected_system)
 	var system_pos = system_node.global_position
 	target_zoom = system_pos + (camera.global_position - system_pos).normalized() * 15 + Vector3(0, 5, 0)
 	is_zoomed = true
@@ -103,30 +140,46 @@ func spawn_planets():
 	for planet in $Planets.get_children():
 		planet.queue_free()
 	var system = systems[selected_system]
-	var system_pos = get_node(selected_system).global_position
+	var system_pos = systems_node.get_node(selected_system).global_position
 	var current_offset = 0.0
-	for i in system["planets"].size():
-		var planet_name = system["planets"][i]
-		var planet = planet_scenes[planet_name].instantiate()
-		planet.name = planet_name
+	for planet_scene in system["planets"]:
+		var planet = planet_scene.instantiate()
 		var collision = planet.get_node("CollisionShape3D")
 		var radius = collision.shape.radius if collision and collision.shape is SphereShape3D else 0.5
 		current_offset += radius
 		planet.position = system_pos + Vector3(current_offset, 0, 0)
 		current_offset += radius + 0.5
-		planet.scale = Vector3.ZERO  # Start at zero scale
+		planet.scale = Vector3.ZERO
 		$Planets.add_child(planet)
-		planet.input_event.connect(_on_planet_input.bind(planet_name))
-		print("Spawned: ", planet_name, " at ", planet.position, " Radius: ", radius)
+		planet.mouse_entered.connect(_on_planet_hover.bind(planet.get_planet_data()["name"], true))
+		planet.mouse_exited.connect(_on_planet_hover.bind(planet.get_planet_data()["name"], false))
+		planet.set_meta("hovered", false)
 	back_button.visible = true
 
-func _on_planet_input(_viewport, event, _shape_idx, _owner, _self, planet_name):
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		print("Selected planet: ", planet_name)
-		get_tree().change_scene_to_file("res://scenes/perk_selection.tscn")
+func _on_planet_hover(planet_name, entered):
+	if is_zoomed:
+		if entered:
+			var planet = $Planets.get_children().filter(func(p): return p.get_planet_data()["name"] == planet_name)[0]
+			planet.set_meta("hovered", true)
+			tooltip_label.text = planet_name
+			var points_needed = planet.get_planet_data()["points_required"]
+			if GameState.get_points() < points_needed:
+				tooltip_label.text += "\nLocked (Need %d points)" % points_needed
+			planet_tooltip.visible = true
+			update_planet_tooltip_position(planet)
+			print("Planet hover: ", planet_name, " - Tooltip visible: ", planet_tooltip.visible)
+		else:
+			var planet = $Planets.get_children().filter(func(p): return p.get_planet_data()["name"] == planet_name)[0]
+			planet.set_meta("hovered", false)
+			planet_tooltip.visible = false
+
+func update_planet_tooltip_position(planet):
+	var screen_pos = camera.unproject_position(planet.global_position + Vector3(0, 1, 0))
+	var tooltip_size = planet_tooltip.size
+	planet_tooltip.position = screen_pos - Vector2(tooltip_size.x / 2, tooltip_size.y + 25)
 
 func _on_back_pressed():
-	var system_node = get_node(selected_system)
+	var system_node = systems_node.get_node(selected_system)
 	system_node.visible = true
 	system_node.collision_layer = 1
 	is_zoomed = false
@@ -134,8 +187,7 @@ func _on_back_pressed():
 	transition_timer = 0.0
 
 func complete_planet(planet_name):
-	if not completed_planets.has(planet_name):
-		completed_planets.append(planet_name)
-		print("Completed: ", planet_name)
-		$Beta.visible = systems["Alpha"]["planets"].all(func(p): return completed_planets.has(p))
-		
+	GameState.complete_planet(planet_name)
+	for system_name in systems:
+		# No visibility toggle here
+		update_system_ui(system_name)

@@ -50,7 +50,7 @@ func _on_body_exited(body):
 
 func shoot_bullet():
 	var bullet = bullet_scene.instantiate()
-	get_tree().get_root().get_node("Main/Level").add_child(bullet)
+	get_tree().get_root().get_node("Level").add_child(bullet)
 	bullet.global_position = muzzle.global_position
 	var bullet_speed = 20.0
 	var forward_dir = -gun.global_transform.basis.z.normalized()

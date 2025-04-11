@@ -1,8 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://chgsxendb6aqj"]
+[gd_scene load_steps=8 format=3 uid="uid://chgsxendb6aqj"]
 
 [ext_resource type="Texture2D" uid="uid://bsfbknwn0s0a3" path="res://scenes/front.png" id="1_3ldf6"]
 [ext_resource type="Script" uid="uid://m5w1jd0shwat" path="res://scripts/star_map.gd" id="1_fp76q"]
-[ext_resource type="Material" uid="uid://dkhfoekfs6d7x" path="res://shaders/fade_material.tres" id="3_ewo0i"]
+[ext_resource type="PackedScene" uid="uid://ppc6bwinifg4" path="res://scenes/systems/alpha_system.tscn" id="3_fevf7"]
+[ext_resource type="PackedScene" uid="uid://cjac672xsqwd0" path="res://scenes/systems/beta_system.tscn" id="4_568mj"]
+[ext_resource type="PackedScene" uid="uid://dik14rukuvh56" path="res://scenes/systems/gamma_system.tscn" id="5_vyd5l"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fp76q"]
 albedo_texture = ExtResource("1_3ldf6")
@@ -10,30 +12,6 @@ albedo_texture = ExtResource("1_3ldf6")
 [sub_resource type="QuadMesh" id="QuadMesh_ewo0i"]
 material = SubResource("StandardMaterial3D_fp76q")
 size = Vector2(200, 200)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ewo0i"]
-albedo_color = Color(0.693064, 0.691916, 1.15514e-06, 1)
-
-[sub_resource type="QuadMesh" id="QuadMesh_fevf7"]
-material = SubResource("StandardMaterial3D_ewo0i")
-size = Vector2(10, 10)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_568mj"]
-size = Vector3(10, 10, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vyd5l"]
-albedo_color = Color(0.34902, 0.129412, 1, 1)
-
-[sub_resource type="QuadMesh" id="QuadMesh_43bgu"]
-material = SubResource("StandardMaterial3D_vyd5l")
-size = Vector2(10, 10)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b4dln"]
-albedo_color = Color(0, 0.563816, 0, 1)
-
-[sub_resource type="QuadMesh" id="QuadMesh_0fbj8"]
-material = SubResource("StandardMaterial3D_b4dln")
-size = Vector2(10, 10)
 
 [node name="StarMap" type="Node3D"]
 script = ExtResource("1_fp76q")
@@ -48,35 +26,16 @@ mesh = SubResource("QuadMesh_ewo0i")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 62.4)
 
-[node name="Alpha" type="StaticBody3D" parent="."]
+[node name="Systems" type="Node3D" parent="."]
+
+[node name="Alpha" parent="Systems" instance=ExtResource("3_fevf7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.1946, 22.5004, 1.1991)
 
-[node name="Mesh" type="MeshInstance3D" parent="Alpha"]
-material_override = ExtResource("3_ewo0i")
-mesh = SubResource("QuadMesh_fevf7")
-surface_material_override/0 = ExtResource("3_ewo0i")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Alpha"]
-shape = SubResource("BoxShape3D_568mj")
-
-[node name="Beta" type="StaticBody3D" parent="."]
+[node name="Beta" parent="Systems" instance=ExtResource("4_568mj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.0869, 32.8748, 1.1991)
 
-[node name="Mesh" type="MeshInstance3D" parent="Beta"]
-material_override = ExtResource("3_ewo0i")
-mesh = SubResource("QuadMesh_43bgu")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Beta"]
-shape = SubResource("BoxShape3D_568mj")
-
-[node name="Gamma" type="StaticBody3D" parent="."]
+[node name="Gamma" parent="Systems" instance=ExtResource("5_vyd5l")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.45267, -18.2436, 1.1991)
-
-[node name="Mesh" type="MeshInstance3D" parent="Gamma"]
-mesh = SubResource("QuadMesh_0fbj8")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gamma"]
-shape = SubResource("BoxShape3D_568mj")
 
 [node name="Planets" type="Node3D" parent="."]
 
@@ -94,5 +53,39 @@ layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
 text = "Back"
+
+[node name="AlphaPopup" type="PopupPanel" parent="UI"]
+
+[node name="AlphaInfo" type="VBoxContainer" parent="UI/AlphaPopup"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 96.0
+offset_bottom = 96.0
+
+[node name="AlphaLabel" type="Label" parent="UI/AlphaPopup/AlphaInfo"]
+layout_mode = 2
+
+[node name="BetaPopup" type="PopupPanel" parent="UI"]
+auto_translate_mode = 1
+
+[node name="BetaInfo" type="VBoxContainer" parent="UI/BetaPopup"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 96.0
+offset_bottom = 96.0
+
+[node name="BetaLabel" type="Label" parent="UI/BetaPopup/BetaInfo"]
+layout_mode = 2
+
+[node name="PlanetTooltip" type="Control" parent="UI"]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TooltipLabel" type="Label" parent="UI/PlanetTooltip"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
 
 [connection signal="pressed" from="UI/BackButton" to="." method="_on_back_button_pressed"]

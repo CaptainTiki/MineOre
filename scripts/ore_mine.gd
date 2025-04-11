@@ -8,7 +8,7 @@ var health = 5
 @onready var collection_area = $CollectionArea
 @onready var ui_panel = $UILayer/UIPanel
 @onready var ore_label = $UILayer/UIPanel/OreLabel
-@onready var camera = get_tree().get_root().get_node("Main/Level/Camera")
+@onready var camera = get_tree().get_root().get_node("Level/Camera")
 
 func _ready():
 	collection_area.body_entered.connect(_on_body_entered)

@@ -1,0 +1,31 @@
+[gd_scene load_steps=9 format=3 uid="uid://ppc6bwinifg4"]
+
+[ext_resource type="Material" uid="uid://dkhfoekfs6d7x" path="res://shaders/fade_material.tres" id="1_qmq44"]
+[ext_resource type="Script" uid="uid://vtcvor35rr2r" path="res://scenes/systems/system.gd" id="1_vpy6o"]
+[ext_resource type="PackedScene" uid="uid://cwuxn3wuqgyot" path="res://scenes/planets/alpha_one.tscn" id="2_ay458"]
+[ext_resource type="PackedScene" uid="uid://m6uuy28dyy0p" path="res://scenes/planets/alpha_two.tscn" id="3_w364r"]
+[ext_resource type="PackedScene" uid="uid://cei8apdje0oue" path="res://scenes/planets/alpha_three.tscn" id="4_4gqpi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ewo0i"]
+albedo_color = Color(0.693064, 0.691916, 1.15514e-06, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_fevf7"]
+material = SubResource("StandardMaterial3D_ewo0i")
+size = Vector2(10, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_568mj"]
+size = Vector3(10, 10, 1)
+
+[node name="Alpha" type="StaticBody3D"]
+script = ExtResource("1_vpy6o")
+system_name = "Alpha"
+difficulty = "Easy"
+planet_scenes = Array[PackedScene]([ExtResource("2_ay458"), ExtResource("3_w364r"), ExtResource("4_4gqpi")])
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+material_override = ExtResource("1_qmq44")
+mesh = SubResource("QuadMesh_fevf7")
+surface_material_override/0 = ExtResource("1_qmq44")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_568mj")

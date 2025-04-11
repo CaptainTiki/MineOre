@@ -28,10 +28,15 @@ var total_waves = 2
 var player_ore = 0
 var turret_cost = 2
 var mine_cost = 5
-var planet_name = "Alpha-1"  # Default, set from star_map later
+var planet_name = "alpha_one"
 
 func _ready():
-	camera.set_player(player)
+	if not camera:
+		camera = get_node("/root/Level/Camera")
+		if not camera:
+			print("Error: Camera not found at $Camera or /root/Level/Camera!")
+	else:
+		camera.set_player(player)
 	player.connect("hq_placed", _on_hq_placed)
 	player.connect("ore_carried", _on_ore_carried)
 	player.connect("ore_deposited", _on_ore_deposited)
@@ -45,6 +50,7 @@ func _ready():
 	else:
 		print("Sun is null!")
 	update_ui()
+	print("Level root: ", get_tree().root.get_path(), " Current scene: ", get_tree().current_scene.get_path())
 
 func _process(delta):
 	match current_state:
@@ -59,11 +65,18 @@ func _process(delta):
 			if sun: sun.light_energy = 0.3
 			var enemy_count = get_tree().get_nodes_in_group("enemies").size()
 			if enemy_count == 0 and wave_count > 0:
-				print("Wave ", wave_count, " cleared!")
 				start_day()
 		State.WON, State.LOST:
 			pass
+	
+	if Input.is_action_just_pressed("winleveldebug"):
+		end_level(true)
+	
 	update_ui()
+
+func assign_planet(passed_in_name: String):
+	planet_name = passed_in_name
+	print("Assigned planet: ", planet_name)
 
 func _on_hq_placed():
 	current_state = State.DAY
@@ -107,7 +120,7 @@ func end_level(won: bool):
 		current_state = State.WON
 		print("Level Complete! You Win!")
 		end_label.text = "Victory!"
-		get_node("/root/StarMap").complete_planet(planet_name)
+		GameState.complete_planet(planet_name)  # Use autoload
 	else:
 		current_state = State.LOST
 		print("Game Over! HQ Destroyed!")
@@ -126,11 +139,10 @@ func _on_hq_health_changed(health):
 	hq_health_label.text = "HQ Health: %d" % health
 
 func _on_ore_carried(amount):
-	print("Ore carried! Amount: ", amount, " Carried: ", player.carried_ore)
+	pass
 
 func _on_ore_deposited(amount):
 	player_ore += amount
-	print("Ore deposited! Stored: ", player_ore)
 	update_ui()
 
 func _on_turret_placed(position):
@@ -140,7 +152,6 @@ func _on_turret_placed(position):
 		turret.global_position = position
 		turret.add_to_group("turrets")
 		add_child(turret)
-		print("Turret placed! Ore remaining: ", player_ore)
 		update_ui()
 	else:
 		print("Not enough stored ore or not daytime!")
@@ -152,7 +163,6 @@ func _on_mine_placed(position):
 		mine.global_position = position
 		mine.add_to_group("mines")
 		add_child(mine)
-		print("Mine placed! Ore remaining: ", player_ore)
 		update_ui()
 	else:
 		print("Not enough stored ore or not daytime!")

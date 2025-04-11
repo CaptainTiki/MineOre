@@ -1,0 +1,30 @@
+[gd_scene load_steps=8 format=3 uid="uid://cjac672xsqwd0"]
+
+[ext_resource type="Material" uid="uid://dkhfoekfs6d7x" path="res://shaders/fade_material.tres" id="1_35hto"]
+[ext_resource type="Script" uid="uid://vtcvor35rr2r" path="res://scenes/systems/system.gd" id="1_cqmi8"]
+[ext_resource type="PackedScene" uid="uid://bm2168v272qmc" path="res://scenes/planets/beta_one.tscn" id="2_b5xo6"]
+[ext_resource type="PackedScene" uid="uid://chnc8p7nh8roq" path="res://scenes/planets/beta_two.tscn" id="3_5c2w2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vyd5l"]
+albedo_color = Color(0.34902, 0.129412, 1, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_43bgu"]
+material = SubResource("StandardMaterial3D_vyd5l")
+size = Vector2(10, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_568mj"]
+size = Vector3(10, 10, 1)
+
+[node name="Beta" type="StaticBody3D"]
+script = ExtResource("1_cqmi8")
+system_name = "Beta"
+difficulty = "Medium"
+points_required = 2
+planet_scenes = Array[PackedScene]([ExtResource("2_b5xo6"), ExtResource("3_5c2w2")])
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+material_override = ExtResource("1_35hto")
+mesh = SubResource("QuadMesh_43bgu")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_568mj")
