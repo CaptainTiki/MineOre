@@ -1,0 +1,88 @@
+[gd_scene load_steps=5 format=3 uid="uid://dnw8phtcorh15"]
+
+[ext_resource type="Script" uid="uid://cwj5pq3r2y4j2" path="res://scripts/ore_mine.gd" id="1_1y6o8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_anvoc"]
+size = Vector3(0.334595, 0.613867, 0.332092)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_8rvg4"]
+height = 1.0
+radius = 5.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_1y6o8"]
+radius = 2.5
+
+[node name="OreMine" type="StaticBody3D"]
+collision_layer = 17
+collision_mask = 16
+script = ExtResource("1_1y6o8")
+
+[node name="CollisionArea" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00164795, 0.294356, -0.00283813)
+shape = SubResource("BoxShape3D_anvoc")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+transform = Transform3D(3.2633, 0, 0, 0, 4.84416, 0, 0, 0, 3.63426, 0, 0, 0)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.328143, 0, 0, 0, 0.344745, 0, 0, 0, 0.313584, 0, 0.380466, 0)
+size = Vector3(1, 0.115234, 1)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.328143, 0, 0, 0, 0.344745, 0, 0, 0, 0.313584, 0.003545, 0.453529, -0.00546436)
+size = Vector3(0.654419, 0.30835, 0.747498)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.328143, 0, 0, 0, 0.344745, 0, 0, 0, 0.313584, 0.000585828, 0.55214, -0.00414373)
+size = Vector3(0.45462, 0.277527, 0.586243)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.328143, 0, 0, 0, 0.344745, 0, 0, 0, 0.313584, -0.00941736, 0.31068, 0.00438298)
+size = Vector3(0.0646381, 0.30925, 0.122437)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.328143, 0, 0, 0, 0.344745, 0, 0, 0, 0.313584, -0.134897, 0.173471, 0.104354)
+size = Vector3(0.187996, 1.09017, 0.278564)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.328143, 0, 0, 0, 0.344745, 0, 0, 0, 0.313584, -0.134897, 0.173471, -0.111462)
+size = Vector3(0.187996, 1.09017, 0.278564)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.328143, 0, 0, 0, 0.344745, 0, 0, 0, 0.313584, 0.12822, 0.173471, 0.10731)
+size = Vector3(0.187996, 1.09017, 0.278564)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.328143, 0, 0, 0, 0.344745, 0, 0, 0, 0.313584, 0.12822, 0.173471, -0.111462)
+size = Vector3(0.187996, 1.09017, 0.278564)
+
+[node name="OreDetection" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="OreDetection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.481293, 0)
+shape = SubResource("CylinderShape3D_8rvg4")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="UIPanel" type="Panel" parent="UILayer"]
+custom_minimum_size = Vector2(100, 50)
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="OreLabel" type="Label" parent="UILayer/UIPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Ore: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollectionArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.03296, 0)
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CollectionArea"]
+shape = SubResource("CylinderShape3D_1y6o8")

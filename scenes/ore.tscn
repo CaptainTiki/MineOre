@@ -7,6 +7,8 @@ albedo_color = Color(0.769718, 0.350424, 0.424662, 1)
 size = Vector3(0.538208, 0.934082, 0.481445)
 
 [node name="Ore" type="StaticBody3D" groups=["ores"]]
+collision_layer = 4
+collision_mask = 0
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
 

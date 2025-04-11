@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://m6uuy28dyy0p"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ls77k"]
+radius = 2.46218
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6thyb"]
+albedo_color = Color(0.55487, 0.236975, 0.0895515, 1)
+
+[node name="AlphaTwo" type="Area3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_ls77k")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+radius = 2.0
+material = SubResource("StandardMaterial3D_6thyb")

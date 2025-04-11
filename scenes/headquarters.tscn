@@ -1,9 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://ch0q4haku44k8"]
+[gd_scene load_steps=10 format=3 uid="uid://ch0q4haku44k8"]
 
 [ext_resource type="Script" uid="uid://cxy7ilx8od5nf" path="res://scripts/head_quarters.gd" id="1_dwusy"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_e1ru4"]
-size = Vector3(1.69067, 1.04053, 1.29443)
+size = Vector3(1.86883, 1.04053, 1.388)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e1ru4"]
 
@@ -17,11 +17,15 @@ size = Vector3(1.69067, 1.04053, 1.29443)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ugq3g"]
 
-[node name="HeadQuarters" type="StaticBody3D"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_455xb"]
+radius = 3.0
+
+[node name="HeadQuarters" type="StaticBody3D" groups=["headquarters"]]
+collision_layer = 16
 script = ExtResource("1_dwusy")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.143677, 0.529787, -0.147217)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.124787, 0.529787, -0.166534)
 shape = SubResource("BoxShape3D_e1ru4")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
@@ -53,3 +57,28 @@ material = SubResource("StandardMaterial3D_pc146")
 transform = Transform3D(0.615091, 0, 0, 0, 0.603544, 0, 0, 0, 0.469217, 0.00257573, 1.06341, -0.332779)
 size = Vector3(0.142822, 0.272903, 0.224121)
 material = SubResource("StandardMaterial3D_ugq3g")
+
+[node name="InteractArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.06406, 0)
+collision_mask = 16
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+shape = SubResource("CylinderShape3D_455xb")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="UIPanel" type="Panel" parent="UILayer"]
+custom_minimum_size = Vector2(100, 50)
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="DepositLabel" type="Label" parent="UILayer/UIPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Ore: 0"
+horizontal_alignment = 1
+vertical_alignment = 1

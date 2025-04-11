@@ -1,50 +1,64 @@
 extends StaticBody3D
 
-@onready var weapon = $Weapon
-@onready var muzzle = $Weapon/Muzzle
-@onready var detection_area = $DetectionArea
 var bullet_scene = preload("res://scenes/bullet.tscn")
-var effective_range = 5.0  # Matches DetectionArea radius
-var fire_rate = 1.0  # Shots per second
-var time_since_last_shot = 0.0
+@onready var detection_area = $DetectionArea
+@onready var gun = $Gun
+@onready var muzzle: Node3D = $Gun/Muzzle
+var fire_rate = 1.0
+var fire_timer = 0.0
+var target = null
+var health = 5
 
 func _ready():
-	# Snap to ground (Y=0 plane)
-	var plane = Plane(Vector3.UP, 0)
-	var ray_origin = global_position + Vector3(0, 1, 0)  # Start above
-	var ray_dir = Vector3.DOWN
-	var intersect = plane.intersects_ray(ray_origin, ray_dir)
-	if intersect:
-		global_position = intersect
+	if not gun:
+		print("Error: Gun node not found!")
+	if not muzzle:
+		print("Error: Muzzle node not found!")
+	detection_area.body_entered.connect(_on_body_entered)
+	detection_area.body_exited.connect(_on_body_exited)
 
-func _physics_process(delta):
-	# Update shooting cooldown
-	time_since_last_shot += delta
-	
-	# Find nearest enemy
-	var enemies = detection_area.get_overlapping_bodies()
-	var nearest_enemy = null
-	var min_distance = effective_range + 1  # Beyond range to start
-	
-	for enemy in enemies:
-		if enemy.is_in_group("enemies"):
-			var distance = global_position.distance_to(enemy.global_position)
-			if distance < min_distance:
-				min_distance = distance
-				nearest_enemy = enemy
-	
-	# Rotate weapon to nearest enemy if in range
-	if nearest_enemy and min_distance <= effective_range:
-		var target_pos = nearest_enemy.global_position
-		weapon.look_at(target_pos, Vector3.UP)
-		# Shoot if cooldown elapsed
-		if time_since_last_shot >= 1.0 / fire_rate:
-			shoot_bullet(target_pos)
-			time_since_last_shot = 0.0
+func _process(delta):
+	if not gun or not muzzle:
+		return
+	if target and is_instance_valid(target):
+		var target_pos = target.global_position
+		var look_dir = (target_pos - gun.global_position).normalized()
+		var target_angle = atan2(-look_dir.x, -look_dir.z)
+		gun.rotation.y = lerp_angle(gun.rotation.y, target_angle, delta * 5.0)
+		
+		fire_timer -= delta
+		if fire_timer <= 0:
+			shoot_bullet()
+			fire_timer = fire_rate
+	else:
+		var enemies = detection_area.get_overlapping_bodies()
+		if enemies.size() > 0:
+			target = enemies[0]
+			fire_timer = fire_rate
+			print("New target acquired, timer reset to: ", fire_rate)
 
-func shoot_bullet(target_pos):
+func _on_body_entered(body):
+	if body.is_in_group("enemies") and not target:
+		target = body
+		fire_timer = fire_rate
+		print("Enemy entered, timer set to: ", fire_rate)
+
+func _on_body_exited(body):
+	if body == target:
+		target = null
+		print("Target lost")
+
+func shoot_bullet():
 	var bullet = bullet_scene.instantiate()
-	get_tree().get_root().get_node("Main").add_child(bullet)
+	get_tree().get_root().get_node("Main/Level").add_child(bullet)
 	bullet.global_position = muzzle.global_position
-	var direction = (target_pos - muzzle.global_position).normalized()
-	bullet.velocity = direction * 20.0  # Match player bullet speed
+	var bullet_speed = 20.0
+	var forward_dir = -gun.global_transform.basis.z.normalized()
+	bullet.velocity = forward_dir * bullet_speed
+	print("Turret fired at: ", target.global_position, " Bullet pos: ", bullet.global_position)
+
+func take_damage(amount):
+	health -= amount
+	if health <= 0:
+		queue_free()
+	print("Turret health: ", health)
