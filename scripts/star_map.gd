@@ -9,6 +9,7 @@ extends Node3D
 @onready var planet_tooltip = $UI/PlanetTooltip
 @onready var tooltip_label = $UI/PlanetTooltip/TooltipLabel
 @onready var systems_node = $Systems
+@onready var perks_screen : PerksScreen = $UI/PerksScreen
 
 var systems = {}
 var selected_system = null
@@ -38,6 +39,10 @@ func _ready():
 	for system_name in systems:
 		update_system_ui(system_name)
 	planet_tooltip.visible = false
+	perks_screen.visible = false
+	perks_screen.perks_selected.connect(_on_perks_selected)
+	print("Perks screen connected in star_map.gd")
+	
 	print("Camera start: ", camera.global_position, " Rotation: ", camera.rotation)
 	print("Paused: ", get_tree().paused)
 	print("Points: ", GameState.get_points())
@@ -73,7 +78,7 @@ func _process(delta):
 				selected_system = null
 	
 	# Planet selection
-	if is_zoomed and Input.is_action_just_pressed("action"):
+	if is_zoomed and not perks_screen.visible and Input.is_action_just_pressed("action"):
 		var planets = $Planets.get_children()
 		for planet in planets:
 			if planet.get_meta("hovered", false):
@@ -82,17 +87,21 @@ func _process(delta):
 					print(data["name"], " locked—need ", data["points_required"], " points!")
 				else:
 					print("Selected planet: ", data["name"])
-					var level = load(data["level_path"]).instantiate()
-					get_tree().root.add_child(level)
-					level.assign_planet(data["name"])
-					get_tree().current_scene.queue_free()
-					get_tree().current_scene = level
+					perks_screen.show_perks(data)
 				break
 	
 	if planet_tooltip.visible:
 		var hovered = $Planets.get_children().filter(func(p): return p.get_meta("hovered", false))
 		if hovered.size() > 0:
 			update_planet_tooltip_position(hovered[0])
+
+func _on_perks_selected(perks, planet_data):
+	print("Received perks_selected: perks=", perks, " planet=", planet_data["name"])
+	var level = load(planet_data["level_path"]).instantiate()
+	get_tree().root.add_child(level)
+	level.assign_planet(planet_data["name"])
+	get_tree().current_scene.queue_free()
+	get_tree().current_scene = level
 
 func _on_system_input(_viewport, event, _shape_idx, _owner, _self, system_name):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:

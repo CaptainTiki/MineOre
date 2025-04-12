@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://chgsxendb6aqj"]
+[gd_scene load_steps=9 format=3 uid="uid://chgsxendb6aqj"]
 
 [ext_resource type="Texture2D" uid="uid://bsfbknwn0s0a3" path="res://scenes/front.png" id="1_3ldf6"]
 [ext_resource type="Script" uid="uid://m5w1jd0shwat" path="res://scripts/star_map.gd" id="1_fp76q"]
 [ext_resource type="PackedScene" uid="uid://ppc6bwinifg4" path="res://scenes/systems/alpha_system.tscn" id="3_fevf7"]
 [ext_resource type="PackedScene" uid="uid://cjac672xsqwd0" path="res://scenes/systems/beta_system.tscn" id="4_568mj"]
 [ext_resource type="PackedScene" uid="uid://dik14rukuvh56" path="res://scenes/systems/gamma_system.tscn" id="5_vyd5l"]
+[ext_resource type="PackedScene" uid="uid://du1343o1l0m7q" path="res://scenes/perks_screen.tscn" id="6_568mj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fp76q"]
 albedo_texture = ExtResource("1_3ldf6")
@@ -87,5 +88,8 @@ offset_bottom = 40.0
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="PerksScreen" parent="UI" instance=ExtResource("6_568mj")]
+layout_mode = 1
 
 [connection signal="pressed" from="UI/BackButton" to="." method="_on_back_button_pressed"]
