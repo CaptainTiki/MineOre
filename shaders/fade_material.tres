@@ -3,6 +3,6 @@
 [ext_resource type="Shader" uid="uid://vdipjch8usnx" path="res://shaders/fade_shader.gdshader" id="1_mp2r4"]
 
 [resource]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_mp2r4")
-shader_parameter/opacity = 1.0

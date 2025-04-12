@@ -5,6 +5,8 @@ signal health_changed(health)
 
 var base_health = 5.0
 var health: float
+var stored_ore = 0
+var max_ore = 20
 
 @onready var interact_area = $InteractArea
 @onready var ui_panel = $UILayer/UIPanel
@@ -38,7 +40,19 @@ func take_damage(amount):
 	print("HQ health: ", health)
 
 func deposit_ore(amount):
-	return amount  # Returns amount deposited for player to subtract
+	var space_left = max_ore - stored_ore
+	var to_deposit = min(amount, space_left)
+	stored_ore += to_deposit
+	update_ui()
+	print("Deposited ", to_deposit, " ore to HQ. Total: ", stored_ore)
+	return to_deposit
+
+func withdraw_ore(amount) -> int:
+	var to_withdraw = min(amount, stored_ore)
+	stored_ore -= to_withdraw
+	update_ui()
+	print("Withdrew ", to_withdraw, " ore from HQ. Remaining: ", stored_ore)
+	return to_withdraw
 
 func _on_body_entered(body):
 	if body.is_in_group("player"):
@@ -50,4 +64,4 @@ func _on_body_exited(body):
 		ui_panel.visible = false
 
 func update_ui():
-	deposit_label.text = "Deposit\nPress E"
+	deposit_label.text = "Ore: %d/%d\nPress E" % [stored_ore, max_ore]

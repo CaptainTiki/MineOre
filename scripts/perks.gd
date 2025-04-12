@@ -7,7 +7,7 @@ var perk_definitions = {
 	"building_health": {"multiplier": 1.05, "description": "Buildings have 5% more health"},
 	"turret_rotation_speed": {"multiplier": 1.25, "description": "Turrets rotate 25% faster"},
 	"turret_damage": {"multiplier": 1.20, "description": "Turrets deal 20% more damage"},
-	"turret_fire_rate": {"multiplier": 0.25, "description": "Turrets shoot 25% faster (lower interval)"},
+	"turret_fire_rate": {"multiplier": 0.10, "description": "Turrets shoot 25% faster (lower interval)"},
 	"player_movement_speed": {"multiplier": 1.15, "description": "Player moves 15% faster"}
 }
 

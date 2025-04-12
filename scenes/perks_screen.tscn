@@ -12,6 +12,23 @@ size_flags_horizontal = 6
 size_flags_vertical = 6
 script = ExtResource("1_54lqj")
 
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(420, 480)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -240.0
+offset_right = 210.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="PerksGrid" type="GridContainer" parent="."]
 custom_minimum_size = Vector2(420, 480)
 layout_mode = 1
@@ -20,17 +37,15 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -210.0
+offset_top = -240.0
+offset_right = 210.0
+offset_bottom = 240.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="Panel" type="Panel" parent="PerksGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+columns = 5
 
 [node name="HoverPanel" type="Panel" parent="."]
 custom_minimum_size = Vector2(200, 400)

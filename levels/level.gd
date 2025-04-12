@@ -15,33 +15,28 @@ extends Node3D
 @onready var carried_ore_label: Label = $UI/HBoxContainer/VBoxContainer/CarriedOreLabel
 
 var enemy_scene = preload("res://scenes/enemy.tscn")
-var turret_scene = preload("res://scenes/turret.tscn")
-var mine_scene = preload("res://scenes/ore_mine.tscn")
 var ground_size = Vector2(100, 100)
 
 enum State { PLACING, DAY, NIGHT, WON, LOST }
 var current_state = State.PLACING
-var day_duration = 20.0
+var day_duration = 120.0
 var day_timer = 0.0
 var wave_count = 0
 var total_waves = 2
 var player_ore = 0
-var turret_cost = 2
-var mine_cost = 5
 var planet_name = "alpha_one"
+var has_hq = false
 
 func _ready():
 	if not camera:
 		camera = get_node("/root/Level/Camera")
 		if not camera:
-			print("Error: Camera not found at $Camera or /root/Level/Camera!")
+			print("Error: Camera not found!")
 	else:
 		camera.set_player(player)
-	player.connect("hq_placed", _on_hq_placed)
+	player.connect("building_placed", _on_building_placed)
 	player.connect("ore_carried", _on_ore_carried)
 	player.connect("ore_deposited", _on_ore_deposited)
-	player.connect("turret_placed", _on_turret_placed)
-	player.connect("mine_placed", _on_mine_placed)
 	end_panel.visible = false
 	restart_button.connect("pressed", _on_restart_pressed)
 	quit_button.connect("pressed", _on_quit_pressed)
@@ -78,14 +73,26 @@ func assign_planet(passed_in_name: String):
 	planet_name = passed_in_name
 	print("Assigned planet: ", planet_name)
 
-func _on_hq_placed():
-	current_state = State.DAY
-	day_timer = day_duration
-	var hq = get_node_or_null("HeadQuarters")
-	if hq:
-		hq.connect("hq_destroyed", _on_hq_destroyed)
-		hq.connect("health_changed", _on_hq_health_changed)
-		hq_health_label.text = "HQ Health: %d" % hq.health
+func _on_building_placed(building_name: String, position: Vector3):
+	if building_name == "hq":
+		has_hq = true
+		current_state = State.DAY
+		day_timer = day_duration
+		var hq = get_node_or_null("HeadQuarters")
+		if hq:
+			hq.connect("hq_destroyed", _on_hq_destroyed)
+			hq.connect("health_changed", _on_hq_health_changed)
+			hq_health_label.text = "HQ Health: %d" % hq.health
+	else:
+		if not has_hq:
+			print("Cannot place ", building_name, " - HQ required!")
+			return
+		var cost = player.building_configs.get(building_name, {}).get("cost", 0)
+		if current_state == State.DAY and player_ore >= cost:
+			player_ore -= cost
+			update_ui()
+		else:
+			print("Not enough ore or not daytime for ", building_name)
 
 func start_day():
 	current_state = State.DAY
@@ -120,7 +127,7 @@ func end_level(won: bool):
 		current_state = State.WON
 		print("Level Complete! You Win!")
 		end_label.text = "Victory!"
-		GameState.complete_planet(planet_name)  # Use autoload
+		GameState.complete_planet(planet_name)
 	else:
 		current_state = State.LOST
 		print("Game Over! HQ Destroyed!")
@@ -144,28 +151,6 @@ func _on_ore_carried(amount):
 func _on_ore_deposited(amount):
 	player_ore += amount
 	update_ui()
-
-func _on_turret_placed(position):
-	if current_state == State.DAY and player_ore >= turret_cost:
-		player_ore -= turret_cost
-		var turret = turret_scene.instantiate()
-		turret.global_position = position
-		turret.add_to_group("turrets")
-		add_child(turret)
-		update_ui()
-	else:
-		print("Not enough stored ore or not daytime!")
-
-func _on_mine_placed(position):
-	if current_state == State.DAY and player_ore >= mine_cost:
-		player_ore -= mine_cost
-		var mine = mine_scene.instantiate()
-		mine.global_position = position
-		mine.add_to_group("mines")
-		add_child(mine)
-		update_ui()
-	else:
-		print("Not enough stored ore or not daytime!")
 
 func _on_restart_pressed():
 	get_tree().paused = false

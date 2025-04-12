@@ -2,25 +2,25 @@ extends CharacterBody3D
 
 signal ore_carried(amount)
 signal ore_deposited(amount)
-signal hq_placed
-signal turret_placed(position)
-signal mine_placed(position)
+signal building_placed(building_name, position)
 
-enum Tool { NONE, GUN, MINING_LASER, TURRET, MINE }
+enum Tool { NONE, GUN, MINING_LASER }
 var current_tool = Tool.NONE
 var speed = 5.0
 var bullet_scene = preload("res://scenes/bullet.tscn")
-var turret_scene = preload("res://scenes/turret.tscn")
-var mine_scene = preload("res://scenes/ore_mine.tscn")
-var headquarters_scene = preload("res://scenes/headquarters.tscn")
-var is_placing_hq = true
 var carry_capacity = 20
 var carried_ore = 0
+var is_placing = false
+var preview_instance = null
+var preview_scene_path = ""
+var preview_building_name = ""
+var preview_distance = 4.0  # Base distance doubled
 
 @onready var camera = get_node_or_null("../Camera")
+@onready var construction_menu = get_tree().get_root().get_node_or_null("Level/UI/ConstructionMenu")
 
 func _ready():
-	# Clear input to prevent carryover from star map
+	# Clear input to prevent carryover
 	Input.action_release("action")
 	
 	add_to_group("player")
@@ -30,32 +30,39 @@ func _ready():
 	if not camera:
 		camera = get_tree().get_root().get_node_or_null("Level/Camera")
 		if not camera:
-			print("Error: Camera not found at ../Camera or /root/Level/Camera!")
+			print("Error: Camera not found!")
 	if not $InteractArea:
-		print("Error: InteractArea not found in player scene!")
+		print("Error: InteractArea not found!")
 	else:
-		print("InteractArea found, radius: ", $InteractArea.get_node("CollisionShape3D").shape.radius)
-	print("Player ready, placing HQ: ", is_placing_hq)
+		print("InteractArea radius: ", $InteractArea.get_node("CollisionShape3D").shape.radius)
+	if not construction_menu:
+		print("Error: ConstructionMenu not found!")
+	else:
+		construction_menu.building_selected.connect(_on_building_selected)
+	print("Player ready, awaiting construction menu")
 
 func _process(delta: float) -> void:
-	if is_placing_hq:
+	if Input.is_action_just_pressed("menu"):
+		if construction_menu.visible:
+			construction_menu.hide_menu()
+			cancel_placement()
+		else:
+			construction_menu.show_menu()
+	
+	if is_placing and preview_instance:
+		update_preview_position()
 		if Input.is_action_just_pressed("action"):
-			print("Action pressed, placing HQ at: ", global_position)
-			place_headquarters()
-	else:
+			place_building()
+
+	if not is_placing:
 		if Input.is_action_just_pressed("action"):
 			match current_tool:
 				Tool.GUN:
 					shoot_bullet()
 				Tool.MINING_LASER:
 					mine_ore()
-				Tool.TURRET:
-					try_place_turret()
-				Tool.MINE:
-					try_place_mine()
-					
-	if Input.is_action_just_pressed("interact"):
-		interact_with_building()
+		if Input.is_action_just_pressed("interact"):
+			interact_with_building()
 
 func _physics_process(delta):
 	var input = Vector3.ZERO
@@ -81,15 +88,11 @@ func _physics_process(delta):
 			look_at(Vector3(look_pos.x, global_position.y, look_pos.z), Vector3.UP)
 
 func _input(event):
-	if not is_placing_hq:
+	if not is_placing:
 		if event.is_action_pressed("tool_gun"):
 			switch_tool(Tool.GUN)
 		elif event.is_action_pressed("tool_mining_laser"):
 			switch_tool(Tool.MINING_LASER)
-		elif event.is_action_pressed("tool_turret"):
-			switch_tool(Tool.TURRET)
-		elif event.is_action_pressed("tool_mine"):
-			switch_tool(Tool.MINE)
 
 func switch_tool(new_tool):
 	current_tool = new_tool
@@ -102,7 +105,7 @@ func shoot_bullet():
 	var bullet = bullet_scene.instantiate()
 	var level = get_tree().get_root().get_node_or_null("Level")
 	if not level:
-		print("Error: Level node not found at /root/Level!")
+		print("Error: Level node not found!")
 		return
 	level.add_child(bullet)
 	if $Gun == null or not $Gun.is_inside_tree():
@@ -138,50 +141,92 @@ func interact_with_building():
 			carried_ore -= deposited
 			emit_signal("ore_deposited", deposited)
 
-func try_place_turret():
-	if not camera:
-		print("Error: Camera is null in try_place_turret!")
-		return
-	var mouse_pos = get_viewport().get_mouse_position()
-	var ray_origin = camera.project_ray_origin(mouse_pos)
-	var ray_dir = camera.project_ray_normal(mouse_pos)
-	var plane = Plane(Vector3.UP, 0)
-	var intersect = plane.intersects_ray(ray_origin, ray_dir)
-	if intersect:
-		emit_signal("turret_placed", intersect)
+func _on_building_selected(scene_path: String, building_name: String):
+	construction_menu.hide_menu()
+	start_placement(scene_path, building_name)
+	print("Selected building: ", building_name)
 
-func try_place_mine():
-	if not camera:
-		print("Error: Camera is null in try_place_mine!")
-		return
-	var mouse_pos = get_viewport().get_mouse_position()
-	var ray_origin = camera.project_ray_origin(mouse_pos)
-	var ray_dir = camera.project_ray_normal(mouse_pos)
-	var plane = Plane(Vector3.UP, 0)
-	var intersect = plane.intersects_ray(ray_origin, ray_dir)
-	if intersect:
-		emit_signal("mine_placed", intersect)
+func start_placement(scene_path: String, building_name: String):
+	if is_placing:
+		cancel_placement()
+	preview_scene_path = scene_path
+	preview_building_name = building_name
+	preview_instance = load(scene_path).instantiate()
+	preview_instance.set_meta("is_preview", true)
+	
+	# Set transparency
+	var mesh = preview_instance.get_node("MeshInstance3D")
+	if mesh:
+		mesh.transparency = 0.65
+		print("Preview ", building_name, " transparency set to 0.65")
+	else:
+		print("Warning: No MeshInstance3D on ", building_name)
+	
+	# Calculate dynamic distance based on CollisionShape3D
+	var base_distance = 4.0
+	var shape_size_z = 0.0
+	var collision_shape = preview_instance.get_node_or_null("CollisionShape3D")
+	if collision_shape and collision_shape.shape is BoxShape3D:
+		shape_size_z = collision_shape.shape.extents.z
+		preview_distance = base_distance + (shape_size_z / 2.0)
+		print("Building ", building_name, " shape size z: ", shape_size_z, ", preview distance: ", preview_distance)
+	else:
+		preview_distance = base_distance
+		print("Warning: No valid CollisionShape3D for ", building_name, ", using base distance: ", base_distance)
+	
+	get_tree().get_root().get_node("Level").add_child(preview_instance)
+	is_placing = true
+	update_preview_position()
+	print("Started placement for ", building_name)
 
-func place_headquarters():
-	if not camera:
-		print("Error: Camera is null in place_headquarters!")
-		return
-	var hq = headquarters_scene.instantiate()
-	var mouse_pos = get_viewport().get_mouse_position()
-	var ray_origin = camera.project_ray_origin(mouse_pos)
-	var ray_dir = camera.project_ray_normal(mouse_pos)
-	var plane = Plane(Vector3.UP, 0)
-	var intersect = plane.intersects_ray(ray_origin, ray_dir)
-	if intersect:
-		hq.global_position = intersect
-		var level = get_tree().get_root().get_node_or_null("Level")
-		if not level:
-			print("Error: Level node not found at /root/Level!")
-			return
-		level.add_child(hq)
-		is_placing_hq = false
-		emit_signal("hq_placed")
-		print("HQ placed at: ", intersect)
+func update_preview_position():
+	if preview_instance:
+		var forward_dir = -transform.basis.z.normalized()
+		var preview_pos = global_position + forward_dir * preview_distance
+		preview_pos.y = 0  # Snap to ground
+		preview_instance.global_position = preview_pos
+
+func place_building():
+	if preview_instance and preview_scene_path:
+		var cost = building_configs.get(preview_building_name, {}).get("cost", 0)
+		var level = get_tree().get_root().get_node("Level")
+		if level.player_ore >= cost:
+			var building = load(preview_scene_path).instantiate()
+			building.global_position = preview_instance.global_position
+			var mesh = building.get_node("MeshInstance3D")
+			if mesh:
+				mesh.transparency = 0.0
+				print("Placed ", preview_building_name, " transparency set to 0.0")
+			else:
+				print("Warning: No MeshInstance3D on placed ", preview_building_name)
+			level.add_child(building)
+			level.player_ore -= cost
+			emit_signal("building_placed", preview_building_name, building.global_position)
+			if building_configs.get(preview_building_name, {}).get("unique", false):
+				construction_menu.mark_unique_placed(preview_building_name)
+			print("Placed ", preview_building_name, " at ", building.global_position)
+		else:
+			print("Not enough ore! Need ", cost, ", have ", level.player_ore)
+		cancel_placement()
+
+func cancel_placement():
+	if preview_instance:
+		preview_instance.queue_free()
+		preview_instance = null
+	is_placing = false
+	preview_scene_path = ""
+	preview_building_name = ""
+	preview_distance = 4.0  # Reset to base
+	print("Placement cancelled")
 
 func set_player(player_node):
 	pass
+
+var building_configs = {
+	"hq": {"scene": "res://scenes/headquarters.tscn", "category": "unique", "cost": 0, "unique": true},
+	"research": {"scene": "res://scenes/research_building.tscn", "category": "unique", "cost": 5, "unique": true},
+	"ore_mine": {"scene": "res://scenes/ore_mine.tscn", "category": "ore", "cost": 5},
+	"silo": {"scene": "res://scenes/silo.tscn", "category": "ore", "cost": 10},
+	"turret": {"scene": "res://scenes/turret.tscn", "category": "defenses", "cost": 2},
+	"cannon": {"scene": "res://scenes/cannon.tscn", "category": "defenses", "cost": 8}
+}

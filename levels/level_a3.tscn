@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dkcsupnh2glyh"]
+[gd_scene load_steps=10 format=3 uid="uid://dkcsupnh2glyh"]
 
 [ext_resource type="Script" uid="uid://3l10w3x0w03r" path="res://levels/level.gd" id="1_bvdna"]
 [ext_resource type="Script" uid="uid://dphpdmx8vikda" path="res://scripts/camera_3d.gd" id="2_6x8sb"]
 [ext_resource type="PackedScene" uid="uid://dmrcwwqgtkirs" path="res://scenes/ore.tscn" id="3_qoly0"]
 [ext_resource type="PackedScene" uid="uid://defrigbi7ac0e" path="res://scenes/player.tscn" id="4_h81pj"]
+[ext_resource type="PackedScene" uid="uid://x7foxbnlqbrt" path="res://scenes/construction_menu.tscn" id="5_6x8sb"]
 [ext_resource type="PackedScene" uid="uid://b3f4cae2fqmud" path="res://scenes/ground_1.tscn" id="5_171xf"]
 [ext_resource type="PackedScene" uid="uid://byu2rmwgu3q8m" path="res://scenes/rock_1.tscn" id="6_eyqdx"]
 [ext_resource type="PackedScene" uid="uid://dcrlkm0x81w4g" path="res://scenes/rock_2_big.tscn" id="7_a7dnx"]
@@ -176,6 +177,20 @@ offset_top = 93.0
 offset_right = 158.0
 offset_bottom = 124.0
 text = "Quit!"
+
+[node name="ConstructionMenu" parent="UI" instance=ExtResource("5_6x8sb")]
+visible = false
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 400.0
+offset_bottom = 600.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="NavRegion" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_gjl0y")

@@ -11,6 +11,7 @@ signal perks_selected(perks, planet_data)
 @onready var doll_label = $PaperDollPanel/DollLabel
 @onready var go_button = $GoButton
 
+var perk_icon_scene = preload("res://scenes/perks_icon.tscn")
 var available_perks = ["building_health", "turret_rotation_speed", "turret_damage", "turret_fire_rate", "player_movement_speed"]
 var chosen_perks = []
 var selected_planet = null
@@ -23,14 +24,12 @@ func _ready():
 	
 	# Populate perks grid
 	for perk in available_perks:
-		var button = Button.new()
-		button.text = perk.capitalize()
-		button.size = Vector2(200, 50)
-		button.focus_mode = FOCUS_NONE  # Disable focus outline
-		button.mouse_entered.connect(_on_perk_hover.bind(perk))
-		button.mouse_exited.connect(_on_perk_hover_exit)
-		button.pressed.connect(_on_perk_selected.bind(perk, button))
-		perks_grid.add_child(button)
+		var icon = perk_icon_scene.instantiate()
+		icon.set_perk(perk)
+		icon.icon_pressed.connect(_on_perk_selected.bind(icon))
+		icon.icon_hovered.connect(_on_perk_hover)
+		icon.icon_unhovered.connect(_on_perk_hover_exit)
+		perks_grid.add_child(icon)
 	
 	update_perk_buttons()
 	print("PerksScreen ready, grid children: ", perks_grid.get_child_count())
@@ -47,13 +46,15 @@ func _on_perk_hover(perk):
 	perk_name_label.text = perk.capitalize()
 	perk_desc_label.text = Perks.get_perk_description(perk)
 	hover_panel.visible = true
+	print("Hover panel shown for perk: ", perk)
 
 func _on_perk_hover_exit():
 	hover_panel.visible = false
 	perk_name_label.text = ""
 	perk_desc_label.text = ""
+	print("Hover panel hidden")
 
-func _on_perk_selected(perk, button):
+func _on_perk_selected(perk, icon):
 	if perk in chosen_perks:
 		chosen_perks.erase(perk)
 		print("Deselected perk: ", perk)
@@ -66,13 +67,12 @@ func _on_perk_selected(perk, button):
 	update_perk_buttons()
 
 func update_perk_buttons():
-	for button in perks_grid.get_children():
-		if button is Button:
-			var perk = button.text.to_lower()
-			if perk in chosen_perks:
-				button.modulate = Color(0, 1, 0)  # Green for selected
-			else:
-				button.modulate = Color(1, 1, 1)  # White for unselected
+	for icon in perks_grid.get_children():
+		if icon is Control and icon.has_method("set_selected"):
+			var perk = icon.perk_name
+			var is_selected = perk in chosen_perks
+			icon.set_selected(is_selected)
+			print("Updating icon: ", perk, " selected: ", is_selected)
 	print("Updated buttons, chosen perks: ", chosen_perks)
 
 func _on_go_pressed():

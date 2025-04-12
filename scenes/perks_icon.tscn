@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://bulrpmp16ghgg"]
+
+[ext_resource type="Texture2D" uid="uid://cv6d4n3taolws" path="res://assets/grey_mid_bn.png" id="1_5infl"]
+[ext_resource type="Script" uid="uid://2ub5ovvif2vh" path="res://scripts/perks_icon.gd" id="1_buquv"]
+[ext_resource type="Texture2D" uid="uid://4b1d4dp1vaq1" path="res://assets/grey_drk_bn.png" id="2_buquv"]
+[ext_resource type="Texture2D" uid="uid://so4ff6duu21v" path="res://assets/grey_lite_bn.png" id="3_2rm8r"]
+
+[node name="PerksIcon" type="Control"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_buquv")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="TextureButton" type="TextureButton" parent="MarginContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_5infl")
+texture_pressed = ExtResource("2_buquv")
+texture_hover = ExtResource("3_2rm8r")

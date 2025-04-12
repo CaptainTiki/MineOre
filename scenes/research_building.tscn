@@ -1,0 +1,88 @@
+[gd_scene load_steps=6 format=4 uid="uid://8so436wobooa"]
+
+[ext_resource type="Script" uid="uid://ddavqcif632rk" path="res://scripts/research_building.gd" id="1_dpu8q"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dhvhm"]
+size = Vector3(2.03015, 2.4693, 2.02203)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ys5ma"]
+albedo_color = Color(0.270222, 0.270222, 0.270222, 1)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ys5ma"]
+_surfaces = [{
+"aabb": AABB(-1, -0.00890732, -1, 2, 2.38628, 2),
+"attribute_data": PackedByteArray("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"),
+"format": 34359738391,
+"material": SubResource("StandardMaterial3D_ys5ma"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 204,
+"vertex_data": PackedByteArray("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4ARlvrVN3j8gxza+ENvYPrVN3j8gxza+4ARlvrVN3j9wTPk+8AC5vrVN3j9wTPk+8AC5vrVN3j845jo/8AC5voAw+T5wTPk+8AC5vrVN3j9wTPk+4ARlvrVN3j9wTPk+8AC5vrVN3j845jo/4ARlvrVN3j9wTPk+ENvYPrVN3j845jo/8AC5vrVN3j845jo/yacjP4Aw+T4Ax/08ENvYPrUBuj8Ax/08yacjP7UBuj8Ax/084ARlvrUBuj/I9Qi/ENvYPrUBuj8gxza+4ARlvrUBuj8gxza+ENvYPrUBuj8gxza+yacjP7UBuj/IkUK/yacjP7UBuj8Ax/08ENvYPrUBuj8Ax/08ENvYPrUBuj8gxza+yacjP7UBuj8Ax/08yacjP7UBuj/IkUK/ENvYPrUBuj8gxza+boyxvrUBuj/IkUK/yacjP7UBuj/IkUK/yacjP4Aw+T4Ax/08yacjP7UBuj8Ax/084ARlvrUBuj/I9Qi/boyxvrUBuj/IkUK/ENvYPrUBuj8gxza+boyxvoAw+T7I9Qi/boyxvoAw+T7IkUK/boyxvrUBuj/IkUK/boyxvrUBuj/IkUK/boyxvrUBuj/I9Qi/boyxvoAw+T7I9Qi/boyxvrUBuj/IkUK/boyxvoAw+T7IkUK/yacjP4Aw+T7IkUK/boyxvrUBuj/IkUK/4ARlvrUBuj/I9Qi/boyxvrUBuj/I9Qi/ENvYPrUBuj8Ax/08yacjP4Aw+T4Ax/08ENvYPoAw+T4Ax/08yacjP4Aw+T7IkUK/yacjP7UBuj/IkUK/boyxvrUBuj/IkUK/yacjP4Aw+T7IkUK/yacjP4Aw+T4Ax/08yacjP7UBuj/IkUK//3//////AAD/f///AAAAAP9//////wAA/3///wAAAAD/f/////8AAP9///8AAAAA/////wAA/z//////AAD/P/////8AAP8//3///wAAAAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//////AAD/f/////8AAP9//////wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9///8AAAAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//////AAD/f/////8AAP9///8AAAAA/3//////AAD/f/////8AAP9//////wAA/////wAA/z//////AAD/P/////8AAP8//3///wAAAAD/f///AAAAAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5//3//////AAD/f/////8AAP9//////wAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5/////f/9//n////9//3/+f////3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//////wAA/z//////AAD/P/////8AAP8//////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8/////f/9//n////9//3/+f////3//f/5//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9//////wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3///wAAAAD/f///AAAAAP9//////wAA/3///wAAAAD/f/////8AAP9//////wAA/3//////AAD/f///AAAAAP9//////wAA/3//////AAD/f///AAAAAP9///8AAAAA////f/9//n////9//3/+f////3//f/5//3///wAAAAD/f///AAAAAP9///8AAAAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//////wAA/z//////AAD/P/////8AAP8//3///wAAAAD/f///AAAAAP9//////wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//////wAA/z//////AAD/P/////8AAP8/////f/9//n////9//3/+f////3//f/5/")
+}]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_v2lnw"]
+radius = 4.0
+
+[node name="ResearchBuilding" type="StaticBody3D"]
+script = ExtResource("1_dpu8q")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00787354, 1.22957, 0.0027771)
+shape = SubResource("BoxShape3D_dhvhm")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+visible = false
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.238895, 0)
+size = Vector3(2, 0.495605, 2)
+material = SubResource("StandardMaterial3D_ys5ma")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.550525, 1.42535, -0.0240445)
+size = Vector3(0.653748, 1.90405, 1.02191)
+material = SubResource("StandardMaterial3D_ys5ma")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0311055, 1.10503, 0.275791)
+size = Vector3(0.784882, 1.26343, 0.908569)
+material = SubResource("StandardMaterial3D_ys5ma")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.146252, 0.963248, -0.364529)
+size = Vector3(0.986053, 0.979858, 0.791016)
+material = SubResource("StandardMaterial3D_ys5ma")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("ArrayMesh_ys5ma")
+
+[node name="InteractArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.01521, 0)
+shape = SubResource("CylinderShape3D_v2lnw")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="ResearchPanel" type="Panel" parent="UILayer"]
+custom_minimum_size = Vector2(300, 400)
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/ResearchPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResearchLabel" type="Label" parent="UILayer/ResearchPanel/VBoxContainer"]
+layout_mode = 2
+text = "Label"
+horizontal_alignment = 1
+
+[node name="ResearchGrid" type="GridContainer" parent="UILayer/ResearchPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
