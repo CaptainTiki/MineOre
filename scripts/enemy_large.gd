@@ -1,16 +1,16 @@
 extends CharacterBody3D
 
-var speed = 5.0
+var speed = 2.0
 var target = null
 var view_distance = 10.0
 var path = []
 var path_index = 0
 var path_update_timer = 0.0
 var path_update_interval = 0.5
-var damage = 1
-var attack_rate = 1.0  # Damage every 1s
+var damage = 5
+var attack_rate = 0.5  # Damage every 1s
 var attack_timer = 0.0
-var health = 5
+var health = 20
 @onready var nav_agent = $NavigationAgent3D
 @onready var damage_area = $DamageArea
 

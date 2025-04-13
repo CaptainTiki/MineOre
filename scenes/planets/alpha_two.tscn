@@ -11,7 +11,7 @@ albedo_color = Color(0.55487, 0.236975, 0.0895515, 1)
 [node name="AlphaTwo" type="Area3D"]
 script = ExtResource("1_mb06c")
 planet_name = "Alpha Two"
-level_path = "res://levels/level_a2.tscn"
+level_path = "res://levels/debug_level.tscn"
 system_name = "Alpha"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

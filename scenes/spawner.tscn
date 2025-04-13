@@ -1,0 +1,33 @@
+[gd_scene load_steps=8 format=3 uid="uid://cx6uhjibhnfip"]
+
+[ext_resource type="Script" uid="uid://bkmm1dr373vbq" path="res://scripts/spawner.gd" id="1_2vbf6"]
+[ext_resource type="Script" uid="uid://brc5q7rkof4o0" path="res://scripts/spawn.gd" id="2_tx2ig"]
+[ext_resource type="PackedScene" uid="uid://uycj3qqetng5" path="res://scenes/enemy.tscn" id="3_6bbd6"]
+[ext_resource type="PackedScene" uid="uid://dtd1hd80yy3im" path="res://scenes/enemy_large.tscn" id="4_6bbd6"]
+
+[sub_resource type="Resource" id="Resource_cmhla"]
+script = ExtResource("2_tx2ig")
+enemy_scene = ExtResource("3_6bbd6")
+wave_counts = Array[int]([5, 7])
+metadata/_custom_type_script = "uid://brc5q7rkof4o0"
+
+[sub_resource type="Resource" id="Resource_4wbs5"]
+script = ExtResource("2_tx2ig")
+enemy_scene = ExtResource("4_6bbd6")
+wave_counts = Array[int]([2, 4])
+metadata/_custom_type_script = "uid://brc5q7rkof4o0"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ik2nu"]
+height = 1.0
+radius = 1.0
+
+[node name="Spawner" type="Node3D"]
+script = ExtResource("1_2vbf6")
+waves = Array[ExtResource("2_tx2ig")]([SubResource("Resource_cmhla"), SubResource("Resource_4wbs5")])
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("CylinderShape3D_ik2nu")
+
+[node name="Timer" type="Timer" parent="."]

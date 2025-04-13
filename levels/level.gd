@@ -13,19 +13,20 @@ extends Node3D
 @onready var sun = $Sun
 @onready var ore_label: Label = $UI/HBoxContainer/VBoxContainer/OreLabel
 @onready var carried_ore_label: Label = $UI/HBoxContainer/VBoxContainer/CarriedOreLabel
+@onready var spawner_manager = $SpawnerManager
 
-var enemy_scene = preload("res://scenes/enemy.tscn")
 var ground_size = Vector2(100, 100)
 
 enum State { PLACING, DAY, NIGHT, WON, LOST }
 var current_state = State.PLACING
-var day_duration = 120.0
+var day_duration = 20.0
 var day_timer = 0.0
 var wave_count = 0
 var total_waves = 2
 var player_ore = 0
 var planet_name = "alpha_one"
 var has_hq = false
+var night_start_time = 0.0
 
 func _ready():
 	if not camera:
@@ -44,6 +45,14 @@ func _ready():
 		print("Sun node: ", sun, " Type: ", sun.get_class())
 	else:
 		print("Sun is null!")
+	if not spawner_manager:
+		print("Error: SpawnerManager not found!")
+	# Calculate total_waves from spawners
+	var max_waves = 0
+	for spawner in spawner_manager.get_children():
+		for wave_res in spawner.waves:
+			max_waves = max(max_waves, wave_res.wave_counts.size())
+	total_waves = max(total_waves, max_waves)
 	update_ui()
 	print("Level root: ", get_tree().root.get_path(), " Current scene: ", get_tree().current_scene.get_path())
 
@@ -58,9 +67,14 @@ func _process(delta):
 				start_night()
 		State.NIGHT:
 			if sun: sun.light_energy = 0.3
+			var time_since_night = Time.get_ticks_msec() / 1000.0 - night_start_time
 			var enemy_count = get_tree().get_nodes_in_group("enemies").size()
-			if enemy_count == 0 and wave_count > 0:
-				start_day()
+			if time_since_night > 1.0:
+				if enemy_count == 0 and wave_count > 0 and not spawner_manager.has_active_spawners():
+					print("Night ending: no enemies, no active spawners")
+					start_day()
+				else:
+					print("Night continues: enemies=", enemy_count, " active_spawners=", spawner_manager.has_active_spawners())
 		State.WON, State.LOST:
 			pass
 	
@@ -97,6 +111,8 @@ func _on_building_placed(building_name: String, position: Vector3):
 func start_day():
 	current_state = State.DAY
 	day_timer = day_duration
+	if spawner_manager:
+		spawner_manager.end_night()
 	if wave_count >= total_waves:
 		end_level(true)
 	else:
@@ -105,22 +121,11 @@ func start_day():
 func start_night():
 	wave_count += 1
 	current_state = State.NIGHT
-	spawn_wave()
-
-func spawn_wave():
-	var enemy_count = 5 + ((wave_count - 1) * 2)
-	print("Spawning wave ", wave_count, " with ", enemy_count, " enemies")
-	for i in range(enemy_count):
-		var enemy = enemy_scene.instantiate()
-		var side = randi() % 4
-		var pos = Vector3.ZERO
-		match side:
-			0: pos = Vector3(randf_range(-ground_size.x/2, ground_size.x/2), 0, -ground_size.y/2)
-			1: pos = Vector3(ground_size.x/2, 0, randf_range(-ground_size.y/2, ground_size.y/2))
-			2: pos = Vector3(randf_range(-ground_size.x/2, ground_size.x/2), 0, ground_size.y/2)
-			3: pos = Vector3(-ground_size.x/2, 0, randf_range(-ground_size.y/2, ground_size.y/2))
-		enemy.global_position = pos
-		add_child(enemy)
+	night_start_time = Time.get_ticks_msec() / 1000.0
+	if spawner_manager:
+		spawner_manager.start_night(wave_count)
+	else:
+		print("Error: No SpawnerManager to start wave ", wave_count)
 
 func end_level(won: bool):
 	if won:

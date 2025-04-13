@@ -21,6 +21,10 @@ GameState="*res://scripts/game_state.gd"
 Perks="*res://scripts/perks.gd"
 BuildingUnlocks="*res://scripts/building_unlocks.gd"
 
+[editor_plugins]
+
+enabled=PackedStringArray()
+
 [input]
 
 winleveldebug={
