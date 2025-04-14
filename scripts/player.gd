@@ -3,6 +3,7 @@ extends CharacterBody3D
 signal ore_carried(amount)
 signal ore_deposited(amount)
 signal building_placed(building_name, position)
+signal placement_failed(building_name, reason)
 
 enum Tool { NONE, GUN, MINING_LASER }
 var current_tool = Tool.NONE
@@ -27,10 +28,9 @@ func _ready():
 	$MiningLaser/Cone.monitoring = false
 	if not camera:
 		camera = get_tree().get_root().get_node_or_null("Level/Camera")
-	construction_menu.building_selected.connect(_on_building_selected)
 
 func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("menu"):
+	if Input.is_action_just_pressed("build"):
 		if construction_menu.visible:
 			construction_menu.hide_menu()
 			cancel_placement()
@@ -122,10 +122,6 @@ func interact_with_building():
 		elif body.has_method("start_launch"):
 			body.start_launch()
 
-func _on_building_selected(scene_path: String, building_name: String):
-	construction_menu.hide_menu()
-	start_placement(scene_path, building_name)
-
 func start_placement(scene_path: String, building_name: String):
 	if is_placing:
 		cancel_placement()
@@ -160,16 +156,20 @@ func update_preview_position():
 
 func place_building():
 	if preview_instance and preview_scene_path:
-		var cost = building_configs.get(preview_building_name, {}).get("cost", 0)
+		var cost = BuildingsManager.building_configs.get(preview_building_name, {}).get("cost", 0)
+		print("Attempting to place ", preview_building_name, " with cost ", cost)
 		var level = get_tree().get_root().get_node("Level")
 		var hq = level.get_node_or_null("Buildings/HeadQuarters")
-		if preview_building_name == "hq" or (hq and hq.stored_ore >= cost):
+		# Allow HQ placement or buildings with enough ore
+		if preview_building_name == "hq" or (cost == 0) or (hq and hq.stored_ore >= cost):
 			var withdrawn = cost
-			if preview_building_name != "hq":
+			if preview_building_name != "hq" and cost > 0:
 				withdrawn = hq.withdraw_ore(cost)
+			print("Withdrew ", withdrawn, " ore for ", preview_building_name)
 			if withdrawn == cost:
 				var building = load(preview_scene_path).instantiate()
 				building.global_position = preview_instance.global_position
+				building.resource = BuildingsManager.get_building_resource(preview_building_name)
 				var mesh = building.get_node("MeshInstance3D")
 				if mesh:
 					mesh.transparency = 0.0
@@ -186,13 +186,18 @@ func place_building():
 				emit_signal("building_placed", preview_building_name, building.global_position)
 				if preview_building_name == "silo" and hq:
 					hq.add_silo()
-				if building_configs.get(preview_building_name, {}).get("unique", false):
+				if BuildingsManager.building_configs.get(preview_building_name, {}).get("unique", false):
 					construction_menu.mark_unique_placed(preview_building_name)
 			else:
 				print("Failed to withdraw enough ore")
+				emit_signal("placement_failed", preview_building_name, "Not enough ore")
 		else:
 			print("Not enough ore in HQ to place ", preview_building_name)
+			emit_signal("placement_failed", preview_building_name, "Not enough ore")
 		cancel_placement()
+	else:
+		print("Invalid placement attempt: no preview or scene path")
+		emit_signal("placement_failed", preview_building_name, "Invalid placement")
 
 func cancel_placement():
 	if preview_instance:
@@ -205,13 +210,3 @@ func cancel_placement():
 
 func set_player(player_node):
 	pass
-
-var building_configs = {
-	"hq": {"scene": "res://scenes/buildings/headquarters.tscn", "category": "unique", "cost": 0, "unique": true},
-	"research": {"scene": "res://scenes/buildings/research_building.tscn", "category": "unique", "cost": 5, "unique": true},
-	"ore_mine": {"scene": "res://scenes/buildings/ore_mine.tscn", "category": "ore", "cost": 5},
-	"silo": {"scene": "res://scenes/buildings/silo.tscn", "category": "ore", "cost": 10},
-	"turret": {"scene": "res://scenes/buildings/turret.tscn", "category": "defenses", "cost": 2},
-	"cannon": {"scene": "res://scenes/buildings/cannon.tscn", "category": "defenses", "cost": 8},
-	"launch_pad": {"scene": "res://scenes/buildings/launch_pad.tscn", "category": "unique", "cost": 15, "unique": true}
-}

@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=4 uid="uid://dnw8phtcorh15"]
+[gd_scene load_steps=9 format=4 uid="uid://dnw8phtcorh15"]
 
-[ext_resource type="Script" uid="uid://cwj5pq3r2y4j2" path="res://scenes/buildings/ore_mine.gd" id="1_1y6o8"]
+[ext_resource type="Script" uid="uid://cwj5pq3r2y4j2" path="res://buildings/ore_mine/ore_mine.gd" id="1_1y6o8"]
+[ext_resource type="Resource" uid="uid://bfjmbasw11760" path="res://buildings/ore_mine.tres" id="2_7ay46"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_anvoc"]
 size = Vector3(0.334595, 0.613867, 0.332092)
@@ -31,11 +32,12 @@ radius = 5.0
 radius = 2.5
 
 [node name="OreMine" type="StaticBody3D"]
-collision_layer = 17
+collision_layer = 16
 collision_mask = 16
 script = ExtResource("1_1y6o8")
+resource = ExtResource("2_7ay46")
 
-[node name="CollisionArea" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00164795, 0.294356, -0.00283813)
 shape = SubResource("BoxShape3D_anvoc")
 
@@ -89,15 +91,31 @@ shape = SubResource("CylinderShape3D_8rvg4")
 [node name="UILayer" type="CanvasLayer" parent="."]
 
 [node name="UIPanel" type="Panel" parent="UILayer"]
+visible = false
 custom_minimum_size = Vector2(100, 50)
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -25.0
+offset_right = 50.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="OreLabel" type="Label" parent="UILayer/UIPanel"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.5
+offset_top = -11.5
+offset_right = 23.5
+offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "Ore: 0"

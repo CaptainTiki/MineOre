@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="BuildingResource" load_steps=2 format=3 uid="uid://84hrxsghewgd"]
+
+[ext_resource type="Script" uid="uid://bbac14qb0h4o8" path="res://scripts/building_resource.gd" id="1_oqukx"]
+
+[resource]
+script = ExtResource("1_oqukx")
+name = "headquarters"
+display_name = "Headquarters"
+scene_path = "res://buildings/headquarters/headquarters.tscn"
+category = "Unique"
+build_cost = 0
+base_health = 5.0
+is_unique = true
+is_researchable = false
+research_cost = 0
+research_description = ""
+is_locked = false
+tags = Array[String](["hq"])
+custom_script_path = "res://buildings/headquarters/headquarters.gd"
+upgrade_cost = 0
+metadata/_custom_type_script = "uid://bbac14qb0h4o8"

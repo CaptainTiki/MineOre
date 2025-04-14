@@ -1,27 +1,21 @@
-extends StaticBody3D
+# res://buildings/headquarters/headquarters.gd
+extends Building
 
 signal hq_destroyed
 signal health_changed(health)
 
-var base_health = 5.0
-var health: float
 var stored_ore = 0
-var base_max_ore = 20 # Base capacity
-var max_ore = base_max_ore # Current capacity, modified by silos
-var silo_count = 0 # Track number of silos
+var base_max_ore = 20
+var max_ore = base_max_ore
+var silo_count = 0
 
 @onready var interact_area = $InteractArea
 @onready var ui_panel = $UILayer/UIPanel
 @onready var deposit_label = $UILayer/UIPanel/DepositLabel
 @onready var camera = get_tree().get_root().get_node("Level/Camera")
 
-func _init():
-	health = Perks.get_modified_stat(base_health, "building_health")
-	add_to_group("hq")
-	add_to_group("buildings")
-	print("HQ initialized with: health=", health, " max_ore=", max_ore)
-
 func _ready():
+	super._ready()
 	interact_area.body_entered.connect(_on_body_entered)
 	interact_area.body_exited.connect(_on_body_exited)
 	ui_panel.visible = false
@@ -34,30 +28,23 @@ func _process(delta):
 		ui_panel.position = screen_pos - (ui_panel.size / 2)
 
 func take_damage(amount):
-	health -= amount
+	super.take_damage(amount)
 	emit_signal("health_changed", health)
 	if health <= 0:
 		emit_signal("hq_destroyed")
-		queue_free()
-	print("HQ health: ", health)
 
 func deposit_ore(amount):
 	var space_left = max_ore - stored_ore
 	var to_deposit = min(amount, space_left)
 	stored_ore += to_deposit
 	update_ui()
-	print("Deposited ", to_deposit, " ore to HQ. Total: ", stored_ore, " Max: ", max_ore)
 	return to_deposit
 
 func withdraw_ore(amount) -> int:
 	var to_withdraw = min(amount, stored_ore)
 	stored_ore -= to_withdraw
 	update_ui()
-	print("Withdrew ", to_withdraw, " ore from HQ. Remaining: ", stored_ore)
 	return to_withdraw
-
-func can_launch(ore_required: int) -> bool:
-	return stored_ore >= ore_required
 
 func _on_body_entered(body):
 	if body.is_in_group("player"):
@@ -71,18 +58,15 @@ func _on_body_exited(body):
 func update_ui():
 	deposit_label.text = "Ore: %d/%d\nPress E" % [stored_ore, max_ore]
 
-# New functions for silo management
 func add_silo():
 	silo_count += 1
 	max_ore = base_max_ore + (silo_count * 20)
 	update_ui()
-	print("Silo added. New max_ore: ", max_ore)
 
 func remove_silo():
 	if silo_count > 0:
 		silo_count -= 1
 		max_ore = base_max_ore + (silo_count * 20)
 		if stored_ore > max_ore:
-			stored_ore = max_ore # Cap stored ore if over limit
+			stored_ore = max_ore
 		update_ui()
-		print("Silo removed. New max_ore: ", max_ore, " Stored ore: ", stored_ore)

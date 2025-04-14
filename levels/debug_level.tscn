@@ -130,6 +130,144 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
 [node name="Ore36" parent="Ores" instance=ExtResource("3_0jxns")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
 
+[node name="Ore37" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore38" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore39" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore40" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore41" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore42" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore43" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore44" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore45" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore46" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore47" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore48" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore49" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore50" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore51" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore52" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore53" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore54" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore55" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore56" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore57" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore58" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore59" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore60" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore61" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore62" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore63" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore64" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore65" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore66" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore67" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore68" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore69" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore70" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore71" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore72" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore73" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore74" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore75" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore76" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore77" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore78" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore79" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore80" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore81" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
+[node name="Ore82" parent="Ores" instance=ExtResource("3_0jxns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.86028, 0.42019, -2.35763)
+
 [node name="Ore2" parent="Ores" instance=ExtResource("3_0jxns")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.51805, 0.42019, 4.27427)
 

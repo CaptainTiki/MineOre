@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=4 uid="uid://ch0q4haku44k8"]
+[gd_scene load_steps=14 format=4 uid="uid://ch0q4haku44k8"]
 
-[ext_resource type="Script" uid="uid://cxy7ilx8od5nf" path="res://scenes/buildings/head_quarters.gd" id="1_dwusy"]
+[ext_resource type="Script" uid="uid://cxy7ilx8od5nf" path="res://buildings/headquarters/head_quarters.gd" id="1_dwusy"]
+[ext_resource type="Resource" uid="uid://84hrxsghewgd" path="res://buildings/headquarters.tres" id="2_ef1bc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_e1ru4"]
 size = Vector3(3.4644, 3.06903, 2.67146)
@@ -87,6 +88,7 @@ radius = 4.5
 [node name="HeadQuarters" type="StaticBody3D" groups=["headquarters"]]
 collision_layer = 16
 script = ExtResource("1_dwusy")
+resource = ExtResource("2_ef1bc")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.279306, 1.54404, -0.301582)

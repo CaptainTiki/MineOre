@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=4 uid="uid://8so436wobooa"]
+[gd_scene load_steps=7 format=4 uid="uid://8so436wobooa"]
 
-[ext_resource type="Script" uid="uid://ddavqcif632rk" path="res://scenes/buildings/research_building.gd" id="1_dpu8q"]
+[ext_resource type="Script" uid="uid://ddavqcif632rk" path="res://buildings/research_lab/research_lab.gd" id="1_toiem"]
+[ext_resource type="Resource" uid="uid://ujblsdsg7ifv" path="res://buildings/research_lab.tres" id="2_46wip"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dhvhm"]
 size = Vector3(2.03015, 2.4693, 2.02203)
@@ -24,7 +25,8 @@ _surfaces = [{
 radius = 4.0
 
 [node name="ResearchBuilding" type="StaticBody3D"]
-script = ExtResource("1_dpu8q")
+script = ExtResource("1_toiem")
+resource = ExtResource("2_46wip")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00787354, 1.22957, 0.0027771)

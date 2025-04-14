@@ -1,18 +1,21 @@
-extends StaticBody3D
+extends Building
 
 signal silo_destroyed
 
-var base_health = 5.0
-var health: float
+@onready var hq = get_tree().get_root().get_node_or_null("Level/Buildings/HeadQuarters")
 
 func _init():
-	health = base_health
 	add_to_group("buildings")
 	add_to_group("silo")
 	print("Silo initialized with: health=", health)
 
+
 func _ready():
-	pass
+	super._ready()
+	add_to_group("silos")
+	if hq and hq.has_method("add_silo"):
+		hq.add_silo()
+		print("Silo added at %s" % global_position)
 
 func take_damage(amount):
 	health -= amount
@@ -23,3 +26,9 @@ func take_damage(amount):
 			hq.remove_silo()
 		queue_free()
 	print("Silo health: ", health)
+
+func _on_destroyed():
+	if hq and hq.has_method("remove_silo"):
+		hq.remove_silo()
+		print("Silo removed at %s" % global_position)
+	super._on_destroyed()

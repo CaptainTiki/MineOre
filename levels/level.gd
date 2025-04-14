@@ -1,3 +1,4 @@
+# res://scripts/level.gd
 extends Node3D
 
 @onready var player = $Player
@@ -19,7 +20,7 @@ var ground_size = Vector2(100, 100)
 
 enum State { PLACING, DAY, NIGHT, WON, LOST }
 var current_state = State.PLACING
-var day_duration = 20.0
+var day_duration = 45.0
 var day_timer = 0.0
 var wave_count = 0
 var total_waves = 2
@@ -33,9 +34,13 @@ func _ready():
 		camera = get_node("/root/Level/Camera")
 	else:
 		camera.set_player(player)
-	player.connect("building_placed", _on_building_placed)
-	player.connect("ore_carried", _on_ore_carried)
-	player.connect("ore_deposited", _on_ore_deposited)
+	if player:
+		player.building_placed.connect(_on_building_placed)
+		player.ore_carried.connect(_on_ore_carried)
+		player.ore_deposited.connect(_on_ore_deposited)
+		player.placement_failed.connect(_on_placement_failed)
+	else:
+		push_error("Player node not found")
 	end_panel.visible = false
 	restart_button.connect("pressed", _on_restart_pressed)
 	quit_button.connect("pressed", _on_quit_pressed)
@@ -75,25 +80,20 @@ func assign_planet(passed_in_name: String):
 	planet_name = passed_in_name
 
 func _on_building_placed(building_name: String, position: Vector3):
-	if building_name == "hq":
+	if building_name == "headquarters":
 		has_hq = true
 		current_state = State.DAY
 		day_timer = day_duration
-		var hq = get_node_or_null("HeadQuarters")
+		var hq = get_node_or_null("Buildings/HeadQuarters")
 		if hq:
-			hq.connect("hq_destroyed", _on_hq_destroyed)
-			hq.connect("health_changed", _on_hq_health_changed)
+			hq.hq_destroyed.connect(_on_hq_destroyed)
+			hq.health_changed.connect(_on_hq_health_changed)
 			hq_health_label.text = "HQ Health: %d" % hq.health
+			print("HQ placed, starting day/night cycle")
 	else:
 		if not has_hq:
-			return #can't place any other building without the HQ
-		var cost = player.building_configs.get(building_name, {}).get("cost", 0)
-		if current_state == State.DAY and player_ore >= cost:
-			player_ore -= cost
-			update_ui()
-		else:
-			#TODO: need to have a quick popup to the player to say why we can't build
-			pass
+			return
+		update_ui()
 
 func start_day():
 	current_state = State.DAY
@@ -102,6 +102,7 @@ func start_day():
 		spawner_manager.end_night()
 	if wave_count >= total_waves:
 		end_level(true)
+	print("Starting day, timer: %.1f" % day_timer) # Debug
 
 func start_night():
 	wave_count += 1
@@ -109,6 +110,7 @@ func start_night():
 	night_start_time = Time.get_ticks_msec() / 1000.0
 	if spawner_manager:
 		spawner_manager.start_night(wave_count)
+	print("Starting night, wave: %d" % wave_count) # Debug
 
 func end_level(won: bool):
 	if won:
@@ -126,6 +128,10 @@ func end_level(won: bool):
 	get_tree().paused = true
 	await get_tree().create_timer(2.0).timeout
 	get_tree().change_scene_to_file("res://scenes/star_map.tscn")
+
+func _on_placement_failed(building_name: String, reason: String):
+	print("Placement failed for ", building_name, ": ", reason)
+	# TODO: Add UI popup or label to show failure reason to player
 
 func _on_hq_destroyed():
 	end_level(false)
@@ -156,6 +162,8 @@ func update_ui():
 		day_timer_label.text = "Victory!"
 	elif current_state == State.LOST:
 		day_timer_label.text = "Defeat!"
+	elif current_state == State.PLACING:
+		day_timer_label.text = "Place HQ"
 	wave_label.text = "Wave: %d/%d" % [wave_count, total_waves]
 	enemies_label.text = "Enemies: %d" % get_tree().get_nodes_in_group("enemies").size()
 	ore_label.text = "Stored: %d" % player_ore
