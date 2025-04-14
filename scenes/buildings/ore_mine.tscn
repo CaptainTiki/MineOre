@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=4 uid="uid://dnw8phtcorh15"]
 
-[ext_resource type="Script" uid="uid://cwj5pq3r2y4j2" path="res://scripts/ore_mine.gd" id="1_1y6o8"]
+[ext_resource type="Script" uid="uid://cwj5pq3r2y4j2" path="res://scenes/buildings/ore_mine.gd" id="1_1y6o8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_anvoc"]
 size = Vector3(0.334595, 0.613867, 0.332092)

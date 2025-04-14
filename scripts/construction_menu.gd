@@ -11,17 +11,14 @@ var placed_uniques = []
 func _ready():
 	visible = false
 	update_menu()
-	print("ConstructionMenu ready")
 
 func show_menu():
 	visible = true
 	get_tree().paused = false
 	update_menu()
-	print("Construction menu shown")
 
 func hide_menu():
 	visible = false
-	print("Construction menu hidden")
 
 func update_menu():
 	# Clear grids
@@ -29,9 +26,11 @@ func update_menu():
 		grid.get_children().map(func(c): c.queue_free())
 	
 	# Populate grids
+	print("Updating construction menu. Available buildings: ", BuildingUnlocks.building_configs.keys())
 	for building in BuildingUnlocks.building_configs:
 		var config = BuildingUnlocks.building_configs[building]
 		if BuildingUnlocks.is_building_unlocked(building) or building in ["hq", "research", "ore_mine", "turret"]:
+			print("Adding building to menu: ", building)
 			var button = Button.new()
 			button.text = "%s (%d ore)" % [building.capitalize(), config.cost]
 			if config.get("unique", false) and building in placed_uniques:
@@ -42,13 +41,13 @@ func update_menu():
 				"unique": unique_grid.add_child(button)
 				"ore": ore_grid.add_child(button)
 				"defenses": defenses_grid.add_child(button)
-			print("Added button for ", building)
+		else:
+			print("Skipping building: ", building, " (not unlocked or not default)")
 
 func mark_unique_placed(building: String):
 	if building in BuildingUnlocks.building_configs and BuildingUnlocks.building_configs[building].get("unique", false):
 		placed_uniques.append(building)
 		update_menu()
-		print("Marked ", building, " as placed")
 
 func _on_building_pressed(scene_path: String, building_name: String):
 	emit_signal("building_selected", scene_path, building_name)

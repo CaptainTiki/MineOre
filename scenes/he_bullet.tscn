@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://3ro8bwclejgm"]
+
+[ext_resource type="Script" uid="uid://doupxwexl2a4y" path="res://scripts/he_bullet.gd" id="1_g76e3"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mkf8s"]
+size = Vector3(0.119263, 0.103271, 0.499023)
+
+[node name="HE_Bullet" type="Area3D" groups=["bullets"]]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_g76e3")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+transform = Transform3D(0.254524, 0, 0, 0, 0.255458, 0, 0, 0, 2.01506, 0, 0, 0)
+radius = 0.1
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00335693, -0.00256348, -0.00732422)
+shape = SubResource("BoxShape3D_mkf8s")

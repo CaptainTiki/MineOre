@@ -18,6 +18,6 @@ points_required = 2
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_x0q3j")
 
-[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+[node name="MeshInstance3D" type="CSGSphere3D" parent="."]
 radius = 1.25
 material = SubResource("StandardMaterial3D_7aydp")

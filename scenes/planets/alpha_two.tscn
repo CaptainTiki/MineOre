@@ -17,6 +17,6 @@ system_name = "Alpha"
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_ls77k")
 
-[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+[node name="MeshInstance3D" type="CSGSphere3D" parent="."]
 radius = 2.0
 material = SubResource("StandardMaterial3D_6thyb")

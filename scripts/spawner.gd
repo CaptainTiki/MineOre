@@ -3,7 +3,8 @@ extends Node3D
 signal enemy_spawned(enemy)
 
 @export var waves: Array[Spawn] = []
-@export var spawn_rate: float = 2.0
+@export var spawn_rate: float = 0.5
+@export var max_spawn_retries: int = 10  # Limit retries to prevent infinite loops
 
 var current_wave: int = 0
 var enemies_to_spawn: Array[Dictionary] = []  # [{enemy: PackedScene, count: int}, ...]
@@ -15,28 +16,20 @@ var is_active: bool = false
 func _ready():
 	timer.wait_time = spawn_rate
 	timer.connect("timeout", _on_timer_timeout)
-	if not area:
-		print("Error: No Area3D for ", name)
 	validate_waves()
-	print("Spawner ", name, " ready with waves: ", waves)
 
 func validate_waves():
 	for wave in waves:
 		if not wave is Spawn:
-			print("Error: Invalid Spawn resource in ", name)
 			waves.erase(wave)
 		elif not wave.enemy_scene:
-			print("Error: No enemy_scene in Spawn for ", name)
 			waves.erase(wave)
 		elif not wave.wave_counts is Array:
-			print("Error: Invalid wave_counts in Spawn for ", name)
 			wave.wave_counts = []
 		for i in range(wave.wave_counts.size()):
 			if not wave.wave_counts[i] is int:
-				print("Error: Invalid count at index ", i, " in Spawn for ", name)
 				wave.wave_counts[i] = 0
 			elif wave.wave_counts[i] < 0:
-				print("Error: Negative count at index ", i, " in Spawn for ", name)
 				wave.wave_counts[i] = 0
 
 func activate_for_wave(wave: int):
@@ -45,7 +38,6 @@ func activate_for_wave(wave: int):
 	if wave == 0:
 		is_active = false
 		timer.stop()
-		print("Spawner ", name, " deactivated")
 		return
 	var wave_index = wave - 1
 	for wave_res in waves:
@@ -56,51 +48,87 @@ func activate_for_wave(wave: int):
 	if enemies_to_spawn.size() > 0:
 		is_active = true
 		timer.start()
-		print("Spawner ", name, " activated for wave ", wave, " with ", enemies_to_spawn)
 	else:
 		is_active = false
 		timer.stop()
-		print("Spawner ", name, " inactive for wave ", wave, ": no enemies")
 
 func _on_timer_timeout():
 	if is_active and enemies_to_spawn.size() > 0:
-		if is_area_clear():
-			spawn_enemy()
+		spawn_enemy_with_retries()
+
+func spawn_enemy_with_retries():
+	var retries = 0
+	while retries < max_spawn_retries:
+		var spawn_position = get_random_position_in_area()
+		if try_spawn_at_position(spawn_position):
+			return  # Success
+		retries += 1
+
+func get_random_position_in_area() -> Vector3:
+	if not area or not area.get_node("CollisionShape3D"):
+		return global_position
+	var collision_shape = area.get_node("CollisionShape3D")
+	var shape = collision_shape.shape
+	var pos = global_position
+	if shape is BoxShape3D:
+		var extents = shape.extents
+		pos += Vector3(
+			randf_range(-extents.x, extents.x),
+			randf_range(-extents.y, extents.y),
+			randf_range(-extents.z, extents.z)
+		)
+	elif shape is SphereShape3D:
+		var radius = shape.radius
+		var random_vec = Vector3(randf_range(-radius, radius), randf_range(-radius, radius), randf_range(-radius, radius))
+		if random_vec.length() <= radius:
+			pos += random_vec
 		else:
-			print("Spawner ", name, " blocked: area not clear, enemies pending: ", enemies_to_spawn)
+			# Normalize to sphere surface and scale randomly
+			pos += random_vec.normalized() * randf_range(0.0, radius)
+	elif shape is CylinderShape3D:
+		var radius = shape.radius
+		var height = shape.height
+		# Pick a random point in the circular base (XZ plane)
+		var angle = randf_range(0.0, 2.0 * PI)
+		var r = radius * sqrt(randf_range(0.0, 1.0))  # Square root for uniform distribution
+		var x = r * cos(angle)
+		var z = r * sin(angle)
+		# Pick a random height along Y
+		var y = randf_range(-height / 2.0, height / 2.0)
+		pos += Vector3(x, y, z)
+	return pos
 
-func is_area_clear() -> bool:
+func try_spawn_at_position(pos: Vector3) -> bool:
 	if not area:
-		print("Error: Area3D missing for ", name)
 		return false
-	var bodies = area.get_overlapping_bodies()
-	for body in bodies:
-		if body.is_in_group("enemies"):
-			print("Spawner ", name, " blocked by enemy: ", body.name)
-			return false
-	return true
-
-func spawn_enemy():
-	if enemies_to_spawn.size() == 0:
-		timer.stop()
-		is_active = false
-		print("Spawner ", name, " depleted for wave ", current_wave)
-		return
+	# Create a physics query to check for overlapping bodies
+	var space_state = get_world_3d().direct_space_state
+	var shape = CylinderShape3D.new()
+	shape.radius = 1.0  # Minimum distance to avoid overlap (adjust based on enemy size)
+	shape.height = 1.0
+	var query = PhysicsShapeQueryParameters3D.new()
+	query.shape = shape
+	query.transform = Transform3D(Basis(), pos + Vector3(0, 0.5, 0))  # Center at spawn position
+	query.collision_mask = 2  # Only check for enemies (collision layer 2)
+	
+	var result = space_state.intersect_shape(query)
+	if result.size() > 0:
+		return false  # Overlap detected, don't spawn
+	
+	# Proceed to spawn
 	var entry = enemies_to_spawn[0]
 	var enemy_scene = entry["enemy"]
 	if not enemy_scene:
-		print("Error: No enemy_scene for ", name)
 		enemies_to_spawn.remove_at(0)
-		return
+		return false
 	var enemy = enemy_scene.instantiate()
-	enemy.global_position = global_position
+	enemy.global_position = pos
 	get_tree().get_root().get_node("Level").add_child(enemy)
 	emit_signal("enemy_spawned", enemy)
 	entry["count"] -= 1
-	print("Spawned ", enemy.name, " at ", name, ", counts left: ", enemies_to_spawn)
 	if entry["count"] <= 0:
 		enemies_to_spawn.remove_at(0)
 	if enemies_to_spawn.size() == 0:
 		timer.stop()
 		is_active = false
-		print("Spawner ", name, " depleted for wave ", current_wave)
+	return true

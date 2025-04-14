@@ -26,44 +26,38 @@ func _ready():
 	for perk in available_perks:
 		var icon = perk_icon_scene.instantiate()
 		icon.set_perk(perk)
-		icon.icon_pressed.connect(_on_perk_selected.bind(icon))
+		icon.icon_pressed.connect(_on_perk_selected)  # Direct connection
 		icon.icon_hovered.connect(_on_perk_hover)
 		icon.icon_unhovered.connect(_on_perk_hover_exit)
 		perks_grid.add_child(icon)
 	
 	update_perk_buttons()
-	print("PerksScreen ready, grid children: ", perks_grid.get_child_count())
 
 func show_perks(planet_data):
+	if visible and selected_planet and selected_planet["name"] == planet_data["name"]:
+		return
 	visible = true
-	chosen_perks.clear()
+	chosen_perks = []
 	selected_planet = planet_data
 	get_tree().paused = false
 	update_perk_buttons()
-	print("Perks screen shown for planet: ", planet_data["name"], " Planet data: ", planet_data)
 
 func _on_perk_hover(perk):
 	perk_name_label.text = perk.capitalize()
 	perk_desc_label.text = Perks.get_perk_description(perk)
 	hover_panel.visible = true
-	print("Hover panel shown for perk: ", perk)
 
 func _on_perk_hover_exit():
 	hover_panel.visible = false
 	perk_name_label.text = ""
 	perk_desc_label.text = ""
-	print("Hover panel hidden")
 
-func _on_perk_selected(perk, icon):
+func _on_perk_selected(perk):
 	if perk in chosen_perks:
 		chosen_perks.erase(perk)
-		print("Deselected perk: ", perk)
 	else:
 		if chosen_perks.size() < 3:
 			chosen_perks.append(perk)
-			print("Selected perk: ", perk)
-		else:
-			print("Max perks (3) already selected!")
 	update_perk_buttons()
 
 func update_perk_buttons():
@@ -72,8 +66,6 @@ func update_perk_buttons():
 			var perk = icon.perk_name
 			var is_selected = perk in chosen_perks
 			icon.set_selected(is_selected)
-			print("Updating icon: ", perk, " selected: ", is_selected)
-	print("Updated buttons, chosen perks: ", chosen_perks)
 
 func _on_go_pressed():
 	if selected_planet:
@@ -83,5 +75,3 @@ func _on_go_pressed():
 		visible = false
 		get_tree().paused = false
 		selected_planet = null
-	else:
-		print("Error: No planet set!")

@@ -43,14 +43,17 @@ func _on_body_exited(body):
 
 func update_ui():
 	research_label.text = "Research Options"
-	research_grid.get_children().map(func(c): c.queue_free())  # Clear old buttons
+	research_grid.get_children().map(func(c): c.queue_free())
 	var options = BuildingUnlocks.get_research_options()
+	print("Updating research menu. Options: ", options.keys())
 	for building in options:
 		if not BuildingUnlocks.is_building_unlocked(building):
 			var button = Button.new()
 			button.text = "%s (%d ore)" % [building.capitalize(), options[building]["ore_cost"]]
 			button.pressed.connect(_on_research_pressed.bind(building))
 			research_grid.add_child(button)
+		else:
+			print("Skipping research: ", building, " (already unlocked)")
 
 func _on_research_pressed(building: String):
 	var hq = get_tree().get_first_node_in_group("hq")

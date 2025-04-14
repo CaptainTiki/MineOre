@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bkmm1dr373vbq" path="res://scripts/spawner.gd" id="1_2vbf6"]
 [ext_resource type="Script" uid="uid://brc5q7rkof4o0" path="res://scripts/spawn.gd" id="2_tx2ig"]
-[ext_resource type="PackedScene" uid="uid://uycj3qqetng5" path="res://scenes/enemy.tscn" id="3_6bbd6"]
-[ext_resource type="PackedScene" uid="uid://dtd1hd80yy3im" path="res://scenes/enemy_large.tscn" id="4_6bbd6"]
+[ext_resource type="PackedScene" uid="uid://uycj3qqetng5" path="res://scenes/enemies/enemy.tscn" id="3_6bbd6"]
+[ext_resource type="PackedScene" uid="uid://dtd1hd80yy3im" path="res://scenes/enemies/enemy_large.tscn" id="4_6bbd6"]
 
 [sub_resource type="Resource" id="Resource_cmhla"]
 script = ExtResource("2_tx2ig")

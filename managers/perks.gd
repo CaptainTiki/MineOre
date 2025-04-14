@@ -14,9 +14,6 @@ var perk_definitions = {
 # Active perks chosen by player
 var active_perks = ["turret_fire_rate"]
 
-func _ready():
-	print("Perks singleton loaded")
-
 func set_active_perks(perks: Array):
 	active_perks = perks
 	print("Active perks set: ", active_perks)

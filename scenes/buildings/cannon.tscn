@@ -1,0 +1,63 @@
+[gd_scene load_steps=7 format=3 uid="uid://cn5daj4oxbak1"]
+
+[ext_resource type="Script" uid="uid://btlf4jrdhoe1j" path="res://scenes/buildings/turret.gd" id="1_3tg2j"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fowog"]
+size = Vector3(1.21136, 1.14191, 1.34863)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x3mc5"]
+albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_el7wl"]
+albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_485p4"]
+albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_x3mc5"]
+height = 5.0
+radius = 10.0
+
+[node name="Cannon" type="StaticBody3D"]
+collision_mask = 0
+script = ExtResource("1_3tg2j")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0333558, 0.565483, -0.106934)
+shape = SubResource("BoxShape3D_fowog")
+
+[node name="Base" type="Node3D" parent="."]
+transform = Transform3D(1.83199, 0, 0, 0, 1.62689, 0, 0, 0, 1.65228, 0, 0, 0)
+
+[node name="CSGCombiner2" type="CSGCombiner3D" parent="Base"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Base/CSGCombiner2"]
+transform = Transform3D(0.6, 0, 0, 0, 0.315685, 0, 0, 0, 0.6, 0, 0.121366, 0)
+size = Vector3(1, 0.768433, 1)
+material = SubResource("StandardMaterial3D_x3mc5")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Base/CSGCombiner2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.326384, 0)
+radius = 0.0893555
+height = 0.18573
+material = SubResource("StandardMaterial3D_el7wl")
+
+[node name="Gun" type="Node3D" parent="."]
+transform = Transform3D(1.83199, 0, 0, 0, 1.62689, 0, 0, 0, 1.65228, 0, 0, 0)
+
+[node name="Muzzle" type="Node3D" parent="Gun"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.00390355, 0.497052, -0.868553)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Gun"]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, -0.00390352, 0.52044, -0.173626)
+radius = 0.138672
+height = 0.597946
+material = SubResource("StandardMaterial3D_485p4")
+
+[node name="DetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.46297, 0)
+shape = SubResource("CylinderShape3D_x3mc5")

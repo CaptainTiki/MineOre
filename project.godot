@@ -17,9 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GameState="*res://scripts/game_state.gd"
-Perks="*res://scripts/perks.gd"
-BuildingUnlocks="*res://scripts/building_unlocks.gd"
+GameState="*res://managers/game_state.gd"
+Perks="*res://managers/perks.gd"
+BuildingUnlocks="*res://managers/building_unlocks.gd"
 
 [editor_plugins]
 

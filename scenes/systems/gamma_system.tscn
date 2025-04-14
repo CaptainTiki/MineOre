@@ -12,7 +12,7 @@ size = Vector2(10, 10)
 [sub_resource type="BoxShape3D" id="BoxShape3D_568mj"]
 size = Vector3(10, 10, 1)
 
-[node name="Gamma" type="StaticBody3D"]
+[node name="Gamma" type="Area3D"]
 script = ExtResource("1_pdqc3")
 system_name = "Gamma"
 difficulty = "Hard"
@@ -23,3 +23,7 @@ mesh = SubResource("QuadMesh_0fbj8")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_568mj")
+
+[node name="Star" type="Node3D" parent="."]
+
+[node name="Planets" type="Node3D" parent="."]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://covbpphyfrk4h"]
 
-[ext_resource type="Script" uid="uid://btlf4jrdhoe1j" path="res://scripts/turret.gd" id="1_x3mc5"]
+[ext_resource type="Script" uid="uid://btlf4jrdhoe1j" path="res://scenes/buildings/turret.gd" id="1_x3mc5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_fowog"]
 size = Vector3(1.21136, 1.14191, 1.34863)

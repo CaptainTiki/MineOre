@@ -1,6 +1,6 @@
 shader_type spatial;
 
-render_mode blend_mix, depth_draw_alpha_prepass, cull_back, unshaded;
+render_mode blend_mix, cull_back, unshaded;
 
 uniform sampler2D main_texture : source_color;
 uniform float transparency : hint_range(0.0, 1.0) = 0.5;

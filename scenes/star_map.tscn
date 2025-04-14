@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://chgsxendb6aqj"]
+[gd_scene load_steps=12 format=3 uid="uid://chgsxendb6aqj"]
 
 [ext_resource type="Texture2D" uid="uid://bsfbknwn0s0a3" path="res://scenes/front.png" id="1_3ldf6"]
 [ext_resource type="Script" uid="uid://m5w1jd0shwat" path="res://scripts/star_map.gd" id="1_fp76q"]
@@ -6,13 +6,16 @@
 [ext_resource type="PackedScene" uid="uid://cjac672xsqwd0" path="res://scenes/systems/beta_system.tscn" id="4_568mj"]
 [ext_resource type="PackedScene" uid="uid://dik14rukuvh56" path="res://scenes/systems/gamma_system.tscn" id="5_vyd5l"]
 [ext_resource type="PackedScene" uid="uid://du1343o1l0m7q" path="res://scenes/perks_screen.tscn" id="6_568mj"]
+[ext_resource type="PackedScene" uid="uid://cwuxn3wuqgyot" path="res://scenes/planets/alpha_one.tscn" id="6_b4dln"]
+[ext_resource type="PackedScene" uid="uid://d0rfyt3nrvluy" path="res://scenes/planets/gamma_star.tscn" id="6_vyd5l"]
+[ext_resource type="PackedScene" uid="uid://bm2168v272qmc" path="res://scenes/planets/beta_one.tscn" id="7_0fbj8"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fp76q"]
 albedo_texture = ExtResource("1_3ldf6")
 
 [sub_resource type="QuadMesh" id="QuadMesh_ewo0i"]
 material = SubResource("StandardMaterial3D_fp76q")
-size = Vector2(200, 200)
+size = Vector2(600, 600)
 
 [node name="StarMap" type="Node3D"]
 script = ExtResource("1_fp76q")
@@ -22,6 +25,7 @@ transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -
 shadow_enabled = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -141.793)
 mesh = SubResource("QuadMesh_ewo0i")
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -37,8 +41,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.0869, 32.8748, 1.1991)
 
 [node name="Gamma" parent="Systems" instance=ExtResource("5_vyd5l")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.45267, -18.2436, 1.1991)
-
-[node name="Planets" type="Node3D" parent="."]
+planet_scenes = Array[PackedScene]([ExtResource("6_b4dln"), ExtResource("7_0fbj8")])
+star_scene = ExtResource("6_vyd5l")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -54,29 +58,6 @@ layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
 text = "Back"
-
-[node name="AlphaPopup" type="PopupPanel" parent="UI"]
-
-[node name="AlphaInfo" type="VBoxContainer" parent="UI/AlphaPopup"]
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 96.0
-offset_bottom = 96.0
-
-[node name="AlphaLabel" type="Label" parent="UI/AlphaPopup/AlphaInfo"]
-layout_mode = 2
-
-[node name="BetaPopup" type="PopupPanel" parent="UI"]
-auto_translate_mode = 1
-
-[node name="BetaInfo" type="VBoxContainer" parent="UI/BetaPopup"]
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 96.0
-offset_bottom = 96.0
-
-[node name="BetaLabel" type="Label" parent="UI/BetaPopup/BetaInfo"]
-layout_mode = 2
 
 [node name="PlanetTooltip" type="Control" parent="UI"]
 visible = false

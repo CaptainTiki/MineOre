@@ -31,8 +31,6 @@ var night_start_time = 0.0
 func _ready():
 	if not camera:
 		camera = get_node("/root/Level/Camera")
-		if not camera:
-			print("Error: Camera not found!")
 	else:
 		camera.set_player(player)
 	player.connect("building_placed", _on_building_placed)
@@ -41,12 +39,6 @@ func _ready():
 	end_panel.visible = false
 	restart_button.connect("pressed", _on_restart_pressed)
 	quit_button.connect("pressed", _on_quit_pressed)
-	if sun:
-		print("Sun node: ", sun, " Type: ", sun.get_class())
-	else:
-		print("Sun is null!")
-	if not spawner_manager:
-		print("Error: SpawnerManager not found!")
 	# Calculate total_waves from spawners
 	var max_waves = 0
 	for spawner in spawner_manager.get_children():
@@ -54,7 +46,6 @@ func _ready():
 			max_waves = max(max_waves, wave_res.wave_counts.size())
 	total_waves = max(total_waves, max_waves)
 	update_ui()
-	print("Level root: ", get_tree().root.get_path(), " Current scene: ", get_tree().current_scene.get_path())
 
 func _process(delta):
 	match current_state:
@@ -71,10 +62,7 @@ func _process(delta):
 			var enemy_count = get_tree().get_nodes_in_group("enemies").size()
 			if time_since_night > 1.0:
 				if enemy_count == 0 and wave_count > 0 and not spawner_manager.has_active_spawners():
-					print("Night ending: no enemies, no active spawners")
 					start_day()
-				else:
-					print("Night continues: enemies=", enemy_count, " active_spawners=", spawner_manager.has_active_spawners())
 		State.WON, State.LOST:
 			pass
 	
@@ -85,7 +73,6 @@ func _process(delta):
 
 func assign_planet(passed_in_name: String):
 	planet_name = passed_in_name
-	print("Assigned planet: ", planet_name)
 
 func _on_building_placed(building_name: String, position: Vector3):
 	if building_name == "hq":
@@ -99,14 +86,14 @@ func _on_building_placed(building_name: String, position: Vector3):
 			hq_health_label.text = "HQ Health: %d" % hq.health
 	else:
 		if not has_hq:
-			print("Cannot place ", building_name, " - HQ required!")
-			return
+			return #can't place any other building without the HQ
 		var cost = player.building_configs.get(building_name, {}).get("cost", 0)
 		if current_state == State.DAY and player_ore >= cost:
 			player_ore -= cost
 			update_ui()
 		else:
-			print("Not enough ore or not daytime for ", building_name)
+			#TODO: need to have a quick popup to the player to say why we can't build
+			pass
 
 func start_day():
 	current_state = State.DAY
@@ -115,8 +102,6 @@ func start_day():
 		spawner_manager.end_night()
 	if wave_count >= total_waves:
 		end_level(true)
-	else:
-		print("Day ", wave_count + 1, " started")
 
 func start_night():
 	wave_count += 1
@@ -124,8 +109,6 @@ func start_night():
 	night_start_time = Time.get_ticks_msec() / 1000.0
 	if spawner_manager:
 		spawner_manager.start_night(wave_count)
-	else:
-		print("Error: No SpawnerManager to start wave ", wave_count)
 
 func end_level(won: bool):
 	if won:
@@ -165,9 +148,6 @@ func _on_quit_pressed():
 	get_tree().change_scene_to_file("res://scenes/star_map.tscn")
 
 func update_ui():
-	if not day_timer_label or not wave_label or not enemies_label or not hq_health_label or not ore_label or not carried_ore_label:
-		print("UI Error: One or more labels are null")
-		return
 	if current_state == State.DAY:
 		day_timer_label.text = "Day: %.1f" % day_timer
 	elif current_state == State.NIGHT:
