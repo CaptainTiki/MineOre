@@ -428,9 +428,6 @@ navigation_mesh = SubResource("NavigationMesh_gjl0y")
 [node name="GroundContainer" type="Node3D" parent="NavRegion"]
 
 [node name="Ground_1" parent="NavRegion/GroundContainer" instance=ExtResource("5_8h4gn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
-collision_layer = 65535
-collision_mask = 65535
 
 [node name="Environment" type="Node3D" parent="NavRegion/GroundContainer"]
 

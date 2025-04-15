@@ -15,6 +15,7 @@ extends Node3D
 @onready var ore_label: Label = $UI/HBoxContainer/VBoxContainer/OreLabel
 @onready var carried_ore_label: Label = $UI/HBoxContainer/VBoxContainer/CarriedOreLabel
 @onready var spawner_manager = $SpawnerManager
+@onready var grid_decal: Decal = $GridDecal
 
 var ground_size = Vector2(100, 100)
 
@@ -50,6 +51,10 @@ func _ready():
 		for wave_res in spawner.waves:
 			max_waves = max(max_waves, wave_res.wave_counts.size())
 	total_waves = max(total_waves, max_waves)
+	if grid_decal:
+		grid_decal.visible = false #start disabled - enable during build
+	else:
+		print("GridDecal not found")
 	update_ui()
 
 func _process(delta):

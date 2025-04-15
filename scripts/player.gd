@@ -1,3 +1,4 @@
+# res://scripts/player.gd
 extends CharacterBody3D
 
 signal ore_carried(amount)
@@ -8,7 +9,7 @@ signal placement_failed(building_name, reason)
 enum Tool { NONE, GUN, MINING_LASER }
 var current_tool = Tool.NONE
 var speed = 5.0
-var bullet_scene = preload("res://scenes/bullet.tscn") # Check if bullet.tscn moved
+var bullet_scene = preload("res://scenes/bullet.tscn")
 var carry_capacity = 20
 var carried_ore = 0
 var is_placing = false
@@ -16,6 +17,9 @@ var preview_instance = null
 var preview_scene_path = ""
 var preview_building_name = ""
 var preview_distance = 4.0
+var grid_size = 2.0  # Each cell is 2x2 units
+var grid_decal_instance = null  # Single decal instance
+var grid_decal_scene = preload("res://scenes/Grid_Decal.tscn")
 
 @onready var camera = get_node_or_null("../Camera")
 @onready var construction_menu = get_tree().get_root().get_node_or_null("Level/UI/ConstructionMenu")
@@ -27,7 +31,7 @@ func _ready():
 	$MiningLaser.visible = false
 	$MiningLaser/Cone.monitoring = false
 	if not camera:
-		camera = get_tree().get_root().get_node_or_null("Level/Camera")
+		camera = get_tree().root.get_node_or_null("Level/Camera")
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("build"):
@@ -36,14 +40,17 @@ func _process(delta: float) -> void:
 			cancel_placement()
 		else:
 			construction_menu.show_menu()
-	
+			cancel_placement()
+
 	if is_placing and preview_instance:
 		update_preview_position()
 		if Input.is_action_just_pressed("action"):
 			place_building()
+		if Input.is_action_just_pressed("cancel"):
+			cancel_placement()
 
 	if not is_placing:
-		if Input.is_action_just_pressed("action"):
+		if Input.is_action_just_pressed("action") and not construction_menu.visible:
 			match current_tool:
 				Tool.GUN:
 					shoot_bullet()
@@ -81,6 +88,8 @@ func _input(event):
 			switch_tool(Tool.GUN)
 		elif event.is_action_pressed("tool_mining_laser"):
 			switch_tool(Tool.MINING_LASER)
+	if event.is_action_pressed("cancel"):
+		cancel_placement()
 
 func switch_tool(new_tool):
 	current_tool = new_tool
@@ -90,7 +99,7 @@ func switch_tool(new_tool):
 
 func shoot_bullet():
 	var bullet = bullet_scene.instantiate()
-	var level = get_tree().get_root().get_node_or_null("Level")
+	var level = get_tree().root.get_node_or_null("Level")
 	level.add_child(bullet)
 	bullet.global_position = $Gun.global_position
 	var bullet_speed = 20.0
@@ -117,7 +126,7 @@ func interact_with_building():
 			var deposited = body.deposit_ore(carried_ore)
 			carried_ore -= deposited
 			emit_signal("ore_deposited", deposited)
-			var level = get_tree().get_root().get_node("Level")
+			var level = get_tree().root.get_node("Level")
 			level.player_ore = body.stored_ore
 		elif body.has_method("start_launch"):
 			body.start_launch()
@@ -132,7 +141,10 @@ func start_placement(scene_path: String, building_name: String):
 	
 	var mesh = preview_instance.get_node("MeshInstance3D")
 	if mesh:
-		mesh.transparency = 0.65
+		var material = StandardMaterial3D.new()
+		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		material.albedo_color = Color(0, 1, 0, 0.65)
+		mesh.material_override = material
 	
 	var base_distance = 4.0
 	var shape_size_z = 0.0
@@ -143,36 +155,88 @@ func start_placement(scene_path: String, building_name: String):
 	else:
 		preview_distance = base_distance
 	
-	get_tree().get_root().get_node("Level").add_child(preview_instance)
+	var level = get_tree().root.get_node("Level")
+	level.add_child(preview_instance)
+	
+	# Add decal (no scaling)
+	grid_decal_instance = grid_decal_scene.instantiate()
+	grid_decal_instance.visible = true  # Ensure visible
+	grid_decal_instance.cull_mask = 0xffffffff  # All layers for debug
+	grid_decal_instance.distance_fade_enabled = false  # Disable fade for debug
+	grid_decal_instance.modulate = Color(1, 1, 1, 1)  # Solid white tint for debug
+	level.add_child(grid_decal_instance)
+	print("Decal instantiated at: ", grid_decal_instance.global_position, " Visible: ", grid_decal_instance.visible, " Cull Mask: ", grid_decal_instance.cull_mask, " Modulate: ", grid_decal_instance.modulate)
+	
 	is_placing = true
+	
 	update_preview_position()
 
 func update_preview_position():
 	if preview_instance:
-		var forward_dir = -transform.basis.z.normalized()
-		var preview_pos = global_position + forward_dir * preview_distance
+		var preview_pos = global_position + (-transform.basis.z.normalized() * preview_distance)
+		preview_pos.x = round(preview_pos.x / grid_size) * grid_size
+		preview_pos.z = round(preview_pos.z / grid_size) * grid_size
 		preview_pos.y = 0
 		preview_instance.global_position = preview_pos
+		# Update decal position
+		if grid_decal_instance:
+			grid_decal_instance.global_position = preview_pos
+			grid_decal_instance.global_position.y = 0.1  # Above ground at y=-0.05
+
+func check_collision(pos: Vector3) -> bool:
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsPointQueryParameters3D.new()
+	query.position = pos
+	query.collision_mask = 0b0100  # Environment layer
+	var result = space_state.intersect_point(query)
+	return result.size() == 0
+
+func check_placement_validity() -> bool:
+	if not preview_instance or not preview_scene_path:
+		print("Invalid placement: No preview instance or scene path")
+		return false
+	
+	var level = get_tree().root.get_node("Level")
+	var is_hq = preview_building_name == "headquarters"
+	var hq = level.get_node_or_null("Buildings/HeadQuarters")
+	var cost = BuildingsManager.building_configs.get(preview_building_name, {}).get("cost", 0)
+	var has_ore = is_hq  # HQ always free
+	if not is_hq and hq:
+		has_ore = hq.stored_ore >= cost
+	
+	var space_state = get_world_3d().direct_space_state
+	var shape = preview_instance.get_node_or_null("CollisionShape3D")
+	if shape and shape.shape:
+		var query = PhysicsShapeQueryParameters3D.new()
+		query.shape = shape.shape
+		query.transform = preview_instance.global_transform
+		query.collision_mask = 0b0100  # Layer 3 (Environment)
+		query.exclude = [self]
+		var result = space_state.intersect_shape(query)
+		var is_collision_free = result.size() == 0
+		if not is_collision_free:
+			print("Collision with: ", result)
+		return has_ore and is_collision_free
+	
+	print("No collision shape for ", preview_building_name)
+	return false
 
 func place_building():
 	if preview_instance and preview_scene_path:
 		var cost = BuildingsManager.building_configs.get(preview_building_name, {}).get("cost", 0)
-		print("Attempting to place ", preview_building_name, " with cost ", cost)
-		var level = get_tree().get_root().get_node("Level")
+		var level = get_tree().root.get_node("Level")
 		var hq = level.get_node_or_null("Buildings/HeadQuarters")
-		# Allow HQ placement or buildings with enough ore
-		if preview_building_name == "hq" or (cost == 0) or (hq and hq.stored_ore >= cost):
-			var withdrawn = cost
-			if preview_building_name != "hq" and cost > 0:
+		if check_placement_validity():
+			var withdrawn = 0
+			if preview_building_name != "headquarters" and cost > 0:
 				withdrawn = hq.withdraw_ore(cost)
-			print("Withdrew ", withdrawn, " ore for ", preview_building_name)
-			if withdrawn == cost:
+			if withdrawn == cost or preview_building_name == "headquarters":
 				var building = load(preview_scene_path).instantiate()
 				building.global_position = preview_instance.global_position
 				building.resource = BuildingsManager.get_building_resource(preview_building_name)
 				var mesh = building.get_node("MeshInstance3D")
 				if mesh:
-					mesh.transparency = 0.0
+					mesh.material_override = null
 				var buildings_node = level.get_node_or_null("Buildings")
 				if not buildings_node:
 					buildings_node = Node3D.new()
@@ -189,20 +253,32 @@ func place_building():
 				if BuildingsManager.building_configs.get(preview_building_name, {}).get("unique", false):
 					construction_menu.mark_unique_placed(preview_building_name)
 			else:
-				print("Failed to withdraw enough ore")
 				emit_signal("placement_failed", preview_building_name, "Not enough ore")
 		else:
-			print("Not enough ore in HQ to place ", preview_building_name)
-			emit_signal("placement_failed", preview_building_name, "Not enough ore")
+			emit_signal("placement_failed", preview_building_name, "Invalid position")
+		# Remove decal
+		if grid_decal_instance:
+			grid_decal_instance.queue_free()
+			grid_decal_instance = null
+			print("Decal removed after placement")
 		cancel_placement()
 	else:
-		print("Invalid placement attempt: no preview or scene path")
 		emit_signal("placement_failed", preview_building_name, "Invalid placement")
+		# Remove decal on failure
+		if grid_decal_instance:
+			grid_decal_instance.queue_free()
+			grid_decal_instance = null
+			print("Decal removed after failed placement")
+		cancel_placement()
 
 func cancel_placement():
 	if preview_instance:
 		preview_instance.queue_free()
-		preview_instance = null
+	# Remove decal
+	if grid_decal_instance:
+		grid_decal_instance.queue_free()
+		grid_decal_instance = null
+		print("Decal removed on cancel")
 	is_placing = false
 	preview_scene_path = ""
 	preview_building_name = ""

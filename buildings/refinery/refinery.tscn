@@ -4,7 +4,7 @@
 [ext_resource type="Resource" uid="uid://cq4owotjmaede" path="res://buildings/refinery.tres" id="2_xit7p"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_f1c0l"]
-size = Vector3(1, 1.25183, 1.28918)
+size = Vector3(1.00403, 1.25183, 1.28918)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_so7c3"]
 albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
@@ -74,7 +74,7 @@ script = ExtResource("1_so7c3")
 resource = ExtResource("2_xit7p")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625895, 0.144592)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00201416, 0.625895, 0.144592)
 shape = SubResource("BoxShape3D_f1c0l")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
