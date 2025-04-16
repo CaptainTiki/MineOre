@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://defrigbi7ac0e"]
+[gd_scene load_steps=10 format=3 uid="uid://defrigbi7ac0e"]
 
 [ext_resource type="Script" uid="uid://brilo3cicayn0" path="res://scripts/player.gd" id="1_3vyb7"]
+[ext_resource type="PackedScene" uid="uid://bqhchx3gip1tl" path="res://scenes/placement_grid.tscn" id="2_g2els"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g2els"]
 
@@ -27,10 +28,11 @@ collision_mask = 22
 script = ExtResource("1_3vyb7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.01416, 0)
 shape = SubResource("CapsuleShape3D_g2els")
 
 [node name="MeshInstance" type="CSGCombiner3D" parent="."]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, -0.461151, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.512029, 0)
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="MeshInstance"]
 mesh = SubResource("CapsuleMesh_u8vuu")
@@ -42,7 +44,7 @@ mesh = SubResource("CapsuleMesh_u8vuu")
 material = SubResource("StandardMaterial3D_3vyb7")
 
 [node name="Gun" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.492879, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.543953, 0)
 visible = false
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Gun"]
@@ -51,7 +53,7 @@ size = Vector3(0.194275, 0.248535, 0.485474)
 material = SubResource("StandardMaterial3D_g2els")
 
 [node name="MiningLaser" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.469741, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.567091, 0)
 visible = false
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="MiningLaser"]
@@ -67,7 +69,11 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -3.
 shape = SubResource("CylinderShape3D_dqkch")
 
 [node name="InteractArea" type="Area3D" parent="."]
+collision_layer = 71
 collision_mask = 16
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.96758, 0)
 shape = SubResource("CylinderShape3D_3vyb7")
+
+[node name="PlacementGrid" parent="." instance=ExtResource("2_g2els")]

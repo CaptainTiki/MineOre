@@ -18,11 +18,11 @@ var preview_scene_path = ""
 var preview_building_name = ""
 var preview_distance = 4.0
 var grid_size = 2.0  # Each cell is 2x2 units
-var grid_decal_instance = null  # Single decal instance
-var grid_decal_scene = preload("res://scenes/Grid_Decal.tscn")
+var preview_material = null  # Store the preview material
 
 @onready var camera = get_node_or_null("../Camera")
 @onready var construction_menu = get_tree().get_root().get_node_or_null("Level/UI/ConstructionMenu")
+@onready var placement_grid = preload("res://scenes/placement_grid.tscn").instantiate()
 
 func _ready():
 	Input.action_release("action")
@@ -32,6 +32,9 @@ func _ready():
 	$MiningLaser/Cone.monitoring = false
 	if not camera:
 		camera = get_tree().root.get_node_or_null("Level/Camera")
+	get_tree().root.get_node("Level").add_child(placement_grid)
+	placement_grid.hide_grid()
+	print("Player initialized, PlacementGrid added to scene")
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("build"):
@@ -141,10 +144,10 @@ func start_placement(scene_path: String, building_name: String):
 	
 	var mesh = preview_instance.get_node("MeshInstance3D")
 	if mesh:
-		var material = StandardMaterial3D.new()
-		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		material.albedo_color = Color(0, 1, 0, 0.65)
-		mesh.material_override = material
+		preview_material = StandardMaterial3D.new()
+		preview_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		preview_material.albedo_color = Color(0, 1, 0, 0.65)  # Default to green
+		mesh.material_override = preview_material
 	
 	var base_distance = 4.0
 	var shape_size_z = 0.0
@@ -158,16 +161,13 @@ func start_placement(scene_path: String, building_name: String):
 	var level = get_tree().root.get_node("Level")
 	level.add_child(preview_instance)
 	
-	# Add decal (no scaling)
-	grid_decal_instance = grid_decal_scene.instantiate()
-	grid_decal_instance.visible = true  # Ensure visible
-	grid_decal_instance.cull_mask = 0xffffffff  # All layers for debug
-	grid_decal_instance.distance_fade_enabled = false  # Disable fade for debug
-	grid_decal_instance.modulate = Color(1, 1, 1, 1)  # Solid white tint for debug
-	level.add_child(grid_decal_instance)
-	print("Decal instantiated at: ", grid_decal_instance.global_position, " Visible: ", grid_decal_instance.visible, " Cull Mask: ", grid_decal_instance.cull_mask, " Modulate: ", grid_decal_instance.modulate)
-	
+	# Initialize grid at zero, update position will set it
+	var resource = BuildingsManager.get_building_resource(building_name)
+	var grid_extents = preview_instance.grid_extents if preview_instance else Vector2i(4, 4)  # Fallback
+	placement_grid.start(Vector3.ZERO, building_name, grid_extents)
+	placement_grid.show_grid()
 	is_placing = true
+	print("Placement started for ", building_name, " with grid extents ", grid_extents)
 	
 	update_preview_position()
 
@@ -178,16 +178,20 @@ func update_preview_position():
 		preview_pos.z = round(preview_pos.z / grid_size) * grid_size
 		preview_pos.y = 0
 		preview_instance.global_position = preview_pos
-		# Update decal position
-		if grid_decal_instance:
-			grid_decal_instance.global_position = preview_pos
-			grid_decal_instance.global_position.y = 0.1  # Above ground at y=-0.05
+		placement_grid.update_position(preview_pos)
+		
+		# Update preview color based on placement validity
+		if preview_material:
+			if check_placement_validity():
+				preview_material.albedo_color = Color(0, 1, 0, 0.65)  # Green for valid
+			else:
+				preview_material.albedo_color = Color(1, 0, 0, 0.65)  # Red for invalid
 
 func check_collision(pos: Vector3) -> bool:
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsPointQueryParameters3D.new()
 	query.position = pos
-	query.collision_mask = 0b0100  # Environment layer
+	query.collision_mask = 0b1000100  # Environment and buildings
 	var result = space_state.intersect_point(query)
 	return result.size() == 0
 
@@ -210,7 +214,7 @@ func check_placement_validity() -> bool:
 		var query = PhysicsShapeQueryParameters3D.new()
 		query.shape = shape.shape
 		query.transform = preview_instance.global_transform
-		query.collision_mask = 0b0100  # Layer 3 (Environment)
+		query.collision_mask = 0b1000100  # Environment and buildings
 		query.exclude = [self]
 		var result = space_state.intersect_shape(query)
 		var is_collision_free = result.size() == 0
@@ -256,33 +260,23 @@ func place_building():
 				emit_signal("placement_failed", preview_building_name, "Not enough ore")
 		else:
 			emit_signal("placement_failed", preview_building_name, "Invalid position")
-		# Remove decal
-		if grid_decal_instance:
-			grid_decal_instance.queue_free()
-			grid_decal_instance = null
-			print("Decal removed after placement")
+		placement_grid.hide_grid()
 		cancel_placement()
 	else:
 		emit_signal("placement_failed", preview_building_name, "Invalid placement")
-		# Remove decal on failure
-		if grid_decal_instance:
-			grid_decal_instance.queue_free()
-			grid_decal_instance = null
-			print("Decal removed after failed placement")
+		placement_grid.hide_grid()
 		cancel_placement()
 
 func cancel_placement():
 	if preview_instance:
 		preview_instance.queue_free()
-	# Remove decal
-	if grid_decal_instance:
-		grid_decal_instance.queue_free()
-		grid_decal_instance = null
-		print("Decal removed on cancel")
+	placement_grid.hide_grid()
 	is_placing = false
 	preview_scene_path = ""
 	preview_building_name = ""
 	preview_distance = 4.0
+	preview_material = null  # Clear material reference
+	print("Placement cancelled")
 
 func set_player(player_node):
 	pass

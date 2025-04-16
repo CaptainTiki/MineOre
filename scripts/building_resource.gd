@@ -6,6 +6,7 @@ class_name BuildingResource extends Resource
 @export var category: String
 @export var build_cost: int
 @export var base_health: float
+@export var grid_extents: Vector2i
 @export var is_unique: bool
 @export var is_researchable: bool
 @export var research_cost: int

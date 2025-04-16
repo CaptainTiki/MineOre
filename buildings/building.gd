@@ -6,6 +6,7 @@ signal destroyed(building_name: String)
 signal under_attack(building_name: String)
 
 @export var resource: BuildingResource
+@export var grid_extents: Vector2i
 var health: float
 
 func _init():
@@ -15,8 +16,15 @@ func _init():
 
 func _ready():
 	if resource:
+		# Compute grid_extents from collider if not set
+		if grid_extents == Vector2i.ZERO:
+			var collision_shape = get_node_or_null("CollisionShape3D")
+			if collision_shape and collision_shape.shape is BoxShape3D:
+				var size = collision_shape.shape.size
+				grid_extents = Vector2i(ceil(size.x / 2.0) * 2, ceil(size.z / 2.0) * 2)
 		health = Perks.get_modified_stat(resource.base_health, "building_health")
 		emit_signal("placed", resource.name, global_position)
+		print("Building: ", resource.name, " Grid Extents: ", grid_extents, " Position: ", global_position)
 	else:
 		push_error("Building %s has no resource assigned" % name)
 

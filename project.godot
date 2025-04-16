@@ -21,6 +21,13 @@ GameState="*res://managers/game_state.gd"
 Perks="*res://managers/perks.gd"
 BuildingsManager="*res://managers/buildings_manager.gd"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=2
+window/stretch/mode="canvas_items"
+
 [editor_plugins]
 
 enabled=PackedStringArray()
@@ -108,3 +115,7 @@ build={
 3d_physics/layer_5="Interactions"
 3d_physics/layer_6="Ground"
 3d_physics/layer_7="Buildings"
+
+[rendering]
+
+anti_aliasing/quality/msaa_3d=1

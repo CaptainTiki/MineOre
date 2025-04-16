@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://bqhchx3gip1tl"]
+
+[ext_resource type="Shader" uid="uid://bn4ckgj5e6jsp" path="res://shaders/grid.gdshader" id="1_6d25t"]
+[ext_resource type="Script" uid="uid://cjwtsoxospm25" path="res://scripts/placement_grid.gd" id="1_p5kqk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6d25t"]
+render_priority = 0
+shader = ExtResource("1_6d25t")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_q6mnl"]
+material = SubResource("ShaderMaterial_6d25t")
+size = Vector2(16, 16)
+
+[node name="PlacementGrid" type="Node3D"]
+script = ExtResource("1_p5kqk")
+
+[node name="GridMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_q6mnl")
