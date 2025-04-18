@@ -1,0 +1,13 @@
+Key Mappings:
+
+WASD: Movement (W: forward, S: backward, A: left, D: right)
+Left Stick: Movement (controller)
+Mouse Left / Right Trigger: Use tool
+F / A Button: Interact
+B / Y Button: Construction menu
+Esc / B Button: Cancel
+Q / D-Pad Up: Next tool
+E / D-Pad Down: Previous tool
+Mouse Wheel / Shoulder Buttons: Zoom
+Arrow Keys / Right Stick: UI navigation
+Enter / A Button: Select

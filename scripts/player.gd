@@ -17,27 +17,25 @@ var preview_instance = null
 var preview_scene_path = ""
 var preview_building_name = ""
 var preview_distance = 4.0
-var grid_size = 2.0  # Each cell is 2x2 units
-var preview_material = null  # Store the preview material
+var grid_size = 2.0
+var preview_material = null
+var rotation_speed = 5.0  # For controller-based rotation
 
 @onready var camera = get_node_or_null("../Camera")
 @onready var construction_menu = get_tree().get_root().get_node_or_null("Level/UI/ConstructionMenu")
-@onready var placement_grid = preload("res://scenes/placement_grid.tscn").instantiate()
 
 func _ready():
-	Input.action_release("action")
+	Input.action_release("use_tool")
 	add_to_group("player")
 	$Gun.visible = false
 	$MiningLaser.visible = false
 	$MiningLaser/Cone.monitoring = false
 	if not camera:
 		camera = get_tree().root.get_node_or_null("Level/Camera")
-	get_tree().root.get_node("Level").add_child(placement_grid)
-	placement_grid.hide_grid()
 	print("Player initialized, PlacementGrid added to scene")
 
 func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("build"):
+	if Input.is_action_just_pressed("construction_menu"):
 		if construction_menu.visible:
 			construction_menu.hide_menu()
 			cancel_placement()
@@ -47,13 +45,13 @@ func _process(delta: float) -> void:
 
 	if is_placing and preview_instance:
 		update_preview_position()
-		if Input.is_action_just_pressed("action"):
+		if Input.is_action_just_pressed("use_tool"):
 			place_building()
 		if Input.is_action_just_pressed("cancel"):
 			cancel_placement()
 
 	if not is_placing:
-		if Input.is_action_just_pressed("action") and not construction_menu.visible:
+		if Input.is_action_just_pressed("use_tool") and not construction_menu.visible:
 			match current_tool:
 				Tool.GUN:
 					shoot_bullet()
@@ -62,12 +60,15 @@ func _process(delta: float) -> void:
 		if Input.is_action_just_pressed("interact"):
 			interact_with_building()
 
+	if Input.is_action_just_pressed("switch_tool_next"):
+		switch_tool_next()
+	if Input.is_action_just_pressed("switch_tool_prev"):
+		switch_tool_prev()
+
 func _physics_process(delta):
 	var input = Vector3.ZERO
-	if Input.is_action_pressed("move_forward"): input.z -= 1
-	if Input.is_action_pressed("move_backward"): input.z += 1
-	if Input.is_action_pressed("move_left"): input.x -= 1
-	if Input.is_action_pressed("move_right"): input.x += 1
+	input.x = Input.get_axis("move_left", "move_right")
+	input.z = Input.get_axis("move_forward", "move_backward")
 	
 	velocity = input.normalized() * speed
 	move_and_slide()
@@ -75,24 +76,37 @@ func _physics_process(delta):
 	position.x = clamp(position.x, -50, 50)
 	position.z = clamp(position.z, -50, 50)
 	
-	if camera:
-		var mouse_pos = get_viewport().get_mouse_position()
-		var ray_origin = camera.project_ray_origin(mouse_pos)
-		var ray_dir = camera.project_ray_normal(mouse_pos)
-		var plane = Plane(Vector3.UP, 0)
-		var intersect = plane.intersects_ray(ray_origin, ray_dir)
-		if intersect:
-			var look_pos = intersect
-			look_at(Vector3(look_pos.x, global_position.y, look_pos.z), Vector3.UP)
+	# Handle rotation
+	var is_using_controller = Input.get_joy_name(0) != ""
+	if is_using_controller:
+		var look_x = Input.get_axis("navigate_left", "navigate_right")
+		var look_y = Input.get_axis("navigate_up", "navigate_down")
+		if look_x != 0 or look_y != 0:
+			var look_dir = Vector3(look_x, 0, look_y).normalized()
+			var target_rotation = atan2(look_dir.x, look_dir.z)
+			rotation.y = lerp_angle(rotation.y, target_rotation, delta * rotation_speed)
+	else:
+		if camera:
+			var mouse_pos = get_viewport().get_mouse_position()
+			var ray_origin = camera.project_ray_origin(mouse_pos)
+			var ray_dir = camera.project_ray_normal(mouse_pos)
+			var plane = Plane(Vector3.UP, 0)
+			var intersect = plane.intersects_ray(ray_origin, ray_dir)
+			if intersect:
+				var look_pos = intersect
+				look_at(Vector3(look_pos.x, global_position.y, look_pos.z), Vector3.UP)
 
-func _input(event):
-	if not is_placing:
-		if event.is_action_pressed("tool_gun"):
-			switch_tool(Tool.GUN)
-		elif event.is_action_pressed("tool_mining_laser"):
-			switch_tool(Tool.MINING_LASER)
-	if event.is_action_pressed("cancel"):
-		cancel_placement()
+func switch_tool_next():
+	var tools = [Tool.NONE, Tool.GUN, Tool.MINING_LASER]
+	var current_index = tools.find(current_tool)
+	current_index = (current_index + 1) % tools.size()
+	switch_tool(tools[current_index])
+
+func switch_tool_prev():
+	var tools = [Tool.NONE, Tool.GUN, Tool.MINING_LASER]
+	var current_index = tools.find(current_tool)
+	current_index = (current_index - 1) % tools.size()
+	switch_tool(tools[current_index])
 
 func switch_tool(new_tool):
 	current_tool = new_tool
@@ -146,7 +160,7 @@ func start_placement(scene_path: String, building_name: String):
 	if mesh:
 		preview_material = StandardMaterial3D.new()
 		preview_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		preview_material.albedo_color = Color(0, 1, 0, 0.65)  # Default to green
+		preview_material.albedo_color = Color(0, 1, 0, 0.65)
 		mesh.material_override = preview_material
 	
 	var base_distance = 4.0
@@ -161,11 +175,8 @@ func start_placement(scene_path: String, building_name: String):
 	var level = get_tree().root.get_node("Level")
 	level.add_child(preview_instance)
 	
-	# Initialize grid at zero, update position will set it
 	var resource = BuildingsManager.get_building_resource(building_name)
-	var grid_extents = preview_instance.grid_extents if preview_instance else Vector2i(4, 4)  # Fallback
-	placement_grid.start(Vector3.ZERO, building_name, grid_extents)
-	placement_grid.show_grid()
+	var grid_extents = preview_instance.grid_extents if preview_instance else Vector2i(4, 4)
 	is_placing = true
 	print("Placement started for ", building_name, " with grid extents ", grid_extents)
 	
@@ -178,20 +189,18 @@ func update_preview_position():
 		preview_pos.z = round(preview_pos.z / grid_size) * grid_size
 		preview_pos.y = 0
 		preview_instance.global_position = preview_pos
-		placement_grid.update_position(preview_pos)
 		
-		# Update preview color based on placement validity
 		if preview_material:
 			if check_placement_validity():
-				preview_material.albedo_color = Color(0, 1, 0, 0.65)  # Green for valid
+				preview_material.albedo_color = Color(0, 1, 0, 0.65)
 			else:
-				preview_material.albedo_color = Color(1, 0, 0, 0.65)  # Red for invalid
+				preview_material.albedo_color = Color(1, 0, 0, 0.65)
 
 func check_collision(pos: Vector3) -> bool:
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsPointQueryParameters3D.new()
 	query.position = pos
-	query.collision_mask = 0b1000100  # Environment and buildings
+	query.collision_mask = 0b1000100
 	var result = space_state.intersect_point(query)
 	return result.size() == 0
 
@@ -204,7 +213,7 @@ func check_placement_validity() -> bool:
 	var is_hq = preview_building_name == "headquarters"
 	var hq = level.get_node_or_null("Buildings/HeadQuarters")
 	var cost = BuildingsManager.building_configs.get(preview_building_name, {}).get("cost", 0)
-	var has_ore = is_hq  # HQ always free
+	var has_ore = is_hq
 	if not is_hq and hq:
 		has_ore = hq.stored_ore >= cost
 	
@@ -214,7 +223,7 @@ func check_placement_validity() -> bool:
 		var query = PhysicsShapeQueryParameters3D.new()
 		query.shape = shape.shape
 		query.transform = preview_instance.global_transform
-		query.collision_mask = 0b1000100  # Environment and buildings
+		query.collision_mask = 0b1000100
 		query.exclude = [self]
 		var result = space_state.intersect_shape(query)
 		var is_collision_free = result.size() == 0
@@ -260,22 +269,19 @@ func place_building():
 				emit_signal("placement_failed", preview_building_name, "Not enough ore")
 		else:
 			emit_signal("placement_failed", preview_building_name, "Invalid position")
-		placement_grid.hide_grid()
 		cancel_placement()
 	else:
 		emit_signal("placement_failed", preview_building_name, "Invalid placement")
-		placement_grid.hide_grid()
 		cancel_placement()
 
 func cancel_placement():
 	if preview_instance:
 		preview_instance.queue_free()
-	placement_grid.hide_grid()
 	is_placing = false
 	preview_scene_path = ""
 	preview_building_name = ""
 	preview_distance = 4.0
-	preview_material = null  # Clear material reference
+	preview_material = null
 	print("Placement cancelled")
 
 func set_player(player_node):

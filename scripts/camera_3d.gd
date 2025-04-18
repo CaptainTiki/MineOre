@@ -1,12 +1,12 @@
 extends Camera3D
 
 var player = null
-var base_offset = Vector3(0, 18, 13)  # Higher, less tilted (high-angle top-down)
+var base_offset = Vector3(0, 18, 13)
 var offset = base_offset
 var smooth_speed = 5.0
 var zoom_speed = 2.0
 var min_zoom = 5.0
-var max_zoom = 25.0  # Increased slightly for higher starting point
+var max_zoom = 25.0
 
 func set_player(player_node):
 	player = player_node
@@ -15,18 +15,14 @@ func _ready():
 	pass
 
 func _input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
-			zoom(-zoom_speed)
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
-			zoom(zoom_speed)
+	if Input.is_action_just_pressed("zoom_in"):
+		zoom(-zoom_speed)
+	elif Input.is_action_just_pressed("zoom_out"):
+		zoom(zoom_speed)
 
 func _process(delta):
 	if player == null:
 		return
-	
-	if Input.is_action_just_pressed("reset_camera"):
-		offset = base_offset
 	
 	var target_position = player.global_position + offset
 	global_position = global_position.lerp(target_position, delta * smooth_speed)

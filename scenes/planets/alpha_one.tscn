@@ -12,7 +12,9 @@ albedo_color = Color(0.152941, 0, 1, 1)
 script = ExtResource("1_jycxw")
 planet_name = "Alpha One"
 level_path = "res://levels/debug_level.tscn"
-system_name = "Alpha"
+planet_type = "Rocky"
+waves = 3
+resistance = "Low"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_l3a1e")

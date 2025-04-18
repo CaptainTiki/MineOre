@@ -1,12 +1,11 @@
 [gd_scene load_steps=5 format=3 uid="uid://bulrpmp16ghgg"]
 
-[ext_resource type="Texture2D" uid="uid://cv6d4n3taolws" path="res://assets/grey_mid_bn.png" id="1_5infl"]
 [ext_resource type="Script" uid="uid://2ub5ovvif2vh" path="res://scripts/perks_icon.gd" id="1_buquv"]
-[ext_resource type="Texture2D" uid="uid://4b1d4dp1vaq1" path="res://assets/grey_drk_bn.png" id="2_buquv"]
-[ext_resource type="Texture2D" uid="uid://so4ff6duu21v" path="res://assets/grey_lite_bn.png" id="3_2rm8r"]
+[ext_resource type="Texture2D" uid="uid://cwckf31u3w3bc" path="res://assets/grey_Normal_bn.png" id="2_2rm8r"]
+[ext_resource type="Texture2D" uid="uid://bdqk5bshr3t2y" path="res://assets/grey_Pressed_bn.png" id="3_buquv"]
+[ext_resource type="Texture2D" uid="uid://djajbaqv143tu" path="res://assets/grey_focus_bn.png" id="4_2rm8r"]
 
 [node name="PerksIcon" type="Control"]
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -19,23 +18,33 @@ offset_right = 32.0
 offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(32, 32)
+size_flags_horizontal = 2
+size_flags_vertical = 2
 script = ExtResource("1_buquv")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-custom_minimum_size = Vector2(64, 64)
+[node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
+pivot_offset = Vector2(32, 32)
 
-[node name="TextureButton" type="TextureButton" parent="MarginContainer"]
+[node name="TextureButton" type="TextureButton" parent="CenterContainer"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-texture_normal = ExtResource("1_5infl")
-texture_pressed = ExtResource("2_buquv")
-texture_hover = ExtResource("3_2rm8r")
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+toggle_mode = true
+texture_normal = ExtResource("2_2rm8r")
+texture_pressed = ExtResource("3_buquv")
+texture_focused = ExtResource("4_2rm8r")
+ignore_texture_size = true
+stretch_mode = 5
+
+[connection signal="mouse_entered" from="CenterContainer/TextureButton" to="." method="_on_texture_button_mouse_entered"]
+[connection signal="mouse_exited" from="CenterContainer/TextureButton" to="." method="_on_texture_button_mouse_exited"]
+[connection signal="pressed" from="CenterContainer/TextureButton" to="." method="_on_texture_button_pressed"]

@@ -8,11 +8,13 @@ radius = 1.40765
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7aydp"]
 albedo_color = Color(0.914928, 0.463406, 0.270068, 1)
 
-[node name="AlphaTwo" type="Area3D"]
+[node name="AlphaThree" type="Area3D"]
 script = ExtResource("1_ba5i5")
 planet_name = "Alpha Three"
 level_path = "res://levels/level_a3.tscn"
-system_name = "Alpha"
+planet_type = "Water"
+waves = 3
+resistance = "medium"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_x0q3j")
