@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Perk" load_steps=2 format=3 uid="uid://bcnvuvjnnyw0s"]
+
+[ext_resource type="Script" uid="uid://cnu3m5ilhw55w" path="res://perks/perk.gd" id="1_s4pjq"]
+
+[resource]
+script = ExtResource("1_s4pjq")
+id = "player_health_1"
+name = "Player Health Boost 1"
+description = "Increases Player Health by 10%"
+normal_icon_path = "res://perks/player_health_1/health_prssd_bn.png"
+pressed_icon_path = "res://perks/player_health_1/heath_nrml_bn.png"
+effects = Dictionary[String, float]({
+"player_health": 1.1
+})
+unlocked = true
+metadata/_custom_type_script = "uid://cnu3m5ilhw55w"

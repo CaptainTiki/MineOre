@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Perk" load_steps=2 format=3 uid="uid://cqy3krpjc1vcu"]
+
+[ext_resource type="Script" uid="uid://cnu3m5ilhw55w" path="res://perks/perk.gd" id="1_rrf0m"]
+
+[resource]
+script = ExtResource("1_rrf0m")
+id = "turret_fire_rate_1"
+name = "Turret Fire Rate 1"
+description = "Boosts Turret Fire Rate by 100%"
+normal_icon_path = "res://perks/turret_fire_rate_1/turretfirerate1_nrml_bn.png"
+pressed_icon_path = "res://perks/turret_fire_rate_1/turretfirerate_prssd_bn.png"
+effects = Dictionary[String, float]({
+"turret_fire_rate": 0.5
+})
+unlocked = false
+metadata/_custom_type_script = "uid://cnu3m5ilhw55w"

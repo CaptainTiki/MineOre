@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cv6d4n3taolws"
-path="res://.godot/imported/grey_mid_bn.png-ff4fd43e8397d2ea05d932168c09e044.ctex"
+uid="uid://bpbakugpnvp71"
+path="res://.godot/imported/turretfirerate1_nrml_bn.png-4043978a861d40498b56d52b51ebb338.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/grey_mid_bn.png"
-dest_files=["res://.godot/imported/grey_mid_bn.png-ff4fd43e8397d2ea05d932168c09e044.ctex"]
+source_file="res://perks/turret_fire_rate_1/turretfirerate1_nrml_bn.png"
+dest_files=["res://.godot/imported/turretfirerate1_nrml_bn.png-4043978a861d40498b56d52b51ebb338.ctex"]
 
 [params]
 

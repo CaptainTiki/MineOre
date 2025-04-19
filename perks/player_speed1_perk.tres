@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Perk" load_steps=2 format=3 uid="uid://cacs6e2grp4wu"]
+
+[ext_resource type="Script" uid="uid://cnu3m5ilhw55w" path="res://perks/perk.gd" id="1_xsctm"]
+
+[resource]
+script = ExtResource("1_xsctm")
+id = "player_speed_1"
+name = "Player Speed Boost 1"
+description = "Boosts Player Movement Speed by 10%"
+normal_icon_path = "res://perks/player_speed_1/playerspeed_nrml_bn.png"
+pressed_icon_path = "res://perks/player_speed_1/playerSpeed_prssd_bn.png"
+effects = Dictionary[String, float]({
+"player_speed": 1.1
+})
+unlocked = true
+metadata/_custom_type_script = "uid://cnu3m5ilhw55w"

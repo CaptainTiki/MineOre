@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://so4ff6duu21v"
-path="res://.godot/imported/grey_lite_bn.png-430672f74ba8d4ebb8d2596ad76752b3.ctex"
+uid="uid://dyda28uatym72"
+path="res://.godot/imported/heath_nrml_bn.png-a58548676494e0c2b8eaef702921c944.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/grey_lite_bn.png"
-dest_files=["res://.godot/imported/grey_lite_bn.png-430672f74ba8d4ebb8d2596ad76752b3.ctex"]
+source_file="res://perks/player_health_1/heath_nrml_bn.png"
+dest_files=["res://.godot/imported/heath_nrml_bn.png-a58548676494e0c2b8eaef702921c944.ctex"]
 
 [params]
 

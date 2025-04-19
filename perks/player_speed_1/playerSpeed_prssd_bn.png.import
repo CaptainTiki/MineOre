@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwckf31u3w3bc"
-path="res://.godot/imported/grey_Normal_bn.png-f8e383853103ca7582ebb317b00ff33c.ctex"
+uid="uid://dqmyercu6y0f4"
+path="res://.godot/imported/playerSpeed_prssd_bn.png-a3efa84232fa1c7737ee7f932060b0b3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/grey_Normal_bn.png"
-dest_files=["res://.godot/imported/grey_Normal_bn.png-f8e383853103ca7582ebb317b00ff33c.ctex"]
+source_file="res://perks/player_speed_1/playerSpeed_prssd_bn.png"
+dest_files=["res://.godot/imported/playerSpeed_prssd_bn.png-a3efa84232fa1c7737ee7f932060b0b3.ctex"]
 
 [params]
 

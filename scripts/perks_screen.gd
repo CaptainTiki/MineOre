@@ -13,30 +13,27 @@ signal perks_canceled
 @onready var go_button = $GoButton
 
 var perk_icon_scene = preload("res://scenes/perks_icon.tscn")
-var available_perks = [
-	"building_health", "turret_rotation_speed", "turret_damage", "turret_fire_rate", 
-	"player_movement_speed", "dummy_perk", "dummy_perk0", "dummy_perk1",
-	"dummy_perk2", "dummy_perk3", "dummy_perk4", "dummy_perk5",
-	"dummy_perk6", "dummy_perk7", "dummy_perk8", "dummy_perk9"
-	]
-var chosen_perks = []
+var available_perks: Array[Perk] = []  # Now an array of Perk resources
+var chosen_perks: Array[String] = []   # Stores perk IDs
 var selected_planet = null
-var current_perk_index = 0  # Start with the first perk highlighted - but not selected
+var current_perk_index: int = 0        # Start with the first perk highlighted
 var mouse_hovered_icon = null
 
-var can_navigate = true
-var nav_cooldown = 0.1  # 1/10th of a second cooldown
+var can_navigate: bool = true
+var nav_cooldown: float = 0.1          # 1/10th of a second cooldown
 
 func _ready():
-	visible = false  # Show the perks screen
+	visible = false
 	go_button.pressed.connect(_on_go_pressed)
 	doll_label.text = "Paper Doll\n(Coming Soon)"
 	hover_panel.visible = false
 	go_button.focus_mode = Control.FOCUS_ALL
 	
+	# Load all perks from PerksManager
+	available_perks = PerksManager.get_all_perks()
 	for perk in available_perks:
 		var icon = perk_icon_scene.instantiate()
-		icon.set_perk(perk)
+		icon.set_perk(perk)  # Pass the Perk resource
 		icon.icon_pressed.connect(_on_perk_selected)
 		icon.icon_hovered.connect(_on_perk_hover)
 		icon.icon_unhovered.connect(_on_perk_hover_exit)
@@ -63,7 +60,7 @@ func _input(event):
 			start_nav_cooldown()
 			get_viewport().set_input_as_handled()
 		elif Input.is_action_just_pressed("select") and current_perk_index >= 0:
-			_on_perk_selected(available_perks[current_perk_index])
+			_on_perk_selected(available_perks[current_perk_index].id)
 			get_viewport().set_input_as_handled()
 		elif Input.is_action_just_pressed("cancel"):
 			visible = false
@@ -72,7 +69,6 @@ func _input(event):
 			emit_signal("perks_canceled")
 			get_viewport().set_input_as_handled()
 
-# Start the cooldown timer to prevent rapid inputs
 func start_nav_cooldown():
 	can_navigate = false
 	await get_tree().create_timer(nav_cooldown).timeout
@@ -112,52 +108,57 @@ func show_perks(planet_data):
 	visible = true
 	chosen_perks = []
 	selected_planet = planet_data
-	get_tree().paused = false  # Make sure the game isn't paused
-	current_perk_index = 0    # Highlight the first perk
+	get_tree().paused = false
+	current_perk_index = 0
 	update_perk_buttons()
 	update_controller_highlight()
 	go_button.grab_focus()
 
-func _on_perk_hover(perk):
-	print("Mouse hovering over perk: ", perk)
-	for icon in perks_grid.get_children():
-		if icon.perk_name == perk:
-			if mouse_hovered_icon and mouse_hovered_icon != icon:
-				mouse_hovered_icon.set_highlight(false)
-			mouse_hovered_icon = icon
-			icon.set_highlight(true)
-			break
-	perk_name_label.text = perk.capitalize()
-	perk_desc_label.text = Perks.get_perk_description(perk)
-	hover_panel.visible = true
+func _on_perk_hover(perk_id: String):
+	var perk = PerksManager.get_perk_by_id(perk_id)
+	if perk:
+		for icon in perks_grid.get_children():
+			if icon.perk_name == perk_id:  # perk_name is the ID
+				if mouse_hovered_icon and mouse_hovered_icon != icon:
+					mouse_hovered_icon.set_highlight(false)
+				mouse_hovered_icon = icon
+				icon.set_highlight(true)
+				break
+		perk_name_label.text = perk.name
+		perk_desc_label.text = perk.description
+		hover_panel.visible = true
+	else:
+		hover_panel.visible = false
 
 func _on_perk_hover_exit():
-	print("Mouse exited perk")
 	if mouse_hovered_icon:
 		mouse_hovered_icon.set_highlight(false)
 		mouse_hovered_icon = null
 	update_controller_highlight()
 
-func _on_perk_selected(perk):
-	if perk in chosen_perks:
-		chosen_perks.erase(perk)
+func _on_perk_selected(perk_id: String):
+	var perk = PerksManager.get_perk_by_id(perk_id)
+	if perk and perk.unlocked:
+		if perk_id in chosen_perks:
+			chosen_perks.erase(perk_id)
+		else:
+			if chosen_perks.size() < 3:
+				chosen_perks.append(perk_id)
+		update_perk_buttons()
+		if current_perk_index >= 0:
+			update_controller_highlight()
 	else:
-		if chosen_perks.size() < 3:
-			chosen_perks.append(perk)
-	update_perk_buttons()
-	if current_perk_index >= 0:
-		update_controller_highlight()  # Ensure highlight persists after selection
+		print("Cannot select locked perk: ", perk_id)
 
 func update_perk_buttons():
 	for icon in perks_grid.get_children():
 		if icon is Control and icon.has_method("set_selected"):
-			var perk = icon.perk_name
-			var is_selected = perk in chosen_perks
+			var perk_id = icon.perk_name  # perk_name is the ID
+			var is_selected = perk_id in chosen_perks
 			icon.set_selected(is_selected)
 
 func update_controller_highlight():
 	if mouse_hovered_icon:
-		# Mouse hover takes temporary precedence; keep its highlight
 		return
 	for icon in perks_grid.get_children():
 		icon.set_highlight(false)
@@ -166,9 +167,9 @@ func update_controller_highlight():
 		if icon:
 			icon.set_highlight(true)
 			var perk = available_perks[current_perk_index]
-			print("Highlighting controller perk at index ", current_perk_index, ": ", perk)
-			perk_name_label.text = perk.capitalize()
-			perk_desc_label.text = Perks.get_perk_description(perk)
+			print("Highlighting controller perk at index ", current_perk_index, ": ", perk.id)
+			perk_name_label.text = perk.name
+			perk_desc_label.text = perk.description
 			hover_panel.visible = true
 	else:
 		hover_panel.visible = false
@@ -177,9 +178,9 @@ func update_controller_highlight():
 
 func _on_go_pressed():
 	if selected_planet:
-		Perks.set_active_perks(chosen_perks)
+		PerksManager.set_active_perks(chosen_perks)  # Updated to PerksManager
 		print("Emitting perks_selected with perks: ", chosen_perks, " and planet: ", selected_planet["name"])
 		emit_signal("perks_selected", chosen_perks, selected_planet)
 		visible = false
-		get_tree().paused = false  # Make sure the game isn't paused
+		get_tree().paused = false
 		selected_planet = null

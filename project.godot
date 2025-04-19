@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameState="*res://managers/game_state.gd"
 Perks="*res://managers/perks.gd"
+PerksManager="*res://managers/perks_manager.gd"
 BuildingsManager="*res://managers/buildings_manager.gd"
 
 [display]

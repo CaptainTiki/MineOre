@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://djajbaqv143tu"
-path="res://.godot/imported/grey_focus_bn.png-80a53935b35c2e83a9c947f44e9f763e.ctex"
+uid="uid://dnix103slj3cu"
+path="res://.godot/imported/perk_locked_bn.png-9f49f046fb8090fa78706adb303b6b04.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/grey_focus_bn.png"
-dest_files=["res://.godot/imported/grey_focus_bn.png-80a53935b35c2e83a9c947f44e9f763e.ctex"]
+source_file="res://perks/defaults/perk_locked_bn.png"
+dest_files=["res://.godot/imported/perk_locked_bn.png-9f49f046fb8090fa78706adb303b6b04.ctex"]
 
 [params]
 
