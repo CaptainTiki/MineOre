@@ -27,6 +27,7 @@ var transition_duration = 0.5
 var is_perks_active = false
 var current_planet_index = 0
 var planets = []
+var highlight: Sprite3D
 
 func _ready():
 	if not system_name or not planet_scenes:
@@ -38,7 +39,7 @@ func _ready():
 	if not mesh:
 		print("Warning: No Mesh for ", name)
 	else:
-		mesh.transparency = 0.0
+		mesh.transparency = 1.0  # Initially invisible
 	if not collision_shape:
 		print("Error: No CollisionShape3D for ", name, "; input detection will fail")
 	else:
@@ -56,6 +57,13 @@ func _ready():
 	popup.add_child(label)
 	add_child(popup)
 	popup.hide()
+	
+	highlight = Sprite3D.new()
+	highlight.texture = preload("res://assets/ring.png")  # Ensure you create this asset
+	highlight.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+	highlight.modulate = Color(0, 0.5, 1, 0)  # Blue with zero alpha
+	highlight.visible = false
+	add_child(highlight)
 
 func _process(delta):
 	if zoom_state == ZoomState.ZOOMING_IN:
@@ -232,6 +240,17 @@ func spawn_planets():
 		planet.mouse_entered.connect(_on_planet_hover.bind(planet.get_planet_data()["name"], true))
 		planet.mouse_exited.connect(_on_planet_hover.bind(planet.get_planet_data()["name"], false))
 		planet.set_meta("hovered", false)
+
+func flicker_in(duration: float):
+	var tween = create_tween()
+	tween.set_trans(Tween.TRANS_LINEAR)
+	tween.set_ease(Tween.EASE_IN_OUT)
+	var num_flickers = 3
+	var flicker_time = 0.1
+	for i in range(num_flickers):
+		tween.tween_property(mesh, "transparency", 0.0, flicker_time / 2).from(1.0)
+		tween.tween_property(mesh, "transparency", 1.0, flicker_time / 2)
+	tween.tween_property(mesh, "transparency", 0.0, duration - num_flickers * flicker_time)
 
 func _on_planet_hover(planet_name, entered):
 	if is_perks_active:

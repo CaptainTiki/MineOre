@@ -37,10 +37,11 @@ _bundled = {
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vyd5l"]
 albedo_color = Color(0.34902, 0.129412, 1, 1)
+emission_enabled = true
+emission = Color(0, 0, 0.952941, 1)
 
-[sub_resource type="QuadMesh" id="QuadMesh_43bgu"]
+[sub_resource type="SphereMesh" id="SphereMesh_ydqa4"]
 material = SubResource("StandardMaterial3D_vyd5l")
-size = Vector2(10, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_568mj"]
 size = Vector3(10, 10, 1)
@@ -54,7 +55,7 @@ planet_scenes = Array[PackedScene]([ExtResource("2_b5xo6"), ExtResource("3_5c2w2
 star_scene = SubResource("PackedScene_ydqa4")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
-mesh = SubResource("QuadMesh_43bgu")
+mesh = SubResource("SphereMesh_ydqa4")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_568mj")
