@@ -36,7 +36,8 @@ script = ExtResource("1_fp76q")
 environment = SubResource("Environment_aoqvg")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+transform = Transform3D(-0.036205, -0.0206527, -0.999131, -0.842254, -0.537472, 0.0416303, -0.537864, 0.843029, 0.00206404, 0, 0, 0)
+light_energy = 0.5
 shadow_enabled = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

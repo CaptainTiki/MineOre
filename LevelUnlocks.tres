@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="LevelUnlocks" load_steps=2 format=3 uid="uid://yyd1uj65cpke"]
+
+[ext_resource type="Script" uid="uid://btjvdtx8fnggs" path="res://scripts/levelunlocks.gd" id="1_g5ko2"]
+
+[resource]
+script = ExtResource("1_g5ko2")
+metadata/_custom_type_script = "uid://btjvdtx8fnggs"

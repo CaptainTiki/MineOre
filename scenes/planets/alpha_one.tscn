@@ -1,12 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://cwuxn3wuqgyot"]
+[gd_scene load_steps=5 format=3 uid="uid://cwuxn3wuqgyot"]
 
 [ext_resource type="Script" uid="uid://ccb51dxpbx4iu" path="res://scenes/planets/planet.gd" id="1_jycxw"]
+[ext_resource type="Texture2D" uid="uid://cqj28kcswjnwq" path="res://scenes/planets/rocky_lava_tx.png" id="2_1iy6p"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_l3a1e"]
 radius = 0.585409
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l3a1e"]
-albedo_color = Color(0.152941, 0, 1, 1)
+albedo_texture = ExtResource("2_1iy6p")
+emission = Color(0.154876, 0.154876, 0.154876, 1)
 
 [node name="AlphaOne" type="Area3D"]
 script = ExtResource("1_jycxw")
@@ -20,4 +22,8 @@ resistance = "Low"
 shape = SubResource("SphereShape3D_l3a1e")
 
 [node name="MeshInstance3D" type="CSGSphere3D" parent="."]
+transform = Transform3D(0.678603, -0.69065, -0.25, -0.699469, -0.711516, 0.0669872, -0.224144, 0.12941, -0.965926, 0, 0, 0)
+radius = 0.75
+radial_segments = 24
+rings = 12
 material = SubResource("StandardMaterial3D_l3a1e")
