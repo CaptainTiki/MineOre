@@ -6,13 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://cei8apdje0oue" path="res://scenes/planets/alpha_three.tscn" id="4_4gqpi"]
 [ext_resource type="PackedScene" uid="uid://dd23dgl0xq2w1" path="res://scenes/planets/alpha_star.tscn" id="5_0i73w"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0i73w"]
-albedo_color = Color(0.532804, 0.670052, 0.14836, 1)
-emission_enabled = true
-emission = Color(0.878431, 0.623529, 0.196078, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ewo0i"]
+albedo_color = Color(0.693064, 0.691916, 1.15514e-06, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_7h3rk"]
-material = SubResource("StandardMaterial3D_0i73w")
+[sub_resource type="QuadMesh" id="QuadMesh_fevf7"]
+material = SubResource("StandardMaterial3D_ewo0i")
+size = Vector2(10, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_568mj"]
 size = Vector3(10, 10, 1)
@@ -25,7 +24,7 @@ planet_scenes = Array[PackedScene]([ExtResource("2_ay458"), ExtResource("3_w364r
 star_scene = ExtResource("5_0i73w")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
-mesh = SubResource("SphereMesh_7h3rk")
+mesh = SubResource("QuadMesh_fevf7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_568mj")

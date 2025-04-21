@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://chgsxendb6aqj"]
+[gd_scene load_steps=12 format=3 uid="uid://chgsxendb6aqj"]
 
 [ext_resource type="Texture2D" uid="uid://bsfbknwn0s0a3" path="res://scenes/front.png" id="1_3ldf6"]
 [ext_resource type="Script" uid="uid://m5w1jd0shwat" path="res://scripts/star_map.gd" id="1_fp76q"]
@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://cjac672xsqwd0" path="res://scenes/systems/beta_system.tscn" id="4_568mj"]
 [ext_resource type="PackedScene" uid="uid://dik14rukuvh56" path="res://scenes/systems/gamma_system.tscn" id="5_vyd5l"]
 [ext_resource type="PackedScene" uid="uid://du1343o1l0m7q" path="res://scenes/perks_screen.tscn" id="6_568mj"]
-[ext_resource type="Script" uid="uid://b23ydgp26kn7k" path="res://scripts/line_drawer.gd" id="7_line_drawer"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_b4dln"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -51,22 +50,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 62.4)
 [node name="Systems" type="Node3D" parent="."]
 
 [node name="Alpha" parent="Systems" instance=ExtResource("3_fevf7")]
-transform = Transform3D(1.29302, 0, 0, 0, 1.29302, 0, 0, 0, 1.29302, -68.6101, 15.0235, -1.86295e-07)
-
-[node name="Alpha2" parent="Systems" instance=ExtResource("3_fevf7")]
-transform = Transform3D(1.29302, 0, 0, 0, 1.29302, 0, 0, 0, 1.29302, -11.5773, -19.7414, -1.86295e-07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -67.0022, 11.5873, 0)
 
 [node name="Beta" parent="Systems" instance=ExtResource("4_568mj")]
-transform = Transform3D(1.29302, 0, 0, 0, 1.29302, 0, 0, 0, 1.29302, -17.3883, 18.7555, -1.86295e-07)
-
-[node name="Beta2" parent="Systems" instance=ExtResource("4_568mj")]
-transform = Transform3D(1.29302, 0, 0, 0, 1.29302, 0, 0, 0, 1.29302, 25.3652, -27.7796, -1.86295e-07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.5937, 27.5564, 0)
 
 [node name="Gamma" parent="Systems" instance=ExtResource("5_vyd5l")]
-transform = Transform3D(1.29302, 0, 0, 0, 1.29302, 0, 0, 0, 1.29302, -51.0494, -4.88468, -1.86295e-07)
-
-[node name="Gamma2" parent="Systems" instance=ExtResource("5_vyd5l")]
-transform = Transform3D(1.29302, 0, 0, 0, 1.29302, 0, 0, 0, 1.29302, 37.0196, 3.02664, 4.74617e-06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5521, -34.6129, 0)
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -84,55 +74,18 @@ offset_bottom = 8.0
 focus_mode = 0
 text = "Back"
 
-[node name="PerksScreen" parent="UI" instance=ExtResource("6_568mj")]
-layout_mode = 1
-
-[node name="StarMapUI" type="Control" parent="UI"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="LineDrawer" type="Control" parent="UI/StarMapUI"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("7_line_drawer")
-
-[node name="SystemPanel" type="Panel" parent="UI/StarMapUI"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -764.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = 377.0
-grow_horizontal = 0
-
-[node name="SystemLabel" type="Label" parent="UI/StarMapUI/SystemPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = -5.0
-offset_bottom = -5.0
-grow_horizontal = 2
-grow_vertical = 2
-autowrap_mode = 2
-
-[node name="PlanetViewUI" type="Control" parent="UI"]
+[node name="PlanetTooltip" type="Control" parent="UI"]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="TooltipLabel" type="Label" parent="UI/PlanetTooltip"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="PerksScreen" parent="UI" instance=ExtResource("6_568mj")]
+layout_mode = 1
 
 [connection signal="pressed" from="UI/BackButton" to="." method="_on_back_button_pressed"]
