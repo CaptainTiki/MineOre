@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="MineOre"
-run/main_scene="uid://chgsxendb6aqj"
+run/main_scene="uid://deo6a22xw7hyb"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 

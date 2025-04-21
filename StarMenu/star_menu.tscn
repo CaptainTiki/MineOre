@@ -1,0 +1,163 @@
+[gd_scene load_steps=16 format=3 uid="uid://deo6a22xw7hyb"]
+
+[ext_resource type="Script" uid="uid://r4esfi5mnbp1" path="res://StarMenu/star_menu.gd" id="1_bawdr"]
+[ext_resource type="Script" uid="uid://dpwfiplimgruh" path="res://StarMenu/star_map_view.gd" id="2_1sd4k"]
+[ext_resource type="Resource" uid="uid://drp686mlyj1xk" path="res://StarMenu/alpha_system.tres" id="3_703u0"]
+[ext_resource type="Script" uid="uid://d2r6ivcpppmcj" path="res://StarMenu/system_view.gd" id="3_suaud"]
+[ext_resource type="Texture2D" uid="uid://csf5na4xj4be1" path="res://assets/background1.png" id="4_703u0"]
+[ext_resource type="Script" uid="uid://8321q6jwtd6u" path="res://StarMenu/planet_view.gd" id="4_k4xme"]
+[ext_resource type="Script" uid="uid://dvynj4ved0mam" path="res://StarMenu/perks_view.gd" id="5_q7svf"]
+[ext_resource type="Texture2D" uid="uid://bsfbknwn0s0a3" path="res://scenes/front.png" id="8_uo6vd"]
+[ext_resource type="PackedScene" uid="uid://dwbhdnwgxpion" path="res://StarMenu/star_sytem.tscn" id="9_703u0"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8ydva"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_0fbj8"]
+sky_material = SubResource("ProceduralSkyMaterial_8ydva")
+
+[sub_resource type="Environment" id="Environment_7xwej"]
+background_mode = 2
+background_energy_multiplier = 1.5
+sky = SubResource("Sky_0fbj8")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fp76q"]
+albedo_texture = ExtResource("8_uo6vd")
+emission = Color(0.169245, 0.169245, 0.169245, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_sw5rk"]
+material = SubResource("StandardMaterial3D_fp76q")
+size = Vector2(1000, 1000)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_abc12"]
+texture = ExtResource("4_703u0")
+
+[node name="StarMenu" type="Node3D"]
+script = ExtResource("1_bawdr")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_7xwej")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.036205, -0.0206527, -0.999131, -0.842254, -0.537471, 0.0416302, -0.537864, 0.843029, 0.00206436, 0, 0, 0)
+light_energy = 0.5
+shadow_enabled = true
+
+[node name="Starfield" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+mesh = SubResource("QuadMesh_sw5rk")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 350)
+
+[node name="StarMapView" type="Node3D" parent="."]
+script = ExtResource("2_1sd4k")
+
+[node name="UI" type="Control" parent="StarMapView"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SystemInfoPanel" type="Panel" parent="StarMapView/UI"]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -320.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 420.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_abc12")
+
+[node name="InfoContainer" type="VBoxContainer" parent="StarMapView/UI/SystemInfoPanel"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SystemNameLabel" type="Label" parent="StarMapView/UI/SystemInfoPanel/InfoContainer"]
+layout_mode = 2
+text = "Select a system"
+
+[node name="DifficultyLabel" type="Label" parent="StarMapView/UI/SystemInfoPanel/InfoContainer"]
+layout_mode = 2
+text = "Difficulty: -"
+
+[node name="ProgressLabel" type="Label" parent="StarMapView/UI/SystemInfoPanel/InfoContainer"]
+layout_mode = 2
+text = "Progress: -"
+
+[node name="DescriptionLabel" type="Label" parent="StarMapView/UI/SystemInfoPanel/InfoContainer"]
+layout_mode = 2
+text = "Description: -"
+
+[node name="LockedLabel" type="Label" parent="StarMapView/UI/SystemInfoPanel/InfoContainer"]
+layout_mode = 2
+text = "Locked: -"
+
+[node name="SystemView" type="Node3D" parent="."]
+script = ExtResource("3_suaud")
+
+[node name="UI" type="Control" parent="SystemView"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlanetView" type="Node3D" parent="."]
+script = ExtResource("4_k4xme")
+
+[node name="UI" type="Control" parent="PlanetView"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PerksView" type="Node3D" parent="."]
+script = ExtResource("5_q7svf")
+
+[node name="UI" type="Control" parent="PerksView"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="StarSystems" type="Node3D" parent="."]
+
+[node name="AlphaSystem" parent="StarSystems" instance=ExtResource("9_703u0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -362.18, 169.69, 0)
+resource = ExtResource("3_703u0")
+
+[node name="AlphaSystem2" parent="StarSystems" instance=ExtResource("9_703u0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -204.225, -18.3387, 0)
+resource = ExtResource("3_703u0")
+
+[node name="AlphaSystem3" parent="StarSystems" instance=ExtResource("9_703u0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114.279, 120.443, 0)
+resource = ExtResource("3_703u0")
+
+[node name="AlphaSystem7" parent="StarSystems" instance=ExtResource("9_703u0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -62.9952, -200.411, 0)
+resource = ExtResource("3_703u0")
+
+[node name="AlphaSystem4" parent="StarSystems" instance=ExtResource("9_703u0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 1, 0, -65.7174, -166.414, 0)
+resource = ExtResource("3_703u0")
+
+[node name="AlphaSystem5" parent="StarSystems" instance=ExtResource("9_703u0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 108.71, -41.3305, 0)
+resource = ExtResource("3_703u0")
+
+[node name="AlphaSystem6" parent="StarSystems" instance=ExtResource("9_703u0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 286.873, -14.0858, 0)
+resource = ExtResource("3_703u0")

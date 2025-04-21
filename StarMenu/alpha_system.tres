@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="StarSystemResource" load_steps=6 format=3 uid="uid://drp686mlyj1xk"]
+
+[ext_resource type="Script" uid="uid://7aiooamcrrxk" path="res://StarMenu/StarSystemResource.gd" id="1_d6yak"]
+[ext_resource type="PackedScene" uid="uid://cwuxn3wuqgyot" path="res://scenes/planets/alpha_one.tscn" id="1_q56fa"]
+[ext_resource type="PackedScene" uid="uid://m6uuy28dyy0p" path="res://scenes/planets/alpha_two.tscn" id="2_3rqs1"]
+[ext_resource type="PackedScene" uid="uid://cei8apdje0oue" path="res://scenes/planets/alpha_three.tscn" id="3_3ausb"]
+[ext_resource type="PackedScene" uid="uid://dd23dgl0xq2w1" path="res://scenes/planets/alpha_star.tscn" id="5_5lg0k"]
+
+[resource]
+script = ExtResource("1_d6yak")
+system_name = "Alpha"
+star_scene = ExtResource("5_5lg0k")
+planets = Array[PackedScene]([ExtResource("1_q56fa"), ExtResource("2_3rqs1"), ExtResource("3_3ausb")])
+difficulty = 1
+description = "A mysterious star system."
+locked = false
+metadata/_custom_type_script = "uid://7aiooamcrrxk"
