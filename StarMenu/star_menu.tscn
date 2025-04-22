@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://deo6a22xw7hyb"]
+[gd_scene load_steps=27 format=3 uid="uid://deo6a22xw7hyb"]
 
 [ext_resource type="Script" uid="uid://r4esfi5mnbp1" path="res://StarMenu/star_menu.gd" id="1_bawdr"]
 [ext_resource type="Script" uid="uid://dpwfiplimgruh" path="res://StarMenu/star_map_view.gd" id="2_1sd4k"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://bsfbknwn0s0a3" path="res://scenes/front.png" id="8_uo6vd"]
 [ext_resource type="PackedScene" uid="uid://dwbhdnwgxpion" path="res://StarMenu/star_sytem.tscn" id="9_703u0"]
 [ext_resource type="Resource" uid="uid://cpe1um4m0rghu" path="res://StarMenu/beta_system.tres" id="10_8ydva"]
+[ext_resource type="Shader" uid="uid://dagqdobs0igw0" path="res://shaders/star_one.gdshader" id="10_sw5rk"]
 [ext_resource type="Resource" uid="uid://dsluqqp01vhbp" path="res://StarMenu/gamma_system.tres" id="11_7xwej"]
 [ext_resource type="PackedScene" uid="uid://dsdstadgt0cya" path="res://StarMenu/line_node.tscn" id="12_7xwej"]
 
@@ -37,6 +38,35 @@ size = Vector2(1000, 1000)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_abc12"]
 texture = ExtResource("4_703u0")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tklnn"]
+render_priority = 0
+shader = ExtResource("10_sw5rk")
+shader_parameter/time_scale = 0.019
+shader_parameter/noise_scale = 10.0
+shader_parameter/detail_scale = 5.0
+shader_parameter/contrast = 1.0
+shader_parameter/color_dark = Vector3(0.5, 0.2, 0)
+shader_parameter/color_core = Vector3(0.2, 0.8, 0.2)
+shader_parameter/color_hot = Vector3(1, 0.4, 0.2)
+shader_parameter/emission_strength = 1.503
+shader_parameter/corona_strength = 0.439
+shader_parameter/swirl_strength = 0.067
+
+[sub_resource type="SphereMesh" id="SphereMesh_uo6vd"]
+material = SubResource("ShaderMaterial_tklnn")
+radius = 2.0
+height = 4.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_7xwej"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_sw5rk"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_tklnn"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_6rj7k"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_wlyw0"]
 
 [node name="StarMenu" type="Node3D"]
 script = ExtResource("1_bawdr")
@@ -139,27 +169,33 @@ offset_bottom = 40.0
 
 [node name="AlphaSystem" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -362.18, 169.69, 0)
-resource = ExtResource("3_703u0")
+system_resource = ExtResource("3_703u0")
+star_mesh = SubResource("SphereMesh_uo6vd")
 
 [node name="BetaSystem" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -204.225, -18.3387, 0)
-resource = ExtResource("10_8ydva")
+system_resource = ExtResource("10_8ydva")
+star_mesh = SubResource("SphereMesh_7xwej")
 
 [node name="GammaSystem" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114.279, 120.443, 0)
-resource = ExtResource("11_7xwej")
+system_resource = ExtResource("11_7xwej")
+star_mesh = SubResource("SphereMesh_sw5rk")
 
 [node name="AlphaSystem2" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.3685, 22.6653, 3.05176e-05)
-resource = ExtResource("3_703u0")
+system_resource = ExtResource("3_703u0")
+star_mesh = SubResource("SphereMesh_tklnn")
 
 [node name="BetaSystem2" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 125.587, -165.363, 3.05176e-05)
-resource = ExtResource("10_8ydva")
+system_resource = ExtResource("10_8ydva")
+star_mesh = SubResource("SphereMesh_6rj7k")
 
 [node name="GammaSystem2" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 215.533, -26.5817, 3.05176e-05)
-resource = ExtResource("11_7xwej")
+system_resource = ExtResource("11_7xwej")
+star_mesh = SubResource("SphereMesh_wlyw0")
 
 [node name="ConstellationLines" type="Node3D" parent="."]
 

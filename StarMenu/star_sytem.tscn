@@ -1,10 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://dwbhdnwgxpion"]
+[gd_scene load_steps=6 format=3 uid="uid://dwbhdnwgxpion"]
 
 [ext_resource type="Script" uid="uid://dfffndntywaqv" path="res://StarMenu/star_sytem.gd" id="1_mjsl1"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_x2iif"]
-radius = 2.0
-height = 4.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_osha0"]
 radius = 1.0
@@ -48,9 +44,6 @@ _data = {
 [node name="StarSytem" type="Area3D"]
 script = ExtResource("1_mjsl1")
 
-[node name="Star" type="MeshInstance3D" parent="."]
-mesh = SubResource("SphereMesh_x2iif")
-
 [node name="Collider" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_osha0")
 
@@ -60,3 +53,5 @@ shape = SubResource("SphereShape3D_osha0")
 libraries = {
 &"": SubResource("AnimationLibrary_osha0")
 }
+
+[node name="StarMesh" type="MeshInstance3D" parent="."]

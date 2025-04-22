@@ -1,29 +1,23 @@
 extends Area3D
+class_name Star_System
 
 signal clicked(resource: StarSystemResource)
 
-@export var resource: StarSystemResource
+@export var system_resource: StarSystemResource
+@export var star_mesh : Mesh
 
-@onready var star: MeshInstance3D = $Star
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var star: MeshInstance3D = $StarMesh
+
 
 func _ready():
-	self.visible = false
-	if resource:
-		# Replace the default Star mesh with the one from the resource
-		if resource.star_scene:
-			# Remove the default Star node
-			star.queue_free()
-			
-			# Instantiate the star_scene from the resource
-			var newstar = resource.star_scene.instantiate()
-			newstar.name = resource.system_name + "_Star"
-			add_child(newstar)
+	star.mesh = star_mesh
+	self.visible = true
 
 func play_anim(animation_name : String) -> void:
 	animation_player.play(animation_name)
 
 func _input_event(_camera, event: InputEvent, _position, _normal, _shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if resource:
-			emit_signal("clicked", resource)
+		if system_resource:
+			emit_signal("clicked", system_resource)

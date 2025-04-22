@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cwuxn3wuqgyot"]
+[gd_scene load_steps=8 format=3 uid="uid://cwuxn3wuqgyot"]
 
 [ext_resource type="Script" uid="uid://ccb51dxpbx4iu" path="res://scenes/planets/planet.gd" id="1_jycxw"]
 [ext_resource type="Texture2D" uid="uid://cqj28kcswjnwq" path="res://scenes/planets/rocky_lava_tx.png" id="2_1iy6p"]
@@ -9,6 +9,44 @@ radius = 0.585409
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l3a1e"]
 albedo_texture = ExtResource("2_1iy6p")
 emission = Color(0.154876, 0.154876, 0.154876, 1)
+
+[sub_resource type="Animation" id="Animation_s6fit"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_1iy6p"]
+resource_name = "rotate"
+length = 15.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rdmjm"]
+_data = {
+&"RESET": SubResource("Animation_s6fit"),
+&"rotate": SubResource("Animation_1iy6p")
+}
 
 [node name="AlphaOne" type="Area3D"]
 script = ExtResource("1_jycxw")
@@ -22,8 +60,13 @@ resistance = "Low"
 shape = SubResource("SphereShape3D_l3a1e")
 
 [node name="MeshInstance3D" type="CSGSphere3D" parent="."]
-transform = Transform3D(0.678603, -0.69065, -0.25, -0.699469, -0.711516, 0.0669872, -0.224144, 0.12941, -0.965926, 0, 0, 0)
 radius = 0.75
 radial_segments = 24
 rings = 12
 material = SubResource("StandardMaterial3D_l3a1e")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_rdmjm")
+}
+autoplay = "rotate"

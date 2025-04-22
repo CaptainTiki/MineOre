@@ -1,8 +1,35 @@
-[gd_scene load_steps=6 format=3 uid="uid://dsdstadgt0cya"]
+[gd_scene load_steps=8 format=3 uid="uid://dsdstadgt0cya"]
 
 [ext_resource type="Script" uid="uid://jcfr5lc361qy" path="res://StarMenu/linenode.gd" id="1"]
 
 [sub_resource type="ImmediateMesh" id="ImmediateMesh_7c1x4"]
+
+[sub_resource type="Animation" id="Animation_0ew0m"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LineMesh:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LineMesh:transparency")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_7c1x4"]
 resource_name = "blink_on_animation"
@@ -19,25 +46,44 @@ tracks/0/keys = {
 "values": [false, true, false, true, false, true, false, true, false, true]
 }
 
-[sub_resource type="Animation" id="Animation_0ew0m"]
-length = 0.001
+[sub_resource type="Animation" id="Animation_qbx7g"]
+resource_name = "fade_out"
+length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("LineMesh:visible")
+tracks/0/path = NodePath("LineMesh:transparency")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+
+[sub_resource type="Animation" id="Animation_g56np"]
+resource_name = "fade_in"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LineMesh:transparency")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qbx7g"]
 _data = {
 &"RESET": SubResource("Animation_0ew0m"),
-&"blink_on_animation": SubResource("Animation_7c1x4")
+&"blink_on_animation": SubResource("Animation_7c1x4"),
+&"fade_in": SubResource("Animation_g56np"),
+&"fade_out": SubResource("Animation_qbx7g")
 }
 
 [node name="LineNode" type="Node3D"]

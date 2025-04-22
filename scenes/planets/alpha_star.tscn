@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://dd23dgl0xq2w1"]
+[gd_scene load_steps=6 format=3 uid="uid://dd23dgl0xq2w1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bumo8"]
 albedo_color = Color(0.785072, 0.782459, 0, 1)
@@ -7,8 +7,44 @@ emission = Color(0.727581, 0.689994, 0.0112403, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_1n1qh"]
 material = SubResource("StandardMaterial3D_bumo8")
-radius = 0.25
-height = 0.5
+
+[sub_resource type="Animation" id="Animation_1iy6p"]
+resource_name = "rotate"
+length = 15.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_s6fit"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rdmjm"]
+_data = {
+&"RESET": SubResource("Animation_s6fit"),
+&"rotate": SubResource("Animation_1iy6p")
+}
 
 [node name="Alpha_Star" type="Node3D"]
 
@@ -16,3 +52,9 @@ height = 0.5
 transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 0)
 mesh = SubResource("SphereMesh_1n1qh")
 skeleton = NodePath("")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_rdmjm")
+}
+autoplay = "rotate"

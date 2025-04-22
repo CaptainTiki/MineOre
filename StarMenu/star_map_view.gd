@@ -1,11 +1,15 @@
 extends Node3D
 
-signal system_selected(system)
+signal system_selected(Star_System)
 
-var highlighted_system: Node3D = null
+var highlighted_system: Star_System = null
 var highlight_sprite: Sprite3D = null
 var vertical_line: MeshInstance3D = null
 var panel_line_mesh: MeshInstance3D = null
+
+var is_active : bool = true
+
+@onready var star_systems: Node3D = $"../StarSystems"
 
 @onready var system_name_label = $UI/SystemInfoPanel/InfoContainer/SystemNameLabel
 @onready var difficulty_label = $UI/SystemInfoPanel/InfoContainer/DifficultyLabel
@@ -15,6 +19,8 @@ var panel_line_mesh: MeshInstance3D = null
 @onready var system_info_panel = $UI/SystemInfoPanel
 
 func _ready():
+	
+	is_active = true
 	# Initialize highlight sprite
 	highlight_sprite = Sprite3D.new()
 	highlight_sprite.texture = preload("res://assets/ring.png")
@@ -39,7 +45,23 @@ func _ready():
 	# Hide panel initially
 	system_info_panel.visible = false
 
+func disable_view() -> void:
+	animate_constellation_lines("fade_out", 0.0)
+	await get_tree().create_timer(0.5) #wait for the animations to finish
+	self.hide()
+	set_process(false) # Disable processing
+	is_active = false
+
+func enable_view() -> void:
+	self.show()
+	_start_animation(star_systems)
+	set_process(true) # Enable processing
+	is_active = true
+
 func set_systems(systems_node: Node3D):
+	if not highlighted_system: #if we don't already have a highlight - lets set one
+		highlighted_system = systems_node.get_child(0) as Star_System
+		
 	for system in systems_node.get_children():
 		if system is Node3D and system.has_signal("clicked"):
 			system.connect("clicked", _on_system_clicked)
@@ -47,7 +69,10 @@ func set_systems(systems_node: Node3D):
 			system.connect("mouse_exited", _on_system_mouse_exited.bind(system))
 	
 	# Automatically highlight the first system
-	var systems = systems_node.get_children()
+	var systems : Array[Star_System] = []
+	for child in systems_node.get_children():
+		if child is Star_System:
+			systems.append(child as Star_System)
 	if systems.size() > 0:
 		systems.sort_custom(func(a, b): return a.position.y > b.position.y)
 		_on_system_mouse_entered(systems[0])
@@ -55,7 +80,11 @@ func set_systems(systems_node: Node3D):
 	call_deferred("_start_animation", systems_node)
 
 func _input(event):
-	if event.is_action_pressed("navigate_left"):
+	if not is_active:
+		return #dont process input if we're not active
+	if event.is_action_pressed("select") and highlighted_system:
+		emit_signal("system_selected", highlighted_system)
+	elif event.is_action_pressed("navigate_left"):
 		navigate_to_next_system("x", -1)
 	elif event.is_action_pressed("navigate_right"):
 		navigate_to_next_system("x", 1)
@@ -104,10 +133,10 @@ func _start_animation(systems_node: Node3D):
 		system.play_anim("blink_on_animation")
 	
 	# Start constellation lines after stars finish (1.6s total)
-	await get_tree().create_timer(1.6).timeout
-	animate_constellation_lines()
+	await get_tree().create_timer(.25).timeout
+	animate_constellation_lines("blink_on_animation", 0.1)
 
-func animate_constellation_lines():
+func animate_constellation_lines(anim: String, delay: float):
 	var lines = get_node("/root/StarMenu/ConstellationLines").get_children()
 	# Sort by the higher y-position of start or end node
 	lines.sort_custom(func(a, b):
@@ -120,16 +149,16 @@ func animate_constellation_lines():
 		return a_y > b_y
 	)
 	
-	var delay_per_line = 0.15
+	var delay_per_line = delay
 	for i in lines.size():
 		await get_tree().create_timer(delay_per_line).timeout
 		var line = lines[i]
-		line.play_anim("blink_on_animation")  # Animation now handles visibility
+		line.play_anim(anim)  # Animation now handles visibility
 
-func _on_system_mouse_entered(system: Node3D):
-	if system.resource:
+func _on_system_mouse_entered(system: Star_System):
+	if system.system_resource:
 		highlighted_system = system
-		update_ui(system.resource)
+		update_ui(system.system_resource)
 		highlight_sprite.visible = true
 		highlight_sprite.global_transform.origin = system.global_transform.origin + Vector3(0, 0.5, 0)
 		animate_lines(system.global_transform.origin + Vector3(0, 0.5, 0))

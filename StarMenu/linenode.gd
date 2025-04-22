@@ -42,7 +42,7 @@ func setup_line(start: Node3D, end: Node3D):
 	line_mesh.global_transform.basis = basis
 
 	# Scale the cylinder to match the distance (default height is 2 units)
-	line_mesh.scale = Vector3(1, length / 2, 1)
+	line_mesh.scale = Vector3(1, length / 2.25, 1)
 
 	# Set the cylinder thickness
 	var cylinder_mesh = line_mesh.mesh as CylinderMesh
@@ -57,4 +57,5 @@ func setup_line(start: Node3D, end: Node3D):
 
 func play_anim(animation_name: String):
 	if animation_player.has_animation(animation_name):
+		animation_player.stop(false)
 		animation_player.play(animation_name)

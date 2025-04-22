@@ -1,25 +1,31 @@
+# system_view.gd
 extends Node3D
 
-signal planet_selected(planet)
+var current_system: Star_System
+var star = null  # To track the star node for exclusion in _input
 
-var current_system: StarSystemResource
-
-func set_system(resource: StarSystemResource):
-	current_system = resource
+func set_system(system: Star_System):
+	current_system = system
 	for child in get_children():
 		if child != $UI:
 			child.queue_free()
-	
-	var star = resource.star_scene.instantiate()
-	star.position = Vector3.ZERO
-	add_child(star)
-	
-	for planet_scene in resource.planets:
+	var planet_position = Vector3(15, 0, 0)
+	var star_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	star_tween.tween_property(current_system.star, "scale", Vector3(5, 5, 5), 0.5)
+	for planet_scene in current_system.system_resource.planets:
 		var planet = planet_scene.instantiate()
-		planet.position = Vector3(randi_range(-5, 5), randi_range(-5, 5), 0)
-		planet.connect("input_event", _on_planet_input.bind(planet))
+		planet.position = planet_position
+		planet.scale = Vector3(0, 0, 0)
 		add_child(planet)
+		var planet_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		planet_tween.tween_property(planet, "scale", Vector3(1, 1, 1), 0.5)
+		planet_position += Vector3(8, 0, 0)
 
-func _on_planet_input(_camera, event: InputEvent, _position, _normal, _shape_idx, planet: Node3D):
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		emit_signal("planet_selected", planet)
+func exit_view():
+	var star_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	star_tween.tween_property(current_system.star, "scale", Vector3(1, 1, 1), 0.5)
+	for planet in get_children():
+		if planet is Node3D and planet != $UI:
+			var tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			tween.tween_property(planet, "scale", Vector3(0, 0, 0), 0.5)
+	await get_tree().create_timer(0.5).timeout
