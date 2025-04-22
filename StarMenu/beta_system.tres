@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="StarSystemResource" load_steps=5 format=3 uid="uid://cpe1um4m0rghu"]
+
+[ext_resource type="PackedScene" uid="uid://bm2168v272qmc" path="res://scenes/planets/beta_one.tscn" id="1_swnug"]
+[ext_resource type="PackedScene" uid="uid://chnc8p7nh8roq" path="res://scenes/planets/beta_two.tscn" id="2_s4rhh"]
+[ext_resource type="Script" uid="uid://7aiooamcrrxk" path="res://StarMenu/StarSystemResource.gd" id="3_dy1wl"]
+[ext_resource type="PackedScene" uid="uid://l4gwqnpjrpbu" path="res://scenes/planets/beta_star.tscn" id="4_78rv5"]
+
+[resource]
+script = ExtResource("3_dy1wl")
+system_name = "Beta"
+star_scene = ExtResource("4_78rv5")
+planets = Array[PackedScene]([ExtResource("1_swnug"), ExtResource("2_s4rhh")])
+difficulty = 2
+description = "A small blue star"
+locked = true
+metadata/_custom_type_script = "uid://7aiooamcrrxk"

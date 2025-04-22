@@ -10,7 +10,6 @@ signal clicked(resource: StarSystemResource)
 func _ready():
 	self.visible = false
 	if resource:
-		name = resource.system_name
 		# Replace the default Star mesh with the one from the resource
 		if resource.star_scene:
 			# Remove the default Star node

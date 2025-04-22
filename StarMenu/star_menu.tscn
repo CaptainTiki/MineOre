@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://deo6a22xw7hyb"]
+[gd_scene load_steps=19 format=3 uid="uid://deo6a22xw7hyb"]
 
 [ext_resource type="Script" uid="uid://r4esfi5mnbp1" path="res://StarMenu/star_menu.gd" id="1_bawdr"]
 [ext_resource type="Script" uid="uid://dpwfiplimgruh" path="res://StarMenu/star_map_view.gd" id="2_1sd4k"]
@@ -9,6 +9,9 @@
 [ext_resource type="Script" uid="uid://dvynj4ved0mam" path="res://StarMenu/perks_view.gd" id="5_q7svf"]
 [ext_resource type="Texture2D" uid="uid://bsfbknwn0s0a3" path="res://scenes/front.png" id="8_uo6vd"]
 [ext_resource type="PackedScene" uid="uid://dwbhdnwgxpion" path="res://StarMenu/star_sytem.tscn" id="9_703u0"]
+[ext_resource type="Resource" uid="uid://cpe1um4m0rghu" path="res://StarMenu/beta_system.tres" id="10_8ydva"]
+[ext_resource type="Resource" uid="uid://dsluqqp01vhbp" path="res://StarMenu/gamma_system.tres" id="11_7xwej"]
+[ext_resource type="PackedScene" uid="uid://dsdstadgt0cya" path="res://StarMenu/line_node.tscn" id="12_7xwej"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8ydva"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -138,26 +141,48 @@ offset_bottom = 40.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -362.18, 169.69, 0)
 resource = ExtResource("3_703u0")
 
-[node name="AlphaSystem2" parent="StarSystems" instance=ExtResource("9_703u0")]
+[node name="BetaSystem" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -204.225, -18.3387, 0)
-resource = ExtResource("3_703u0")
+resource = ExtResource("10_8ydva")
 
-[node name="AlphaSystem3" parent="StarSystems" instance=ExtResource("9_703u0")]
+[node name="GammaSystem" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114.279, 120.443, 0)
+resource = ExtResource("11_7xwej")
+
+[node name="AlphaSystem2" parent="StarSystems" instance=ExtResource("9_703u0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.3685, 22.6653, 3.05176e-05)
 resource = ExtResource("3_703u0")
 
-[node name="AlphaSystem7" parent="StarSystems" instance=ExtResource("9_703u0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -62.9952, -200.411, 0)
-resource = ExtResource("3_703u0")
+[node name="BetaSystem2" parent="StarSystems" instance=ExtResource("9_703u0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 125.587, -165.363, 3.05176e-05)
+resource = ExtResource("10_8ydva")
 
-[node name="AlphaSystem4" parent="StarSystems" instance=ExtResource("9_703u0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 1, 0, -65.7174, -166.414, 0)
-resource = ExtResource("3_703u0")
+[node name="GammaSystem2" parent="StarSystems" instance=ExtResource("9_703u0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 215.533, -26.5817, 3.05176e-05)
+resource = ExtResource("11_7xwej")
 
-[node name="AlphaSystem5" parent="StarSystems" instance=ExtResource("9_703u0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 108.71, -41.3305, 0)
-resource = ExtResource("3_703u0")
+[node name="ConstellationLines" type="Node3D" parent="."]
 
-[node name="AlphaSystem6" parent="StarSystems" instance=ExtResource("9_703u0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 286.873, -14.0858, 0)
-resource = ExtResource("3_703u0")
+[node name="LineNode" parent="ConstellationLines" instance=ExtResource("12_7xwej")]
+start_node = NodePath("../../StarSystems/AlphaSystem")
+end_node = NodePath("../../StarSystems/BetaSystem")
+
+[node name="LineNode2" parent="ConstellationLines" instance=ExtResource("12_7xwej")]
+start_node = NodePath("../../StarSystems/AlphaSystem")
+end_node = NodePath("../../StarSystems/GammaSystem")
+
+[node name="LineNode3" parent="ConstellationLines" instance=ExtResource("12_7xwej")]
+start_node = NodePath("../../StarSystems/BetaSystem")
+end_node = NodePath("../../StarSystems/AlphaSystem2")
+
+[node name="LineNode4" parent="ConstellationLines" instance=ExtResource("12_7xwej")]
+start_node = NodePath("../../StarSystems/GammaSystem")
+end_node = NodePath("../../StarSystems/AlphaSystem2")
+
+[node name="LineNode5" parent="ConstellationLines" instance=ExtResource("12_7xwej")]
+start_node = NodePath("../../StarSystems/AlphaSystem2")
+end_node = NodePath("../../StarSystems/BetaSystem2")
+
+[node name="LineNode6" parent="ConstellationLines" instance=ExtResource("12_7xwej")]
+start_node = NodePath("../../StarSystems/AlphaSystem2")
+end_node = NodePath("../../StarSystems/GammaSystem2")

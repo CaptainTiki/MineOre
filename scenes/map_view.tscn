@@ -1,11 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://bc6ep14m8xdns"]
+[gd_scene load_steps=8 format=3 uid="uid://bc6ep14m8xdns"]
 
-[ext_resource type="Script" path="res://scripts/map_view.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bsfbknwn0s0a3" path="res://scenes/front.png" id="2_4p13y"]
-[ext_resource type="Script" path="res://map_system/scripts/star_map_view.gd" id="3_r3vtn"]
-[ext_resource type="Texture2D" path="res://assets/ring.tres" id="4_8fogj"]
-[ext_resource type="Script" path="res://map_system/scripts/system_view.gd" id="5_8fogj"]
-[ext_resource type="Script" path="res://map_system/scripts/system.gd" id="6_adhmk"]
 [ext_resource type="PackedScene" uid="uid://dik14rukuvh56" path="res://scenes/systems/gamma_system.tscn" id="7_4p13y"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fgaft"]
@@ -31,7 +26,6 @@ material = SubResource("StandardMaterial3D_fp76q")
 size = Vector2(1000, 1000)
 
 [node name="MapView" type="Node3D"]
-script = ExtResource("1")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_voanh")
@@ -49,17 +43,13 @@ mesh = SubResource("QuadMesh_yefl3")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 62.4)
 
 [node name="StarMapView" type="Node3D" parent="."]
-script = ExtResource("3_r3vtn")
 
 [node name="HighlightRing" type="Sprite3D" parent="StarMapView"]
 billboard = 2
-texture = ExtResource("4_8fogj")
 
 [node name="Gamma" parent="StarMapView" instance=ExtResource("7_4p13y")]
-script = ExtResource("6_adhmk")
 
 [node name="SystemView" type="Node3D" parent="."]
-script = ExtResource("5_8fogj")
 
 [node name="PlanetView" type="Node3D" parent="."]
 

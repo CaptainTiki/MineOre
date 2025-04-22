@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StarSystemResource" load_steps=3 format=3 uid="uid://dsluqqp01vhbp"]
+
+[ext_resource type="Script" uid="uid://7aiooamcrrxk" path="res://StarMenu/StarSystemResource.gd" id="1_a3uni"]
+[ext_resource type="PackedScene" uid="uid://d0rfyt3nrvluy" path="res://scenes/planets/gamma_star.tscn" id="2_pbxeo"]
+
+[resource]
+script = ExtResource("1_a3uni")
+system_name = "Gamma"
+star_scene = ExtResource("2_pbxeo")
+planets = Array[PackedScene]([])
+difficulty = 3
+description = "A mysterious star system."
+locked = true
+metadata/_custom_type_script = "uid://7aiooamcrrxk"
