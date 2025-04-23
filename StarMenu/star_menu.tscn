@@ -147,6 +147,28 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="PlanetInfoPanel" type="Panel" parent="SystemView/UI"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="InfoContainer" type="VBoxContainer" parent="SystemView/UI/PlanetInfoPanel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlanetNameLabel" type="Label" parent="SystemView/UI/PlanetInfoPanel/InfoContainer"]
+layout_mode = 2
+
+[node name="DifficultyLabel" type="Label" parent="SystemView/UI/PlanetInfoPanel/InfoContainer"]
+layout_mode = 2
+
+[node name="TypeLabel" type="Label" parent="SystemView/UI/PlanetInfoPanel/InfoContainer"]
+layout_mode = 2
+
+[node name="LockedLabel" type="Label" parent="SystemView/UI/PlanetInfoPanel/InfoContainer"]
+layout_mode = 2
+
 [node name="PlanetView" type="Node3D" parent="."]
 script = ExtResource("4_k4xme")
 

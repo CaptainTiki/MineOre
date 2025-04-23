@@ -8,8 +8,10 @@ var vertical_line: MeshInstance3D = null
 var panel_line_mesh: MeshInstance3D = null
 
 var is_active : bool = true
+var active_tweens: Array[Tween] = []
 
 @onready var star_systems: Node3D = $"../StarSystems"
+@onready var constellation_lines: Node3D = $"../ConstellationLines"
 
 @onready var system_name_label = $UI/SystemInfoPanel/InfoContainer/SystemNameLabel
 @onready var difficulty_label = $UI/SystemInfoPanel/InfoContainer/DifficultyLabel
@@ -17,6 +19,7 @@ var is_active : bool = true
 @onready var description_label = $UI/SystemInfoPanel/InfoContainer/DescriptionLabel
 @onready var locked_label = $UI/SystemInfoPanel/InfoContainer/LockedLabel
 @onready var system_info_panel = $UI/SystemInfoPanel
+@onready var ui_node: Control = $UI
 
 func _ready():
 	
@@ -49,11 +52,16 @@ func disable_view() -> void:
 	animate_constellation_lines("fade_out", 0.0)
 	await get_tree().create_timer(0.5) #wait for the animations to finish
 	self.hide()
+	ui_node.visible = false
 	set_process(false) # Disable processing
 	is_active = false
+	for tween in active_tweens:
+		tween.kill()
+	active_tweens.clear()
 
 func enable_view() -> void:
 	self.show()
+	ui_node.visible = true
 	_start_animation(star_systems)
 	set_process(true) # Enable processing
 	is_active = true
@@ -125,7 +133,7 @@ func _start_animation(systems_node: Node3D):
 	var systems = systems_node.get_children()
 	systems.sort_custom(func(a, b): return a.position.y > b.position.y)
 	
-	var delay_per_system = 0.15
+	var delay_per_system = 0.1
 	for i in systems.size():
 		await get_tree().create_timer(delay_per_system).timeout
 		var system = systems[i]
@@ -133,7 +141,7 @@ func _start_animation(systems_node: Node3D):
 		system.play_anim("blink_on_animation")
 	
 	# Start constellation lines after stars finish (1.6s total)
-	await get_tree().create_timer(.25).timeout
+	await get_tree().create_timer(.15).timeout
 	animate_constellation_lines("blink_on_animation", 0.1)
 
 func animate_constellation_lines(anim: String, delay: float):
@@ -153,7 +161,8 @@ func animate_constellation_lines(anim: String, delay: float):
 	for i in lines.size():
 		await get_tree().create_timer(delay_per_line).timeout
 		var line = lines[i]
-		line.play_anim(anim)  # Animation now handles visibility
+		line.animation_player.stop()
+		line.play_anim(anim)
 
 func _on_system_mouse_entered(system: Star_System):
 	if system.system_resource:
@@ -234,3 +243,5 @@ func animate_lines(start_pos: Vector3):
 	)
 	
 	tween.tween_callback(func(): system_info_panel.visible = true)
+	active_tweens.append(tween)
+	tween.connect("finished", func(): active_tweens.erase(tween))
