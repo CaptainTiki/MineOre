@@ -21,7 +21,7 @@ func take_damage(amount):
 	health -= amount
 	if health <= 0:
 		emit_signal("silo_destroyed")
-		var hq = get_tree().get_root().get_node_or_null("Level/Buildings/HeadQuarters")
+		hq = get_tree().get_root().get_node_or_null("Level/Buildings/HeadQuarters")
 		if hq:
 			hq.remove_silo()
 		queue_free()

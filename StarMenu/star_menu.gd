@@ -50,8 +50,10 @@ func _on_level_selected(level: PackedScene):
 func on_cancel_pressed():
 	match current_state:
 		ViewState.SYSTEM:
+			system_view.current_planet_index = -1
 			transition_to(ViewState.STAR_MAP)
 		ViewState.PLANET:
+			planet_view.disable_view()
 			transition_to(ViewState.SYSTEM) # Add exit_view for planet_view later
 		ViewState.PERKS:
 			transition_to(ViewState.PLANET) # Add exit_view for perks_view later
@@ -102,13 +104,19 @@ func transition_to_system() -> void:
 		system_view.select_planet(0)
 	
 func transition_to_planet() -> void:
-	star_map_view.hide()
-	system_view.hide()
-	planet_view.show()
-	planet_view.set_planet(current_planet)
+	print("transition to planet")
+	system_view.disable_view()
+	planet_view.enable_view()
 	perks_view.hide()
-	camera.position = Vector3(0, 2, 5)
-	camera.look_at(Vector3(0, 0, 0), Vector3.UP)
+	var planet_pos = current_planet.global_transform.origin
+	var target_position = get_camera_position_for_zoom(planet_pos, 5, camera)
+	var tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	active_tweens.append(tween)
+	is_camera_moving = true
+	tween.tween_property(camera, "global_transform:origin", target_position, 0.5)
+	tween.connect("finished", func(): active_tweens.erase(tween))
+	await tween.finished
+	is_camera_moving = false
 
 func transition_to_perks() -> void:
 	star_map_view.hide()

@@ -1,5 +1,6 @@
 #system_view.gd
 extends Node3D
+class_name SystemView
 
 signal planet_selected
 
@@ -64,21 +65,22 @@ func set_system(system: Star_System):
 	startween.tween_property(star, "scale", Vector3(5, 5, 5), 0.5)
 	active_tweens.append(startween)
 	startween.connect("finished", func(): active_tweens.erase(startween))
-	planets = []
-	for planet_scene in current_system.system_resource.planets:
-		var planet = planet_scene.instantiate()
-		planet.position = planet_position
-		planet.scale = Vector3(0, 0, 0)
-		add_child(planet)
-		planets.append(planet)
-		var planet_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		active_tweens.append(planet_tween)
-		planet_tween.tween_property(planet, "scale", Vector3(1, 1, 1), 0.5)
-		planet_tween.connect("finished", func(): active_tweens.erase(planet_tween))
-		planet_position += Vector3(8, 0, 0)
+	if planets.size() <= 0: #this is the first time - create our planets
+		for planet_scene in current_system.system_resource.planets:
+			var planet = planet_scene.instantiate()
+			planet.position = planet_position
+			planet.scale = Vector3(0.01, 0.01, 0.01)
+			add_child(planet)
+			planets.append(planet)
+			var planet_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			active_tweens.append(planet_tween)
+			planet_tween.tween_property(planet, "scale", Vector3(1, 1, 1), 0.5)
+			planet_tween.connect("finished", func(): active_tweens.erase(planet_tween))
+			planet_position += Vector3(8, 0, 0)
 
 func enable_view() -> void:
 	global_position = current_system.global_position
+	canvas_layer.visible = true
 	self.show()
 	self.set_process(true)
 	ui_node.visible = true
@@ -88,41 +90,63 @@ func enable_view() -> void:
 func disable_view() -> void:
 	is_active = false
 	ui_node.visible = false
+	canvas_layer.visible = false
 	highlight_sprite.visible = false
 	vertical_line_2d.visible = false
 	panel_line_2d.visible = false
 	planet_info_panel.visible = false
 	#zoom out the star and planets
 	var startween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	active_tweens.append(startween)
-	startween.tween_property(star, "scale", Vector3(1, 1, 1), 0.5)
+	if current_planet_index >= 0:
+		#we have a planet selected - lets shrink the star to zero 
+		startween.tween_property(star, "scale", Vector3(0.01, 0.01, 0.01), 0.2)
+	else:#otherwise - we shrink to normal scale
+		startween.tween_property(star, "scale", Vector3(1, 1, 1), 0.5)
 	startween.connect("finished", func(): active_tweens.erase(startween))
-	for planet in planets:
-		var planettween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		active_tweens.append(planettween)
-		planettween.tween_property(planet, "scale", Vector3(0, 0, 0), 0.5)
-		planettween.connect("finished", func(): active_tweens.erase(planettween))
+	active_tweens.append(startween)
+	for i in range(planets.size()):
+		var planet = planets[i]
+		if current_planet_index >= 0:
+			if planet == planets[current_planet_index]: 
+				#if we get here - we know that we've selected a planet, not canceling back to starmap
+				#lets scale up the planet - we're about to zoom into.
+				var planettween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+				active_tweens.append(planettween)
+				planettween.tween_property(planet, "scale", Vector3(4, 4, 4), 0.5)
+				planettween.connect("finished", func(): active_tweens.erase(planettween))
+			else:
+				var planettween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+				active_tweens.append(planettween)
+				# Start parallel tweens
+				planettween.parallel().tween_property(planet, "scale", Vector3(0.01, 0.01, 0.01), 0.25)
+				var direction = Vector3(1, 0, 0)
+				if i < current_planet_index:
+					direction *= -1
+				planettween.parallel().tween_property(planet, "position", planet.position + Vector3(10, 0, 0) * direction, 0.25)
+				planettween.connect("finished", func(): active_tweens.erase(planettween))
 	#now wait for the animations to complete - before we turn everything off
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(1).timeout
 	
 	for tween in active_tweens:
 		tween.kill()
 	active_tweens.clear()
-	
-	for planet in planets:   #now discard the planets - we don't need them now
-		planet.queue_free()
-	planets = []
-	hide()
+	if current_planet_index < 0:
+		for planet in planets:   #now discard the planets - we don't need them now
+			planet.queue_free()
+		planets = []
+		hide()
 	set_process(false)
 	pass
 
 func _input(event):
 	if not is_active:
-		return #don't do input - if we're not the active scene
+		return
 	if event.is_action_pressed("navigate_left"):
 		select_planet((current_planet_index - 1 + planets.size()) % planets.size())
 	elif event.is_action_pressed("navigate_right"):
 		select_planet((current_planet_index + 1) % planets.size())
+	elif event.is_action_pressed("select"):
+		emit_signal("planet_selected", planets[current_planet_index])
 
 func select_planet(index: int):
 	print("select_planet")
@@ -151,7 +175,6 @@ func update_info_panel(planet):
 	planet_info_panel.visible = true
 
 func animate_lines(start_pos: Vector3):
-	print("animatinglines")
 	var screen_pos = star_menu.camera.unproject_position(start_pos)
 	var screen_end_pos = screen_pos + Vector2(0, -100)  # Draw line up 100 pixels
 	var panel_screen_pos = planet_info_panel.get_global_rect().position  # Top-left corner of panel

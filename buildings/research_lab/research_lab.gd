@@ -17,7 +17,7 @@ func _ready():
 	update_ui()
 	print("Research Lab initialized at %s, health: %.2f" % [global_position, health])
 
-func _process(delta):
+func _process(_delta):
 	if research_panel.visible and camera:
 		var screen_pos = camera.unproject_position(global_position + Vector3(0, 2, 0))
 		research_panel.position = screen_pos - (research_panel.size / 2)

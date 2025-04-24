@@ -22,7 +22,7 @@ func _ready():
 	update_ui()
 	emit_signal("health_changed", health)
 
-func _process(delta):
+func _process(_delta):
 	if ui_panel.visible and camera:
 		var screen_pos = camera.unproject_position(global_position + Vector3(0, 2, 0))
 		ui_panel.position = screen_pos - (ui_panel.size / 2)

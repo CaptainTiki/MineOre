@@ -56,20 +56,20 @@ void fragment() {
     vec2 swirl_offset = vec2(cos(swirl), sin(swirl)) * 0.5;
     vec2 uv = UV + swirl_offset + TIME * time_scale;
     vec2 uv_detail = UV + TIME * time_scale * 0.7; // Secondary layer for detail
-    
+
     // Base turbulent noise
     float n = warped_noise(uv * noise_scale, 5);
-    
+
     // Detail noise for granules/bubbles
     float n_detail = fbm(uv_detail * noise_scale * detail_scale, 3);
-    
+
     // Combine noises
     float noise_value = mix(n, n_detail, 0.3);
-    
+
     // Apply contrast (sharpen bright/dark areas)
     noise_value = pow(noise_value, contrast);
     noise_value = smoothstep(0.2, 0.8, noise_value);
-    
+
     // Color gradient
     vec3 color;
     if (noise_value < 0.4) {
@@ -77,14 +77,14 @@ void fragment() {
     } else {
         color = mix(color_core, color_hot, (noise_value - 0.4) / 0.6);
     }
-    
+
     // Emission for glowing hot spots
     vec3 emission = color * emission_strength * smoothstep(0.5, 1.0, noise_value);
-    
+
     // Corona effect (subtle glow at edges)
     float corona = pow(1.0 - dot(NORMAL, VIEW), 3.0) * corona_strength;
     emission += vec3(1.0, 0.9, 0.7) * corona;
-    
+
     // Output
     ALBEDO = color;
     EMISSION = emission;
