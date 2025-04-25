@@ -13,6 +13,7 @@ var active_tweens: Array[Tween] = []
 @onready var system_view = $SystemView
 @onready var planet_view = $PlanetView
 @onready var perks_view = $PerksView
+@onready var planets_node = $Planets
 @onready var camera = $Camera3D
 
 func _ready():
@@ -22,7 +23,6 @@ func _ready():
 	planet_view.connect("level_selected", _on_level_selected)
 	perks_view.connect("perks_confirmed", _on_perks_confirmed)
 	
-	# Pass StarSystems node to StarMapView
 	star_map_view.set_systems($StarSystems)
 	transition_to(ViewState.STAR_MAP)
 
@@ -54,11 +54,12 @@ func on_cancel_pressed():
 			transition_to(ViewState.STAR_MAP)
 		ViewState.PLANET:
 			planet_view.disable_view()
-			transition_to(ViewState.SYSTEM) # Add exit_view for planet_view later
+			print("StarMenu: Backing out from PlanetView, planet ", current_planet.name if current_planet else "null")
+			transition_to(ViewState.SYSTEM)
 		ViewState.PERKS:
-			transition_to(ViewState.PLANET) # Add exit_view for perks_view later
+			transition_to(ViewState.PLANET)
 		ViewState.STAR_MAP:
-			pass # Optionally exit the menu
+			pass
 
 func transition_to(new_state: ViewState):
 	current_state = new_state
@@ -104,17 +105,24 @@ func transition_to_system() -> void:
 		system_view.select_planet(0)
 	
 func transition_to_planet() -> void:
-	print("transition to planet")
+	print("StarMenu: Transitioning to planet, planet position: ", current_planet.global_transform.origin)
 	system_view.disable_view()
 	planet_view.enable_view()
 	perks_view.hide()
 	var planet_pos = current_planet.global_transform.origin
 	var target_position = get_camera_position_for_zoom(planet_pos, 5, camera)
+	print("StarMenu: Camera target position: ", target_position)
 	var tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	active_tweens.append(tween)
 	is_camera_moving = true
 	tween.tween_property(camera, "global_transform:origin", target_position, 0.5)
-	tween.connect("finished", func(): active_tweens.erase(tween))
+	tween.connect("finished", func(): 
+		active_tweens.erase(tween)
+		if current_planet:
+			current_planet.visible = true
+			print("StarMenu: Camera tween finished, planet ", current_planet.name, " visible: ", current_planet.visible, " at position: ", current_planet.global_transform.origin)
+		planet_view.set_planet(current_planet)
+	)
 	await tween.finished
 	is_camera_moving = false
 
@@ -136,7 +144,6 @@ func get_camera_position_for_zoom(star_position: Vector3, z_distance: float, cam
 	var offset = Vector3(offset_x, 0, z_distance)
 	return star_position + offset
 
-# Function to handle tween completion for camera movement
 func _on_camera_tween_completed():
 	is_camera_moving = false
 

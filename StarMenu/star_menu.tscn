@@ -99,6 +99,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SystemInfoPanel" type="Panel" parent="StarMapView/UI"]
+visible = false
 layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -109,6 +110,7 @@ offset_bottom = 420.0
 theme_override_styles/panel = SubResource("StyleBoxTexture_abc12")
 
 [node name="InfoContainer" type="VBoxContainer" parent="StarMapView/UI/SystemInfoPanel"]
+visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -175,9 +177,60 @@ script = ExtResource("4_k4xme")
 
 [node name="UI" type="Control" parent="PlanetView"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -20.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="PlanetInfoPanel" type="Panel" parent="PlanetView/UI"]
+custom_minimum_size = Vector2(400, 600)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -100.0
+offset_bottom = 100.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="InfoContainer" type="VBoxContainer" parent="PlanetView/UI/PlanetInfoPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlanetNameLabel" type="Label" parent="PlanetView/UI/PlanetInfoPanel/InfoContainer"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="PlanetView/UI/PlanetInfoPanel/InfoContainer"]
+layout_mode = 2
+
+[node name="EnvironmentLabel" type="Label" parent="PlanetView/UI/PlanetInfoPanel/InfoContainer"]
+layout_mode = 2
+
+[node name="DifficultyLabel" type="Label" parent="PlanetView/UI/PlanetInfoPanel/InfoContainer"]
+layout_mode = 2
+
+[node name="StartLevelButton" type="Button" parent="PlanetView/UI"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="PerksButton" type="Button" parent="PlanetView/UI"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
 
 [node name="PerksView" type="Node3D" parent="."]
 script = ExtResource("5_q7svf")
@@ -219,6 +272,8 @@ star_mesh = SubResource("SphereMesh_6rj7k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 215.533, -26.5817, 3.05176e-05)
 system_resource = ExtResource("11_7xwej")
 star_mesh = SubResource("SphereMesh_wlyw0")
+
+[node name="Planets" type="Node3D" parent="."]
 
 [node name="ConstellationLines" type="Node3D" parent="."]
 
