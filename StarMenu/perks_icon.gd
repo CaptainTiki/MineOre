@@ -1,4 +1,5 @@
 extends Control
+class_name PerksIcon
 
 signal icon_pressed(perk_name)
 signal icon_hovered(perk_name)

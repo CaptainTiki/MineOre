@@ -71,6 +71,7 @@ func _physics_process(delta):
 	input.z = Input.get_axis("move_forward", "move_backward")
 	
 	velocity = input.normalized() * speed
+	velocity += get_gravity()
 	move_and_slide()
 	
 	position.x = clamp(position.x, -50, 50)
@@ -227,8 +228,6 @@ func check_placement_validity() -> bool:
 		query.exclude = [self]
 		var result = space_state.intersect_shape(query)
 		var is_collision_free = result.size() == 0
-		if not is_collision_free:
-			print("Collision with: ", result)
 		return has_ore and is_collision_free
 	
 	print("No collision shape for ", preview_building_name)

@@ -19,15 +19,16 @@ var active_tweens: Array[Tween] = []
 func _ready():
 	star_map_view.connect("system_selected", _on_system_selected)
 	system_view.connect("planet_selected", _on_planet_selected)
-	planet_view.connect("perks_selected", _on_perks_selected)
+	planet_view.connect("planet_confirm", _on_planet_confirm)
 	planet_view.connect("level_selected", _on_level_selected)
-	perks_view.connect("perks_confirmed", _on_perks_confirmed)
+	perks_view.connect("load_level_selected", _on_load_level_selected)
 	
 	star_map_view.set_systems($StarSystems)
 	transition_to(ViewState.STAR_MAP)
 
 func _input(event):
 	if event.is_action_pressed("cancel"):
+		print("cancel pressed")
 		on_cancel_pressed()
 
 func _on_system_selected(system_node: Star_System):
@@ -38,14 +39,22 @@ func _on_planet_selected(planet: Node3D):
 	current_planet = planet
 	transition_to(ViewState.PLANET)
 
-func _on_perks_selected():
+func _on_planet_confirm():
 	transition_to(ViewState.PERKS)
 
-func _on_perks_confirmed():
-	transition_to(ViewState.PLANET)
+func _on_load_level_selected():
+	print("on load level selected")
+	var fade_rect = $FadeRect/ColorRect
+	var tween = create_tween()
+	tween.tween_property(fade_rect, "color", Color(0, 0, 0, 1), 0.5)
+	tween.tween_callback(func():
+		var new_level = load(current_planet.level_path)
+		get_tree().change_scene_to_packed(new_level)
+	)
 
 func _on_level_selected(level: PackedScene):
-	get_tree().change_scene_to_packed(level)
+	transition_to(ViewState.PLANET)
+	
 
 func on_cancel_pressed():
 	match current_state:
@@ -54,11 +63,12 @@ func on_cancel_pressed():
 			transition_to(ViewState.STAR_MAP)
 		ViewState.PLANET:
 			planet_view.disable_view()
-			print("StarMenu: Backing out from PlanetView, planet ", current_planet.name if current_planet else "null")
 			transition_to(ViewState.SYSTEM)
 		ViewState.PERKS:
+			perks_view.disable_view()
 			transition_to(ViewState.PLANET)
 		ViewState.STAR_MAP:
+			get_tree().quit()
 			pass
 
 func transition_to(new_state: ViewState):
@@ -105,13 +115,11 @@ func transition_to_system() -> void:
 		system_view.select_planet(0)
 	
 func transition_to_planet() -> void:
-	print("StarMenu: Transitioning to planet, planet position: ", current_planet.global_transform.origin)
 	system_view.disable_view()
 	planet_view.enable_view()
 	perks_view.hide()
 	var planet_pos = current_planet.global_transform.origin
 	var target_position = get_camera_position_for_zoom(planet_pos, 5, camera)
-	print("StarMenu: Camera target position: ", target_position)
 	var tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	active_tweens.append(tween)
 	is_camera_moving = true
@@ -120,20 +128,15 @@ func transition_to_planet() -> void:
 		active_tweens.erase(tween)
 		if current_planet:
 			current_planet.visible = true
-			print("StarMenu: Camera tween finished, planet ", current_planet.name, " visible: ", current_planet.visible, " at position: ", current_planet.global_transform.origin)
 		planet_view.set_planet(current_planet)
 	)
 	await tween.finished
 	is_camera_moving = false
 
 func transition_to_perks() -> void:
-	star_map_view.hide()
-	system_view.hide()
-	planet_view.hide()
-	perks_view.show()
+	planet_view.disable_view()
+	perks_view.enable_view()
 	perks_view.set_planet(current_planet)
-	camera.position = Vector3(0, 2, 5)
-	camera.look_at(Vector3(0, 0, 0), Vector3.UP)
 
 func get_camera_position_for_zoom(star_position: Vector3, z_distance: float, camera: Camera3D) -> Vector3:
 	var viewport = get_viewport()

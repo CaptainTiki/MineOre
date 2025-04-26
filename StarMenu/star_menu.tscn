@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://deo6a22xw7hyb"]
+[gd_scene load_steps=31 format=3 uid="uid://deo6a22xw7hyb"]
 
 [ext_resource type="Script" uid="uid://r4esfi5mnbp1" path="res://StarMenu/star_menu.gd" id="1_bawdr"]
 [ext_resource type="Script" uid="uid://dpwfiplimgruh" path="res://StarMenu/star_map_view.gd" id="2_1sd4k"]
@@ -6,13 +6,16 @@
 [ext_resource type="Script" uid="uid://d2r6ivcpppmcj" path="res://StarMenu/system_view.gd" id="3_suaud"]
 [ext_resource type="Texture2D" uid="uid://csf5na4xj4be1" path="res://assets/background1.png" id="4_703u0"]
 [ext_resource type="Script" uid="uid://8321q6jwtd6u" path="res://StarMenu/planet_view.gd" id="4_k4xme"]
-[ext_resource type="Script" uid="uid://dvynj4ved0mam" path="res://StarMenu/perks_view.gd" id="5_q7svf"]
+[ext_resource type="Script" uid="uid://bfwetdetm7qcq" path="res://StarMenu/perks_view.gd" id="5_q7svf"]
 [ext_resource type="Texture2D" uid="uid://bsfbknwn0s0a3" path="res://scenes/front.png" id="8_uo6vd"]
 [ext_resource type="PackedScene" uid="uid://dwbhdnwgxpion" path="res://StarMenu/star_sytem.tscn" id="9_703u0"]
 [ext_resource type="Resource" uid="uid://cpe1um4m0rghu" path="res://StarMenu/beta_system.tres" id="10_8ydva"]
 [ext_resource type="Shader" uid="uid://dagqdobs0igw0" path="res://shaders/star_one.gdshader" id="10_sw5rk"]
 [ext_resource type="Resource" uid="uid://dsluqqp01vhbp" path="res://StarMenu/gamma_system.tres" id="11_7xwej"]
 [ext_resource type="PackedScene" uid="uid://dsdstadgt0cya" path="res://StarMenu/line_node.tscn" id="12_7xwej"]
+[ext_resource type="Shader" uid="uid://dj6xv4buhn5k8" path="res://shaders/star_two.gdshader" id="12_tklnn"]
+[ext_resource type="Texture2D" uid="uid://cankff3vb3x2b" path="res://assets/noise.jpg" id="13_6rj7k"]
+[ext_resource type="PackedScene" uid="uid://dl6b4yo1gr0vq" path="res://scenes/planets/test2.glb" id="16_wlyw0"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8ydva"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -58,7 +61,23 @@ material = SubResource("ShaderMaterial_tklnn")
 radius = 2.0
 height = 4.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_7xwej"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wlyw0"]
+render_priority = 0
+shader = ExtResource("12_tklnn")
+shader_parameter/noise_texture = ExtResource("13_6rj7k")
+shader_parameter/color_a = Color(1, 0.8, 0.2, 1)
+shader_parameter/color_b = Color(1, 0.1, 0, 1)
+shader_parameter/noise_scale = 1.045
+shader_parameter/time_scale = 0.018
+shader_parameter/swirl_strength = 0.447
+shader_parameter/glow_intensity = 3.329
+shader_parameter/noise_contrast = 0.46
+shader_parameter/mix_strength = 1.368
+
+[sub_resource type="SphereMesh" id="SphereMesh_n3e5w"]
+material = SubResource("ShaderMaterial_wlyw0")
+radius = 1.2
+height = 2.4
 
 [sub_resource type="SphereMesh" id="SphereMesh_sw5rk"]
 
@@ -145,6 +164,7 @@ text = "Locked: -"
 script = ExtResource("3_suaud")
 
 [node name="UI" type="Control" parent="SystemView"]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -176,6 +196,7 @@ layout_mode = 2
 script = ExtResource("4_k4xme")
 
 [node name="UI" type="Control" parent="PlanetView"]
+visible = false
 layout_mode = 3
 anchors_preset = 6
 anchor_left = 1.0
@@ -235,11 +256,151 @@ offset_bottom = 8.0
 [node name="PerksView" type="Node3D" parent="."]
 script = ExtResource("5_q7svf")
 
-[node name="UI" type="Control" parent="PerksView"]
-layout_mode = 3
-anchors_preset = 0
+[node name="MarginContainer" type="MarginContainer" parent="PerksView"]
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1148.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Background" type="Panel" parent="PerksView/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PerksView/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="TopContainer" type="MarginContainer" parent="PerksView/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="PerksView/MarginContainer/VBoxContainer/TopContainer"]
+custom_minimum_size = Vector2(128, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="PlanetLabel" type="Label" parent="PerksView/MarginContainer/VBoxContainer/TopContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "PlanetName"
+
+[node name="MidContainer" type="HBoxContainer" parent="PerksView/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="HoverPanel" type="Panel" parent="PerksView/MarginContainer/VBoxContainer/MidContainer"]
+custom_minimum_size = Vector2(200, 400)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PerksView/MarginContainer/VBoxContainer/MidContainer/HoverPanel"]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="PerkNameLabel" type="Label" parent="PerksView/MarginContainer/VBoxContainer/MidContainer/HoverPanel/VBoxContainer"]
+custom_minimum_size = Vector2(200, 32)
+layout_mode = 2
+size_flags_vertical = 2
+text = "placeholder text"
+
+[node name="PerkDescLabel" type="Label" parent="PerksView/MarginContainer/VBoxContainer/MidContainer/HoverPanel/VBoxContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+size_flags_vertical = 3
+text = "placeholder text"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="GridPanel" type="Panel" parent="PerksView/MarginContainer/VBoxContainer/MidContainer"]
+custom_minimum_size = Vector2(700, 700)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PerksGrid" type="GridContainer" parent="PerksView/MarginContainer/VBoxContainer/MidContainer/GridPanel"]
+custom_minimum_size = Vector2(700, 700)
+layout_mode = 1
+offset_right = 700.0
+offset_bottom = 700.0
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 64
+theme_override_constants/v_separation = 64
+columns = 8
+
+[node name="PaperDollPanel" type="Panel" parent="PerksView/MarginContainer/VBoxContainer/MidContainer"]
+custom_minimum_size = Vector2(200, 400)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="DollLabel" type="Label" parent="PerksView/MarginContainer/VBoxContainer/MidContainer/PaperDollPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -47.0
+offset_top = -11.5
+offset_right = 47.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Paperdoll
+PlaceHolder"
+horizontal_alignment = 1
+
+[node name="BottomContainer" type="MarginContainer" parent="PerksView/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="PerksView/MarginContainer/VBoxContainer/BottomContainer"]
+custom_minimum_size = Vector2(700, 128)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Panel" type="Panel" parent="PerksView/MarginContainer/VBoxContainer/BottomContainer"]
+custom_minimum_size = Vector2(700, 128)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+
+[node name="Button_Wrapper" type="Control" parent="PerksView/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+
+[node name="GoButton" type="Button" parent="PerksView/MarginContainer/VBoxContainer/Button_Wrapper"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -66.5
+offset_right = 66.5
+offset_bottom = 31.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Hold A to DROP!"
+
+[node name="GoButtonProgressBar" type="ProgressBar" parent="PerksView/MarginContainer/VBoxContainer/Button_Wrapper/GoButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+fill_mode = 3
+show_percentage = false
 
 [node name="StarSystems" type="Node3D" parent="."]
 
@@ -251,7 +412,7 @@ star_mesh = SubResource("SphereMesh_uo6vd")
 [node name="BetaSystem" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -204.225, -18.3387, 0)
 system_resource = ExtResource("10_8ydva")
-star_mesh = SubResource("SphereMesh_7xwej")
+star_mesh = SubResource("SphereMesh_n3e5w")
 
 [node name="GammaSystem" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114.279, 120.443, 0)
@@ -300,3 +461,16 @@ end_node = NodePath("../../StarSystems/BetaSystem2")
 [node name="LineNode6" parent="ConstellationLines" instance=ExtResource("12_7xwej")]
 start_node = NodePath("../../StarSystems/AlphaSystem2")
 end_node = NodePath("../../StarSystems/GammaSystem2")
+
+[node name="test2" parent="." instance=ExtResource("16_wlyw0")]
+
+[node name="FadeRect" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="FadeRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)

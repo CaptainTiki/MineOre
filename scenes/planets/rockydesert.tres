@@ -5,6 +5,7 @@
 [resource]
 resource_name = "rockydesert"
 cull_mode = 2
+albedo_color = Color(0.362829, 0.362829, 0.362829, 1)
 albedo_texture = ExtResource("1_5iv83")
 emission_enabled = true
 emission = Color(1, 1, 1, 1)

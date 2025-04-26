@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://du1343o1l0m7q"]
 
-[ext_resource type="Script" uid="uid://bfwetdetm7qcq" path="res://scripts/perks_screen.gd" id="1_54lqj"]
+[ext_resource type="Script" uid="uid://bfwetdetm7qcq" path="res://StarMenu/perks_view.gd" id="1_54lqj"]
 
-[node name="PerksScreen" type="Panel"]
+[node name="PerksView" type="Panel"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -12,81 +12,91 @@ size_flags_horizontal = 6
 size_flags_vertical = 6
 script = ExtResource("1_54lqj")
 
-[node name="Panel" type="Panel" parent="."]
-custom_minimum_size = Vector2(700, 700)
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -320.0
-offset_top = -320.0
-offset_right = 320.0
-offset_bottom = 320.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="PerksGrid" type="GridContainer" parent="."]
-custom_minimum_size = Vector2(700, 700)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -210.0
-offset_top = -240.0
-offset_right = 210.0
-offset_bottom = 240.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/h_separation = 0
-theme_override_constants/v_separation = 0
-columns = 8
-
-[node name="HoverPanel" type="Panel" parent="."]
-custom_minimum_size = Vector2(200, 400)
-layout_mode = 1
-anchors_preset = 6
+anchors_preset = 11
 anchor_left = 1.0
-anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 0.5
+anchor_bottom = 1.0
+offset_left = -1132.0
 grow_horizontal = 0
 grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HoverPanel"]
+[node name="Background" type="Panel" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="HboxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="TopContainer" type="MarginContainer" parent="MarginContainer/HboxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/HboxContainer/TopContainer"]
+custom_minimum_size = Vector2(128, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="PlanetLabel" type="Label" parent="MarginContainer/HboxContainer/TopContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "PlanetName"
+
+[node name="MidContainer" type="HBoxContainer" parent="MarginContainer/HboxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="HoverPanel" type="Panel" parent="MarginContainer/HboxContainer/MidContainer"]
+custom_minimum_size = Vector2(200, 400)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HboxContainer/MidContainer/HoverPanel"]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="PerkNameLabel" type="Label" parent="HoverPanel/VBoxContainer"]
+[node name="PerkNameLabel" type="Label" parent="MarginContainer/HboxContainer/MidContainer/HoverPanel/VBoxContainer"]
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 size_flags_vertical = 2
 
-[node name="PerkDescLabel" type="Label" parent="HoverPanel/VBoxContainer"]
+[node name="PerkDescLabel" type="Label" parent="MarginContainer/HboxContainer/MidContainer/HoverPanel/VBoxContainer"]
 custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="PaperDollPanel" type="Panel" parent="."]
-custom_minimum_size = Vector2(200, 400)
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -20.0
-offset_right = 40.0
-offset_bottom = 20.0
-grow_vertical = 2
+[node name="PerksGrid" type="GridContainer" parent="MarginContainer/HboxContainer/MidContainer"]
+custom_minimum_size = Vector2(700, 700)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+columns = 8
 
-[node name="DollLabel" type="Label" parent="PaperDollPanel"]
+[node name="Panel" type="Panel" parent="MarginContainer/HboxContainer/MidContainer/PerksGrid"]
+custom_minimum_size = Vector2(700, 700)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PaperDollPanel" type="Panel" parent="MarginContainer/HboxContainer/MidContainer"]
+custom_minimum_size = Vector2(200, 400)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="DollLabel" type="Label" parent="MarginContainer/HboxContainer/MidContainer/PaperDollPanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -103,16 +113,23 @@ text = "Paperdoll
 PlaceHolder"
 horizontal_alignment = 1
 
-[node name="GoButton" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -28.5
-offset_top = -31.0
-offset_right = 28.5
-grow_horizontal = 2
-grow_vertical = 0
+[node name="BottomContainer" type="MarginContainer" parent="MarginContainer/HboxContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/HboxContainer/BottomContainer"]
+custom_minimum_size = Vector2(700, 128)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Panel" type="Panel" parent="MarginContainer/HboxContainer/BottomContainer"]
+custom_minimum_size = Vector2(700, 128)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+
+[node name="GoButton" type="Button" parent="MarginContainer/HboxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 text = "DROP!"
