@@ -14,7 +14,7 @@ func set_player(player_node):
 func _ready():
 	pass
 
-func _input(event):
+func _input(_event):
 	if Input.is_action_just_pressed("zoom_in"):
 		zoom(-zoom_speed)
 	elif Input.is_action_just_pressed("zoom_out"):

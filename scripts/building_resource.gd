@@ -1,6 +1,6 @@
 class_name BuildingResource extends Resource
 
-@export var name: String
+@export var building_name: String
 @export var display_name: String
 @export var scene_path: String
 @export var category: String

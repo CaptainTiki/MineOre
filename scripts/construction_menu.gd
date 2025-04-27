@@ -10,7 +10,7 @@ func _ready():
 	visible = false
 	update_menu()
 
-func _input(event):
+func _input(_event):
 	if visible:
 		if Input.is_action_just_pressed("navigate_down"):
 			current_button_index = (current_button_index + 1) % buttons.size()
@@ -47,8 +47,8 @@ func update_menu():
 		var config = BuildingsManager.building_configs[building]
 		var resource = BuildingsManager.get_building_resource(building)
 		if resource:
-			var is_visible = (building in BuildingsManager.unlocked_buildings or not resource.is_researchable) and not resource.is_locked
-			if is_visible:
+			var ui_is_visible = (building in BuildingsManager.unlocked_buildings or not resource.is_researchable) and not resource.is_locked
+			if ui_is_visible:
 				var button = Button.new()
 				button.text = "%s (%d ore)" % [resource.display_name, config.cost]
 				button.focus_mode = Control.FOCUS_ALL

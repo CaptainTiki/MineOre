@@ -111,7 +111,7 @@ func _on_body_entered(body):
 	if body == target and body.has_method("take_damage"):
 		attack_overlapping_targets()
 
-func _on_body_exited(body):
+func _on_body_exited(_body):
 	pass  # Could reset timer if needed
 
 func attack_overlapping_targets():

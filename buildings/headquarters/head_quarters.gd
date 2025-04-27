@@ -9,23 +9,34 @@ var base_max_ore = 20
 var max_ore = base_max_ore
 var silo_count = 0
 
-@onready var interact_area = $InteractArea
-@onready var ui_panel = $UILayer/UIPanel
 @onready var deposit_label = $UILayer/UIPanel/DepositLabel
-@onready var camera = get_tree().get_root().get_node("Level/Camera")
 
 func _ready():
 	super._ready()
-	interact_area.body_entered.connect(_on_body_entered)
-	interact_area.body_exited.connect(_on_body_exited)
-	ui_panel.visible = false
+	is_placed = true  # HQ is always interactive
+	if interact_area:
+		interact_area.monitoring = true
+		interact_area.monitorable = true
+	var panel = get_ui_panel()
+	if panel:
+		panel.visible = false  # Will show when player enters
 	update_ui()
 	emit_signal("health_changed", health)
 
-func _process(_delta):
-	if ui_panel.visible and camera:
-		var screen_pos = camera.unproject_position(global_position + Vector3(0, 2, 0))
-		ui_panel.position = screen_pos - (ui_panel.size / 2)
+func _on_interact():
+	if player and player.carried_ore > 0:
+		var space_left = max_ore - stored_ore
+		var to_deposit = min(player.carried_ore, space_left)
+		if to_deposit > 0:
+			stored_ore += to_deposit
+			player.carried_ore -= to_deposit
+			player.emit_signal("ore_deposited", to_deposit)
+			update_ui()
+			print("Deposited %d ore to HQ. Stored: %d/%d" % [to_deposit, stored_ore, max_ore])
+
+func update_ui():
+	if deposit_label:
+		deposit_label.text = "Ore: %d/%d\nPress F" % [stored_ore, max_ore]
 
 func take_damage(amount):
 	super.take_damage(amount)
@@ -45,18 +56,6 @@ func withdraw_ore(amount) -> int:
 	stored_ore -= to_withdraw
 	update_ui()
 	return to_withdraw
-
-func _on_body_entered(body):
-	if body.is_in_group("player"):
-		ui_panel.visible = true
-		update_ui()
-
-func _on_body_exited(body):
-	if body.is_in_group("player"):
-		ui_panel.visible = false
-
-func update_ui():
-	deposit_label.text = "Ore: %d/%d\nPress E" % [stored_ore, max_ore]
 
 func add_silo():
 	silo_count += 1

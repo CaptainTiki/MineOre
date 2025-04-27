@@ -2,7 +2,6 @@ extends Node3D
 class_name PerksView
 
 signal load_level_selected
-signal perks_canceled
 
 @onready var perks_grid = $MarginContainer/VBoxContainer/MidContainer/GridPanel/PerksGrid
 @onready var hover_panel = $MarginContainer/VBoxContainer/MidContainer/HoverPanel
@@ -26,7 +25,7 @@ var current_planet : Planet
 
 var select_hold_time: float = 0.0
 var is_holding_select: bool = false
-const HOLD_DURATION: float = 2.0  # 2 seconds to trigger DROP!
+const HOLD_DURATION: float = 0.75  # 3/4 second to trigger DROP!
 var original_position: Vector2
 var transition_triggered: bool = false
 
@@ -38,12 +37,6 @@ func _ready():
 	hover_panel.visible = false
 	current_perk_index = 0
 	original_position = go_button.position
-	print("GoButton class:", go_button.get_class())
-	print("GoButton position:", go_button.position)
-	
-	# Wait for layout to settle
-	await get_tree().create_timer(0.1).timeout
-	print("GoButton screen-space position:", go_button.get_global_rect().position)
 	
 	# Load all perks from PerksManager
 	available_perks = PerksManager.get_all_perks()
@@ -132,26 +125,22 @@ func start_nav_cooldown():
 	can_navigate = true
 
 func navigate_right():
-	var old_index = current_perk_index
 	current_perk_index = (current_perk_index + 1) % perks_grid.get_child_count()
 	update_controller_highlight()
 
 func navigate_left():
-	var old_index = current_perk_index
 	current_perk_index = (current_perk_index - 1 + perks_grid.get_child_count()) % perks_grid.get_child_count()
 	update_controller_highlight()
 
 func navigate_up():
 	var columns = perks_grid.columns
 	var child_count = perks_grid.get_child_count()
-	var old_index = current_perk_index
 	current_perk_index = (current_perk_index - columns + child_count) % child_count
 	update_controller_highlight()
 
 func navigate_down():
 	var columns = perks_grid.columns
 	var child_count = perks_grid.get_child_count()
-	var old_index = current_perk_index
 	current_perk_index = (current_perk_index + columns) % child_count
 	update_controller_highlight()
 

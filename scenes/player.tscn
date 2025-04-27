@@ -23,7 +23,7 @@ radius = 1.28564
 radius = 3.0
 
 [node name="Player" type="CharacterBody3D" groups=["player"]]
-collision_mask = 54
+collision_mask = 118
 script = ExtResource("1_3vyb7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

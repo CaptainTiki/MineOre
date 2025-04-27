@@ -108,15 +108,16 @@ func disable_view() -> void:
 	active_tweens.clear()
 	
 	# Create new tweens
-	var startween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	if current_planet_index >= 0:
-		startween.tween_property(star, "scale", Vector3(0.01, 0.01, 0.01), 0.2)
-	else:
-		startween.tween_property(star, "scale", Vector3(1, 1, 1), 0.5)
-	active_tweens.append(startween)
-	startween.connect("finished", func(): 
-		active_tweens.erase(startween)
-	)
+	if star:
+		var startween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		if current_planet_index >= 0:
+			startween.tween_property(star, "scale", Vector3(0.01, 0.01, 0.01), 0.2)
+		else:
+			startween.tween_property(star, "scale", Vector3(1, 1, 1), 0.5)
+		active_tweens.append(startween)
+		startween.connect("finished", func(): 
+			active_tweens.erase(startween)
+		)
 	
 	for i in range(planets.size()):
 		var planet = planets[i]

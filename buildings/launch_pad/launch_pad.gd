@@ -7,7 +7,6 @@ signal launch_failed
 
 @onready var hq = get_tree().get_root().get_node_or_null("Level/Buildings/HeadQuarters")
 @onready var ui_label = $UILayer/LaunchLabel
-@onready var camera = get_tree().get_root().get_node_or_null("Level/Camera")
 
 var launch_ore_required = 30
 var launch_duration = 10.0
@@ -17,8 +16,6 @@ var launch_timer = 0.0
 func _ready():
 	super._ready()
 	add_to_group("launch_pad")
-	if ui_label:
-		ui_label.visible = false
 	print("Launch Pad initialized at %s, health: %.2f" % [global_position, health])
 
 func _process(delta):
@@ -27,11 +24,9 @@ func _process(delta):
 		if launch_timer <= 0:
 			complete_launch()
 		update_ui()
-	if ui_label and ui_label.visible and camera:
-		var screen_pos = camera.unproject_position(global_position + Vector3(0, 2, 0))
-		ui_label.position = screen_pos - (ui_label.size / 2)
+	super._process(delta)  # Call base class for UI positioning
 
-func start_launch():
+func _on_interact():
 	if is_launching or not hq:
 		return
 	if hq.stored_ore >= launch_ore_required:

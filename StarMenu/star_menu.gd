@@ -20,7 +20,6 @@ func _ready():
 	star_map_view.connect("system_selected", _on_system_selected)
 	system_view.connect("planet_selected", _on_planet_selected)
 	planet_view.connect("planet_confirm", _on_planet_confirm)
-	planet_view.connect("level_selected", _on_level_selected)
 	perks_view.connect("load_level_selected", _on_load_level_selected)
 	
 	star_map_view.set_systems($StarSystems)
@@ -51,10 +50,6 @@ func _on_load_level_selected():
 		var new_level = load(current_planet.level_path)
 		get_tree().change_scene_to_packed(new_level)
 	)
-
-func _on_level_selected(level: PackedScene):
-	transition_to(ViewState.PLANET)
-	
 
 func on_cancel_pressed():
 	match current_state:
@@ -138,10 +133,10 @@ func transition_to_perks() -> void:
 	perks_view.enable_view()
 	perks_view.set_planet(current_planet)
 
-func get_camera_position_for_zoom(star_position: Vector3, z_distance: float, camera: Camera3D) -> Vector3:
+func get_camera_position_for_zoom(star_position: Vector3, z_distance: float, level_camera: Camera3D) -> Vector3:
 	var viewport = get_viewport()
 	var aspect = float(viewport.size.x) / viewport.size.y
-	var fov_rad = deg_to_rad(camera.fov)
+	var fov_rad = deg_to_rad(level_camera.fov)
 	var tan_half_fov = tan(fov_rad / 2.0)
 	var offset_x = z_distance * aspect * tan_half_fov
 	var offset = Vector3(offset_x, 0, z_distance)

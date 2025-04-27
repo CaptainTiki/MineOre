@@ -4,7 +4,7 @@
 [ext_resource type="Resource" uid="uid://84hrxsghewgd" path="res://buildings/headquarters.tres" id="2_ef1bc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_e1ru4"]
-size = Vector3(4, 3, 4)
+size = Vector3(1.22424, 1.16211, 0.94017)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_455xb"]
 albedo_color = Color(0.332881, 0.332881, 0.332881, 1)
@@ -100,7 +100,11 @@ script = ExtResource("1_dwusy")
 resource = ExtResource("2_ef1bc")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.315186, 1.5, -0.0203705)
+shape = SubResource("BoxShape3D_e1ru4")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.803772, 0.581055, -1.08253)
 shape = SubResource("BoxShape3D_e1ru4")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
@@ -137,7 +141,7 @@ size = Vector3(0.142822, 0.272903, 0.224121)
 material = SubResource("StandardMaterial3D_ugq3g")
 
 [node name="CSGBox3D7" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.142578, 0.050293, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.142578, 0.050293, -0.164424)
 size = Vector3(1.99805, 0.0751953, 1)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

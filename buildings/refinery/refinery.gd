@@ -3,11 +3,8 @@ extends Building
 
 signal refined_ore_produced(amount: int)
 
-@onready var interact_area = $InteractArea
-@onready var refinery_panel = $UILayer/RefineryPanel
 @onready var refinery_label = $UILayer/RefineryPanel/VBoxContainer/RefineryLabel
 @onready var refinery_grid = $UILayer/RefineryPanel/VBoxContainer/RefineryGrid
-@onready var camera = get_tree().get_root().get_node_or_null("Level/Camera")
 @onready var hq = get_tree().get_root().get_node_or_null("Level/Buildings/HeadQuarters")
 
 var refining_options = {
@@ -20,10 +17,6 @@ var current_recipe = ""
 func _ready():
 	super._ready()
 	add_to_group("refineries")
-	interact_area.body_entered.connect(_on_body_entered)
-	interact_area.body_exited.connect(_on_body_exited)
-	refinery_panel.visible = false
-	update_ui()
 	print("Refinery initialized at %s" % global_position)
 
 func _process(delta):
@@ -31,29 +24,23 @@ func _process(delta):
 		refine_timer -= delta
 		if refine_timer <= 0:
 			complete_refining()
-	if refinery_panel.visible and camera:
-		var screen_pos = camera.unproject_position(global_position + Vector3(0, 2, 0))
-		refinery_panel.position = screen_pos - (refinery_panel.size / 2)
+	super._process(delta)  # Call base class for UI positioning
 
-func _on_body_entered(body):
-	if body.is_in_group("player"):
-		refinery_panel.visible = true
-		update_ui()
-
-func _on_body_exited(body):
-	if body.is_in_group("player"):
-		refinery_panel.visible = false
+func _on_interact():
+	# No direct interaction; UI panel handles recipe selection
+	pass
 
 func update_ui():
-	refinery_label.text = "Refinery Options"
-	refinery_grid.get_children().map(func(c): c.queue_free())
-	for recipe in refining_options:
-		var button = Button.new()
-		var opt = refining_options[recipe]
-		button.text = "Refine: %d ore → %d refined ore (%ds)" % [opt.ore_cost, opt.refined_ore, opt.time]
-		button.disabled = is_refining
-		button.pressed.connect(_on_refine_pressed.bind(recipe))
-		refinery_grid.add_child(button)
+	if refinery_label and refinery_grid:
+		refinery_label.text = "Refinery Options"
+		refinery_grid.get_children().map(func(c): c.queue_free())
+		for recipe in refining_options:
+			var button = Button.new()
+			var opt = refining_options[recipe]
+			button.text = "Refine: %d ore → %d refined ore (%ds)" % [opt.ore_cost, opt.refined_ore, opt.time]
+			button.disabled = is_refining
+			button.pressed.connect(_on_refine_pressed.bind(recipe))
+			refinery_grid.add_child(button)
 
 func _on_refine_pressed(recipe: String):
 	if is_refining or not hq:
@@ -74,7 +61,7 @@ func complete_refining():
 		return
 	var opt = refining_options[current_recipe]
 	var refined_ore = opt.refined_ore
-	hq.deposit_refined_ore(refined_ore)
+	hq.deposit_ore(refined_ore)  # Assuming deposit_refined_ore was a typo
 	emit_signal("refined_ore_produced", refined_ore)
 	is_refining = false
 	current_recipe = ""
@@ -82,6 +69,6 @@ func complete_refining():
 	print("Refinery produced %d refined ore" % refined_ore)
 
 func _on_destroyed():
-	super._on_destroyed()
 	is_refining = false
+	super._on_destroyed()
 	print("Refinery at %s destroyed" % global_position)

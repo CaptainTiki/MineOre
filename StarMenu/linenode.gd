@@ -33,13 +33,13 @@ func setup_line(start: Node3D, end: Node3D):
 		up = Vector3.FORWARD
 
 	# Create a basis to align the cylinder's Y-axis with the direction
-	var basis = Basis()
-	basis.y = direction.normalized()
-	basis.x = up.cross(basis.y).normalized()
-	basis.z = basis.x.cross(basis.y).normalized()
+	var newbasis = Basis()
+	newbasis.y = direction.normalized()
+	newbasis.x = up.cross(newbasis.y).normalized()
+	newbasis.z = newbasis.x.cross(newbasis.y).normalized()
 
 	# Apply the rotation to the cylinder
-	line_mesh.global_transform.basis = basis
+	line_mesh.global_transform.basis = newbasis
 
 	# Scale the cylinder to match the distance (default height is 2 units)
 	line_mesh.scale = Vector3(1, length / 2.25, 1)

@@ -4,12 +4,13 @@
 
 [resource]
 script = ExtResource("1_5cle8")
-name = "turret"
+building_name = "turret"
 display_name = "Defense Turret"
 scene_path = "res://buildings/turret/turret.tscn"
 category = "Defense"
 build_cost = 2
 base_health = 5.0
+grid_extents = Vector2i(0, 0)
 is_unique = false
 is_researchable = false
 research_cost = 0

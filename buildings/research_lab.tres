@@ -4,12 +4,13 @@
 
 [resource]
 script = ExtResource("1_yekqd")
-name = "research_lab"
+building_name = "research_lab"
 display_name = "Research Lab"
 scene_path = "res://buildings/research_lab/research_lab.tscn"
 category = "research"
 build_cost = 4
 base_health = 5.0
+grid_extents = Vector2i(0, 0)
 is_unique = true
 is_researchable = false
 research_cost = 0

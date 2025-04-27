@@ -15,13 +15,12 @@ extends Node3D
 @onready var ore_label: Label = $UI/HBoxContainer/VBoxContainer/OreLabel
 @onready var carried_ore_label: Label = $UI/HBoxContainer/VBoxContainer/CarriedOreLabel
 @onready var spawner_manager = $SpawnerManager
-@onready var grid_decal: Decal = $GridDecal
 
 var ground_size = Vector2(100, 100)
 
 enum State { PLACING, DAY, NIGHT, WON, LOST }
 var current_state = State.PLACING
-var day_duration = 45.0
+var day_duration = 120.0
 var day_timer = 0.0
 var wave_count = 0
 var total_waves = 2
@@ -38,7 +37,6 @@ func _ready():
 	if player:
 		player.building_placed.connect(_on_building_placed)
 		player.ore_carried.connect(_on_ore_carried)
-		player.ore_deposited.connect(_on_ore_deposited)
 		player.placement_failed.connect(_on_placement_failed)
 	else:
 		push_error("Player node not found")
@@ -51,10 +49,7 @@ func _ready():
 		for wave_res in spawner.waves:
 			max_waves = max(max_waves, wave_res.wave_counts.size())
 	total_waves = max(total_waves, max_waves)
-	if grid_decal:
-		grid_decal.visible = false #start disabled - enable during build
-	else:
-		print("GridDecal not found")
+	
 	update_ui()
 
 func _process(delta):
@@ -84,7 +79,7 @@ func _process(delta):
 func assign_planet(passed_in_name: String):
 	planet_name = passed_in_name
 
-func _on_building_placed(building_name: String, position: Vector3):
+func _on_building_placed(building_name: String, _place_position: Vector3):
 	if building_name == "headquarters":
 		has_hq = true
 		current_state = State.DAY
@@ -144,7 +139,7 @@ func _on_hq_destroyed():
 func _on_hq_health_changed(health):
 	hq_health_label.text = "HQ Health: %d" % health
 
-func _on_ore_carried(amount):
+func _on_ore_carried(_amount):
 	pass
 
 func _on_ore_deposited(amount):

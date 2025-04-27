@@ -25,6 +25,7 @@ _surfaces = [{
 radius = 4.0
 
 [node name="ResearchBuilding" type="StaticBody3D"]
+collision_layer = 64
 script = ExtResource("1_toiem")
 resource = ExtResource("2_46wip")
 
@@ -59,6 +60,7 @@ material = SubResource("StandardMaterial3D_ys5ma")
 mesh = SubResource("ArrayMesh_ys5ma")
 
 [node name="InteractArea" type="Area3D" parent="."]
+collision_layer = 16
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.01521, 0)
@@ -66,10 +68,19 @@ shape = SubResource("CylinderShape3D_v2lnw")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
+[node name="HintLabel" type="Label" parent="UILayer"]
+custom_minimum_size = Vector2(150, 50)
+offset_right = 150.0
+offset_bottom = 50.0
+text = "Press F to open research menu"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="ResearchPanel" type="Panel" parent="UILayer"]
-custom_minimum_size = Vector2(300, 400)
-offset_right = 40.0
-offset_bottom = 40.0
+visible = false
+custom_minimum_size = Vector2(300, 200)
+offset_right = 300.0
+offset_bottom = 200.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/ResearchPanel"]
 layout_mode = 1
@@ -81,10 +92,9 @@ grow_vertical = 2
 
 [node name="ResearchLabel" type="Label" parent="UILayer/ResearchPanel/VBoxContainer"]
 layout_mode = 2
-text = "Label"
+text = "Research Options"
 horizontal_alignment = 1
 
 [node name="ResearchGrid" type="GridContainer" parent="UILayer/ResearchPanel/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
+columns = 2

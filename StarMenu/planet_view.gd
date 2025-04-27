@@ -58,21 +58,21 @@ func _on_accept_button():
 
 func _reset_planet_positions() -> void:
 	for i in range(system_view.planets.size()):
-		var planet = system_view.planets[i]
-		if not is_instance_valid(planet):
+		var new_planet = system_view.planets[i]
+		if not is_instance_valid(new_planet):
 			continue
 		var planettween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		active_tweens.append(planettween)
-		if system_view.current_planet_index >= 0 and planet == system_view.planets[system_view.current_planet_index] and not input_select: 
-			planettween.tween_property(planet, "scale", Vector3(1, 1, 1), 0.25)
-		elif system_view.current_planet_index >= 0 and planet == system_view.planets[system_view.current_planet_index] and  input_select: 
-			continue #don't do anything to our selected planet - just skip out of this one
+		if system_view.current_planet_index >= 0 and new_planet == system_view.planets[system_view.current_planet_index] and not input_select: 
+			planettween.tween_property(new_planet, "scale", Vector3(1, 1, 1), 0.25)
+		elif system_view.current_planet_index >= 0 and new_planet == system_view.planets[system_view.current_planet_index] and  input_select: 
+			continue #don't do anything to our selected new_planet - just skip out of this one
 		else:
-			planettween.parallel().tween_property(planet, "scale", Vector3(1, 1, 1), 0.25)
+			planettween.parallel().tween_property(new_planet, "scale", Vector3(1, 1, 1), 0.25)
 			var direction = Vector3(1, 0, 0)
 			if i < system_view.current_planet_index:
 				direction *= -1
-			planettween.parallel().tween_property(planet, "global_position", planet.global_position + Vector3(10, 0, 0) * -direction, 0.5)
+			planettween.parallel().tween_property(new_planet, "global_position", new_planet.global_position + Vector3(10, 0, 0) * -direction, 0.5)
 		planettween.connect("finished", func(): 
 			active_tweens.erase(planettween)
 		)

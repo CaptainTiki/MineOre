@@ -15,19 +15,19 @@ uniform float mix_strength : hint_range(0.0, 2.0) = 1.0; // <<< NEW CONTROL!
 void fragment() {
     vec2 uv = UV * noise_scale;
     float t = TIME * time_scale;
-    
+
     // Animate UV offsets
-    vec2 uv_r = uv + vec2(0.0, t * swirl_strength);  
-    vec2 uv_g = uv + vec2(t * swirl_strength, 0.0);  
-    vec2 uv_b = uv + vec2(-t * swirl_strength, 0.0); 
-    
+    vec2 uv_r = uv + vec2(0.0, t * swirl_strength);
+    vec2 uv_g = uv + vec2(t * swirl_strength, 0.0);
+    vec2 uv_b = uv + vec2(-t * swirl_strength, 0.0);
+
     // Sample noise
     float r = texture(noise_texture, uv_r).r;
     float g = texture(noise_texture, uv_g).g;
     float b = texture(noise_texture, uv_b).b;
-    
+
     float n = (r + g + b) / 3.0;
-    
+
 		// Stretch contrast before mix
 	n = pow(n, noise_contrast); // >1 makes it darker, <1 makes it brighter
 	n = clamp(n * mix_strength, 0.0, 1.0); // still clamp after stretching

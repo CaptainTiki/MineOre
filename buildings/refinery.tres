@@ -4,12 +4,13 @@
 
 [resource]
 script = ExtResource("1_20wsg")
-name = "refinery"
+building_name = "refinery"
 display_name = "Refinery"
 scene_path = "res://buildings/refinery/refinery.tscn"
 category = "production"
 build_cost = 5
 base_health = 5.0
+grid_extents = Vector2i(0, 0)
 is_unique = false
 is_researchable = true
 research_cost = 5

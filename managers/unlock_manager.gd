@@ -1,49 +1,88 @@
 extends Node
 
-# Preload the level unlocks resource
-var level_unlocks = preload("res://LevelUnlocks.tres").level_data
+var level_unlocks: Array[LevelUnlock] = []
+var level_unlocks_dict: Dictionary = {}
 
-# Get all unlocked items based on player's XP
-func get_unlocked_items(player_xp: int) -> Dictionary:
-	var unlocked = {"planets": [], "perks": []}
-	var current_level = 1
-	
-	# Find the highest level reached
-	for level in level_unlocks.keys():
-		if player_xp >= level_unlocks[level].xp_threshold:
-			current_level = level
-		else:
-			break
-	
-	# Collect all unlocks up to the current level
-	for l in range(1, current_level + 1):
-		for unlock in level_unlocks[l].unlocks:
-			match unlock.type:
-				"planet":
-					unlocked.planets.append(unlock.id)
-				"perk":
-					unlocked.perks.append(unlock.id)
-	
-	return unlocked
+func _ready():
+	load_level_unlocks()
 
-# Apply the unlocks to the game
-func apply_unlocks(unlocked: Dictionary) -> void:
-	for planet in unlocked.planets:
-		unlock_planet(planet)
-	for perk in unlocked.perks:
-		unlock_perk(perk)
+func load_level_unlocks():
+	var dir = DirAccess.open("res://level_unlocks/")
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if file_name.ends_with(".tres"):
+				var unlock = load("res://level_unlocks/" + file_name) as LevelUnlock
+				if unlock:
+					level_unlocks.append(unlock)
+			file_name = dir.get_next()
+		# Sort by level
+		level_unlocks.sort_custom(func(a, b): return a.level < b.level)
+		# Create dictionary for quick access and check for duplicates
+		for unlock in level_unlocks:
+			if unlock.level in level_unlocks_dict:
+				push_error("Duplicate level: " + str(unlock.level))
+			else:
+				level_unlocks_dict[unlock.level] = unlock
+	else:
+		push_error("Failed to open level_unlocks directory")
 
-func unlock_planet(planet_id: String) -> void:
-	# Example: Make planet selectable in the star map
-	print("Unlocked planet: ", planet_id)
+func unlock_level(level: int):
+	if level in level_unlocks_dict:
+		var unlock = level_unlocks_dict[level]
+		unlock_buildings(unlock.building_unlocks)
+		unlock_perks(unlock.perk_unlocks)
+		unlock_curses(unlock.curse_unlocks)
+		unlock_player_abilities(unlock.player_unlocks)
+		unlock_planets(unlock.planet_unlocks)
+	else:
+		push_warning("Level not found: " + str(level))
 
-func unlock_perk(perk_id: String) -> void:
-	# Example: Add perk to player's available perks
-	print("Unlocked perk: ", perk_id)
+func set_unlocks_up_to_level(level: int):
+	for l in range(1, level + 1):
+		unlock_level(l)
 
-# Get the next unlock for display
-func get_next_unlock(player_xp: int) -> Array:
-	for level in level_unlocks.keys():
-		if player_xp < level_unlocks[level].xp_threshold:
-			return level_unlocks[level].unlocks
-	return []  # No more unlocks
+func get_xp_for_level(level: int) -> int:
+	if level in level_unlocks_dict:
+		return level_unlocks_dict[level].xp_amount
+	return -1
+
+func get_next_unlocks(current_level: int) -> Dictionary:
+	var next_level = current_level + 1
+	if next_level in level_unlocks_dict:
+		var unlock = level_unlocks_dict[next_level]
+		return {
+			"level": unlock.level,
+			"xp_required": unlock.xp_amount,
+			"building_unlocks": unlock.building_unlocks,
+			"perk_unlocks": unlock.perk_unlocks,
+			"curse_unlocks": unlock.curse_unlocks,
+			"player_unlocks": unlock.player_unlocks,
+			"planet_unlocks": unlock.planet_unlocks
+		}
+	return {}
+
+func unlock_buildings(buildings: Array[String]):
+	for building in buildings:
+		if building not in BuildingsManager.globally_unlocked_buildings:
+			BuildingsManager.globally_unlocked_buildings.append(building)
+			print("Unlocked building: ", building)
+
+func unlock_perks(perks: Array[String]):
+	for perk in perks:
+		if not PerksManager.is_perk_unlocked(perk):
+			PerksManager.unlock_perk(perk)
+			print("Unlocked perk: ", perk)
+
+func unlock_curses(curses: Array[String]):
+	for curse in curses:
+		pass
+
+func unlock_player_abilities(abilities: Array[String]):
+	for ability in abilities:
+		pass
+
+func unlock_planets(planets: Array[String]):
+	for planet in planets:
+		pass
