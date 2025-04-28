@@ -71,7 +71,7 @@ func _process(delta):
 		State.WON, State.LOST:
 			pass
 	
-	if Input.is_action_just_pressed("winleveldebug"):
+	if Input.is_action_just_pressed("leveldebug"):
 		end_level(true)
 	
 	update_ui()

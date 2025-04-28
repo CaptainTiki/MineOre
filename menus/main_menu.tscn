@@ -1,0 +1,189 @@
+[gd_scene load_steps=11 format=3 uid="uid://bg1p72k4qa86w"]
+
+[ext_resource type="FontFile" uid="uid://byroa4prefgb" path="res://assets/fonts/Rubik_Glitch/RubikGlitch-Regular.ttf" id="1_ij7vn"]
+[ext_resource type="Script" uid="uid://rf782x3whay1" path="res://menus/main_menu.gd" id="1_rqbgu"]
+[ext_resource type="Theme" uid="uid://3vvi30n4q21k" path="res://menus/ButtonTheme.tres" id="2_yjgyn"]
+[ext_resource type="StyleBox" uid="uid://chljvrm82ov2m" path="res://menus/blank_bg_bn_style.tres" id="3_yjgyn"]
+
+[sub_resource type="Gradient" id="Gradient_rqbgu"]
+colors = PackedColorArray(0.197937, 0.197937, 0.197937, 1, 0.61339, 0.61339, 0.61339, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_oblsv"]
+gradient = SubResource("Gradient_rqbgu")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_a63lr"]
+font = ExtResource("1_ij7vn")
+font_size = 128
+shadow_size = 16
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_offset = Vector2(10.915, 11.34)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_oblsv"]
+color = Color(0.384314, 0.384314, 0.384314, 0.47451)
+thickness = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rqbgu"]
+bg_color = Color(0.201527, 0.201527, 0.201526, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.275106, 0.430647, 0.991754, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+corner_detail = 16
+shadow_size = 12
+shadow_offset = Vector2(4.18, 10.16)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_a63lr"]
+color = Color(1, 1, 1, 1)
+thickness = 3
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rqbgu")
+
+[node name="BackgroundTexture" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_oblsv")
+
+[node name="Menu_Container" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_right = 32.0
+offset_bottom = 84.0
+grow_horizontal = 2
+
+[node name="BlankSpaceTop" type="CenterContainer" parent="Menu_Container"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Menu_Container"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="GameTitleLabel" type="Label" parent="Menu_Container/CenterContainer"]
+layout_mode = 2
+text = "MineOre Problems"
+label_settings = SubResource("LabelSettings_a63lr")
+
+[node name="CenterContainer2" type="CenterContainer" parent="Menu_Container"]
+layout_mode = 2
+
+[node name="ButtonContainer" type="VBoxContainer" parent="Menu_Container/CenterContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="BlankSpaceTop" type="CenterContainer" parent="Menu_Container/CenterContainer2/ButtonContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="StarMapBn" type="Button" parent="Menu_Container/CenterContainer2/ButtonContainer"]
+layout_mode = 2
+theme = ExtResource("2_yjgyn")
+theme_override_styles/normal = ExtResource("3_yjgyn")
+text = "Star Map"
+alignment = 0
+
+[node name="StoreBn" type="Button" parent="Menu_Container/CenterContainer2/ButtonContainer"]
+layout_mode = 2
+theme = ExtResource("2_yjgyn")
+theme_override_styles/normal = ExtResource("3_yjgyn")
+text = "Store"
+alignment = 0
+
+[node name="PerfReviewBn" type="Button" parent="Menu_Container/CenterContainer2/ButtonContainer"]
+layout_mode = 2
+theme = ExtResource("2_yjgyn")
+theme_override_styles/normal = ExtResource("3_yjgyn")
+text = "Performance"
+alignment = 0
+
+[node name="HSeparator" type="HSeparator" parent="Menu_Container/CenterContainer2/ButtonContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_oblsv")
+
+[node name="ExitBn" type="Button" parent="Menu_Container/CenterContainer2/ButtonContainer"]
+layout_mode = 2
+theme = ExtResource("2_yjgyn")
+theme_override_styles/normal = ExtResource("3_yjgyn")
+text = "Exit"
+alignment = 0
+
+[node name="ExitConfirmPanel" type="Panel" parent="."]
+visible = false
+custom_minimum_size = Vector2(640, 480)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rqbgu")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ExitConfirmPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="ExitConfirmPanel/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_yjgyn")
+text = "Quit?"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="ExitConfirmPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 29
+theme_override_styles/separator = SubResource("StyleBoxLine_a63lr")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ExitConfirmPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="ExitConfirmPanel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_yjgyn")
+text = "Yes"
+
+[node name="Label" type="Label" parent="ExitConfirmPanel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_yjgyn")
+text = "/"
+
+[node name="Button2" type="Button" parent="ExitConfirmPanel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_yjgyn")
+text = "No"

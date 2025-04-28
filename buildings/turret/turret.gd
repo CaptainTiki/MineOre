@@ -18,9 +18,9 @@ var target = null
 
 func _ready():
 	super._ready()
-	fire_rate = Perks.get_modified_stat(base_fire_rate, "turret_fire_rate")
-	rotation_speed = Perks.get_modified_stat(base_rotation_speed, "turret_rotation_speed")
-	damage = Perks.get_modified_stat(base_damage, "turret_damage")
+	fire_rate = PerksManager.get_modified_stat(base_fire_rate, "turret_fire_rate")
+	rotation_speed = PerksManager.get_modified_stat(base_rotation_speed, "turret_rotation_speed")
+	damage = PerksManager.get_modified_stat(base_damage, "turret_damage")
 	detection_area.body_entered.connect(_on_body_entered)
 	detection_area.body_exited.connect(_on_body_exited)
 	fire_timer = fire_rate

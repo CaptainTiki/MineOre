@@ -28,7 +28,7 @@ func _ready():
 			if collision_shape and collision_shape.shape is BoxShape3D:
 				var size = collision_shape.shape.size
 				grid_extents = Vector2i(ceil(size.x / 2.0) * 2, ceil(size.z / 2.0) * 2)
-		health = Perks.get_modified_stat(resource.base_health, "building_health")
+		health = PerksManager.get_modified_stat(resource.base_health, "building_health")
 	else:
 		push_error("Building %s has no resource assigned" % resource.building_name)
 	

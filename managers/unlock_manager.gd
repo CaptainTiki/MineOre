@@ -1,3 +1,4 @@
+# UnlockManager.gd
 extends Node
 
 var level_unlocks: Array[LevelUnlock] = []
@@ -17,9 +18,7 @@ func load_level_unlocks():
 				if unlock:
 					level_unlocks.append(unlock)
 			file_name = dir.get_next()
-		# Sort by level
 		level_unlocks.sort_custom(func(a, b): return a.level < b.level)
-		# Create dictionary for quick access and check for duplicates
 		for unlock in level_unlocks:
 			if unlock.level in level_unlocks_dict:
 				push_error("Duplicate level: " + str(unlock.level))
@@ -27,21 +26,6 @@ func load_level_unlocks():
 				level_unlocks_dict[unlock.level] = unlock
 	else:
 		push_error("Failed to open level_unlocks directory")
-
-func unlock_level(level: int):
-	if level in level_unlocks_dict:
-		var unlock = level_unlocks_dict[level]
-		unlock_buildings(unlock.building_unlocks)
-		unlock_perks(unlock.perk_unlocks)
-		unlock_curses(unlock.curse_unlocks)
-		unlock_player_abilities(unlock.player_unlocks)
-		unlock_planets(unlock.planet_unlocks)
-	else:
-		push_warning("Level not found: " + str(level))
-
-func set_unlocks_up_to_level(level: int):
-	for l in range(1, level + 1):
-		unlock_level(l)
 
 func get_xp_for_level(level: int) -> int:
 	if level in level_unlocks_dict:
@@ -54,6 +38,7 @@ func get_next_unlocks(current_level: int) -> Dictionary:
 		var unlock = level_unlocks_dict[next_level]
 		return {
 			"level": unlock.level,
+			"level_name": unlock.level_name,
 			"xp_required": unlock.xp_amount,
 			"building_unlocks": unlock.building_unlocks,
 			"perk_unlocks": unlock.perk_unlocks,
@@ -77,12 +62,18 @@ func unlock_perks(perks: Array[String]):
 
 func unlock_curses(curses: Array[String]):
 	for curse in curses:
-		pass
+		if not CurseManager.is_curse_unlocked(curse):
+			CurseManager.unlock_curse(curse)
+			print("Unlocked curse: ", curse)
 
 func unlock_player_abilities(abilities: Array[String]):
 	for ability in abilities:
-		pass
+		if not PlayerUnlockManager.is_ability_unlocked(ability):
+			PlayerUnlockManager.unlock_ability(ability)
+			print("Unlocked player ability: ", ability)
 
 func unlock_planets(planets: Array[String]):
 	for planet in planets:
-		pass
+		if not PlanetManager.is_planet_unlocked(planet):
+			PlanetManager.unlock_planet(planet)
+			print("Unlocked planet: ", planet)

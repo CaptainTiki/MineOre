@@ -17,11 +17,15 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GameState="*res://managers/game_state.gd"
-Perks="*res://managers/perks.gd"
-PerksManager="*res://managers/perks_manager.gd"
+PlanetManager="*res://managers/planet_manager.gd"
+PlayerUnlockManager="*res://managers/player_unlock_manager.gd"
 BuildingsManager="*res://managers/buildings_manager.gd"
+PerksManager="*res://managers/perks_manager.gd"
+CurseManager="*res://managers/curse_manager.gd"
 UnlockManager="*res://managers/unlock_manager.gd"
+StoreManager="*res://managers/store_manager.gd"
+StatsManager="*res://managers/stats_manager.gd"
+GameState="*res://managers/game_state.gd"
 
 [display]
 
@@ -36,7 +40,7 @@ enabled=PackedStringArray()
 
 [input]
 
-winleveldebug={
+leveldebug={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":96,"key_label":0,"unicode":96,"location":0,"echo":false,"script":null)
 ]

@@ -1,0 +1,205 @@
+[gd_scene load_steps=8 format=3 uid="uid://bun4nl65fyfu8"]
+
+[ext_resource type="Script" uid="uid://crbqw0273j82v" path="res://menus/store_menu.gd" id="1_xky3c"]
+[ext_resource type="FontFile" uid="uid://byroa4prefgb" path="res://assets/fonts/Rubik_Glitch/RubikGlitch-Regular.ttf" id="2_ij7vn"]
+[ext_resource type="Theme" uid="uid://3vvi30n4q21k" path="res://menus/ButtonTheme.tres" id="3_yjgyn"]
+
+[sub_resource type="Gradient" id="Gradient_store"]
+colors = PackedColorArray(0.197937, 0.197937, 0.197937, 1, 0.61339, 0.61339, 0.61339, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_store"]
+gradient = SubResource("Gradient_store")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_store"]
+font = ExtResource("2_ij7vn")
+font_size = 64
+shadow_size = 8
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_offset = Vector2(5, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_popup"]
+bg_color = Color(0.2, 0.2, 0.2, 0.9)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.275106, 0.430647, 0.991754, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 8
+
+[node name="StoreMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xky3c")
+
+[node name="BackgroundTexture" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_store")
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -600.0
+offset_top = -400.0
+offset_right = 600.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="MainContainer"]
+layout_mode = 2
+text = "Corporate Loyalty Store"
+label_settings = SubResource("LabelSettings_store")
+horizontal_alignment = 1
+
+[node name="CLPLabel" type="Label" parent="MainContainer"]
+layout_mode = 2
+theme = ExtResource("3_yjgyn")
+text = "CLP: 0"
+horizontal_alignment = 1
+
+[node name="TabContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BuildingsTab" type="Button" parent="MainContainer/TabContainer"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../PerksTab")
+focus_neighbor_bottom = NodePath("../../ContentContainer/ItemScroll/ItemContainer")
+theme = ExtResource("3_yjgyn")
+text = "Buildings"
+
+[node name="PerksTab" type="Button" parent="MainContainer/TabContainer"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../BuildingsTab")
+focus_neighbor_right = NodePath("../CursesTab")
+focus_neighbor_bottom = NodePath("../../ContentContainer/ItemScroll/ItemContainer")
+theme = ExtResource("3_yjgyn")
+text = "Perks"
+
+[node name="CursesTab" type="Button" parent="MainContainer/TabContainer"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../PerksTab")
+focus_neighbor_right = NodePath("../PlayerUnlocksTab")
+focus_neighbor_bottom = NodePath("../../ContentContainer/ItemScroll/ItemContainer")
+theme = ExtResource("3_yjgyn")
+text = "Curses"
+
+[node name="PlayerUnlocksTab" type="Button" parent="MainContainer/TabContainer"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../CursesTab")
+focus_neighbor_bottom = NodePath("../../ContentContainer/ItemScroll/ItemContainer")
+theme = ExtResource("3_yjgyn")
+text = "Player Unlocks"
+
+[node name="ContentContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="ItemScroll" type="ScrollContainer" parent="MainContainer/ContentContainer"]
+custom_minimum_size = Vector2(800, 400)
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 0
+
+[node name="ItemContainer" type="VBoxContainer" parent="MainContainer/ContentContainer/ItemScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="DescriptionPanel" type="Panel" parent="MainContainer/ContentContainer"]
+custom_minimum_size = Vector2(350, 400)
+layout_mode = 2
+theme = ExtResource("3_yjgyn")
+
+[node name="DescriptionLabel" type="Label" parent="MainContainer/ContentContainer/DescriptionPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Hover or select an item to view its description."
+autowrap_mode = 2
+
+[node name="BackButton" type="Button" parent="MainContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ContentContainer/ItemScroll/ItemContainer")
+theme = ExtResource("3_yjgyn")
+text = "Back to Main Menu"
+
+[node name="PurchasePopup" type="Panel" parent="."]
+visible = false
+custom_minimum_size = Vector2(400, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_popup")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PurchasePopup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="ConfirmLabel" type="Label" parent="PurchasePopup/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_yjgyn")
+text = "Confirm Purchase?"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PurchasePopup/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="BuyButton" type="Button" parent="PurchasePopup/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_yjgyn")
+text = "Buy"
+
+[node name="CancelButton" type="Button" parent="PurchasePopup/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_yjgyn")
+text = "Cancel"

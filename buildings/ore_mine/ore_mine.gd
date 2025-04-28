@@ -17,7 +17,7 @@ var stored_ore = 0
 
 func _ready():
 	super._ready()
-	production_rate = Perks.get_modified_stat(base_production_rate, "mine_rate")
+	production_rate = PerksManager.get_modified_stat(base_production_rate, "mine_rate")
 	ore_timer = production_rate
 	add_to_group("ore_mines")
 	print("Ore Mine initialized, production_rate: %.2f seconds" % production_rate)

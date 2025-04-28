@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="LevelUnlock" load_steps=2 format=3 uid="uid://btysajmm1u64x"]
+
+[ext_resource type="Script" uid="uid://btjvdtx8fnggs" path="res://level_unlocks/levelunlock.gd" id="1_h8dbe"]
+
+[resource]
+script = ExtResource("1_h8dbe")
+level = 0
+xp_amount = 0
+level_name = "Foundling"
+building_unlocks = Array[Dictionary]([])
+perk_unlocks = Array[Dictionary]([])
+curse_unlocks = Array[Dictionary]([])
+player_unlocks = Array[Dictionary]([])
+planet_unlocks = Array[Dictionary]([])
+metadata/_custom_type_script = "uid://btjvdtx8fnggs"

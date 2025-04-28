@@ -63,7 +63,7 @@ func on_cancel_pressed():
 			perks_view.disable_view()
 			transition_to(ViewState.PLANET)
 		ViewState.STAR_MAP:
-			get_tree().quit()
+			get_tree().change_scene_to_file("res://menus/main_menu.tscn")
 			pass
 
 func transition_to(new_state: ViewState):

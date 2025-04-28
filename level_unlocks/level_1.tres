@@ -1,14 +1,21 @@
 [gd_resource type="Resource" script_class="LevelUnlock" load_steps=2 format=3 uid="uid://rc0vmq12mgd3"]
 
-[ext_resource type="Script" uid="uid://btjvdtx8fnggs" path="res://levelunlocks.gd" id="1_bs75e"]
+[ext_resource type="Script" uid="uid://btjvdtx8fnggs" path="res://level_unlocks/levelunlock.gd" id="1_bs75e"]
 
 [resource]
 script = ExtResource("1_bs75e")
 level = 1
-xp_amount = 0
-building_unlocks = Array[String]([])
-perk_unlocks = Array[String]([])
-curse_unlocks = Array[String]([])
-player_unlocks = Array[String]([])
-planet_unlocks = Array[String](["alpha_one"])
+xp_amount = 100
+level_name = "Rookie"
+building_unlocks = Array[Dictionary]([{
+"clp_cost": 30,
+"id": "refinery"
+}])
+perk_unlocks = Array[Dictionary]([{
+"clp_cost": 35,
+"id": "turret_fire_rate_1"
+}])
+curse_unlocks = Array[Dictionary]([])
+player_unlocks = Array[Dictionary]([])
+planet_unlocks = Array[Dictionary]([])
 metadata/_custom_type_script = "uid://btjvdtx8fnggs"
