@@ -8,6 +8,7 @@ var current_system: Star_System
 var star = null
 var highlight_sprite: Sprite3D = null
 var current_planet_index: int = 1
+var current_planet: Planet
 var planets: Array = []
 
 var active_tweens: Array[Tween] = []
@@ -16,6 +17,8 @@ var is_active : bool = false
 @onready var planet_info_panel = $UI/PlanetInfoPanel
 @onready var planet_name_label = $UI/PlanetInfoPanel/InfoContainer/PlanetNameLabel
 @onready var difficulty_label = $UI/PlanetInfoPanel/InfoContainer/DifficultyLabel
+@onready var description_label: Label = $UI/PlanetInfoPanel/InfoContainer/DescriptionLabel
+@onready var points_required_label: Label = $UI/PlanetInfoPanel/InfoContainer/PointsRequiredLabel
 @onready var type_label = $UI/PlanetInfoPanel/InfoContainer/TypeLabel
 @onready var locked_label = $UI/PlanetInfoPanel/InfoContainer/LockedLabel
 @onready var ui_node: Control = $UI
@@ -177,7 +180,10 @@ func _input(event):
 	elif event.is_action_pressed("navigate_right"):
 		select_planet((current_planet_index + 1) % planets.size())
 	elif event.is_action_pressed("select"):
-		emit_signal("planet_selected", planets[current_planet_index])
+		if current_planet:
+			var data = current_planet.get_planet_data()
+			if data["points_required"] <= GameState.planet_completion_points:
+				emit_signal("planet_selected", planets[current_planet_index])
 
 func select_planet(index: int):
 	if index < 0 or index >= planets.size():
@@ -188,18 +194,48 @@ func select_planet(index: int):
 	highlight_sprite.visible = true
 	update_info_panel(planet)
 	animate_lines(planet.global_transform.origin + Vector3(0, 0.25, 0))
+	current_planet = planets[current_planet_index]
+	print(current_planet.planet_name)
 
 func update_info_panel(planet):
-	var planet_name = planet.name
-	var difficulty = 1
-	var planet_type = "Rocky"
-	var locked = false
+	if not planet or not planet.has_method("get_planet_data"):
+		print("Error: Invalid planet or missing get_planet_data: ", planet)
+		planet_name_label.text = "Planet: Unknown"
+		difficulty_label.text = "Difficulty: -"
+		type_label.text = "Type: -"
+		locked_label.text = "Locked: -"
+		planet_info_panel.visible = true
+		return
 	
-	planet_name_label.text = "Planet: %s" % planet_name
-	difficulty_label.text = "Difficulty: %d" % difficulty
-	type_label.text = "Type: %s" % planet_type
+	var data = planet.get_planet_data()
+	if not data or not data is Dictionary:
+		print("Error: Invalid planet data: ", data)
+		planet_name_label.text = "Planet: Unknown"
+		difficulty_label.text = "Difficulty: -"
+		type_label.text = "Type: -"
+		locked_label.text = "Locked: -"
+		planet_info_panel.visible = true
+		return
+	
+	# Fetch GameState for lock check
+	var game_state = get_tree().root.get_node_or_null("GameState")
+	var available_points = game_state.planet_completion_points if game_state else 0
+	var locked = data.get("points_required", 0) > available_points
+	
+	# Update UI
+	planet_name_label.text = "Planet: %s" % data.get("name", planet.name)
+	difficulty_label.text = "Difficulty: %d" % data.get("difficulty", 1)
+	type_label.text = "Type: %s" % data.get("type", "Rocky")
 	locked_label.text = "Locked: %s" % ("Yes" if locked else "No")
+	
+	# Add points required and description (will need new labels in scene)
+	if is_instance_valid(points_required_label):
+		points_required_label.text = "Points Required: %d" % data.get("points_required", 0)
+	if is_instance_valid(description_label):
+		description_label.text = "Description: %s" % data.get("description", "No description available")
+	
 	planet_info_panel.visible = true
+	print("Planet UI Updated: Name=%s, Locked=%s, Points Required=%d" % [data.get("name", planet.name), "Yes" if locked else "No", data.get("points_required", 0)])
 
 func animate_lines(start_pos: Vector3):
 	var screen_pos = star_menu.camera.unproject_position(start_pos)

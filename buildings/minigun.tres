@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="BuildingResource" load_steps=2 format=3 uid="uid://dgjbs20muw5aa"]
+
+[ext_resource type="Script" uid="uid://bbac14qb0h4o8" path="res://scripts/building_resource.gd" id="1_5cle8"]
+
+[resource]
+script = ExtResource("1_5cle8")
+building_name = "minigun"
+display_name = "Minigun Turret"
+scene_path = "res://buildings/minigun/minigun.tscn"
+category = ""
+build_cost = 3
+base_health = 6.0
+grid_extents = Vector2i(2, 2)
+is_unique = false
+is_researchable = false
+research_cost = 0
+research_description = ""
+is_locked = true
+tags = Array[String](["defensive"])
+custom_script_path = ""
+upgrade_cost = 0
+dependencies = Array[String](["headquarters", "ordnance_facility"])

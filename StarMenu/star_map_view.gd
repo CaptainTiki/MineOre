@@ -12,7 +12,6 @@ var active_tweens: Array[Tween] = []
 
 @onready var star_systems: Node3D = $"../StarSystems"
 @onready var constellation_lines: Node3D = $"../ConstellationLines"
-
 @onready var system_name_label = $UI/SystemInfoPanel/InfoContainer/SystemNameLabel
 @onready var difficulty_label = $UI/SystemInfoPanel/InfoContainer/DifficultyLabel
 @onready var progress_label = $UI/SystemInfoPanel/InfoContainer/ProgressLabel
@@ -22,7 +21,6 @@ var active_tweens: Array[Tween] = []
 @onready var ui_node: Control = $UI
 
 func _ready():
-	
 	is_active = true
 	# Initialize highlight sprite
 	highlight_sprite = Sprite3D.new()
@@ -146,7 +144,6 @@ func _start_animation(systems_node: Node3D):
 
 func animate_constellation_lines(anim: String, delay: float):
 	var lines = get_node("/root/StarMenu/ConstellationLines").get_children()
-	# Sort by the higher y-position of start or end node
 	lines.sort_custom(func(a, b):
 		var a_start = a.get_node_or_null(a.start_node)
 		var a_end = a.get_node_or_null(a.end_node)
@@ -167,10 +164,13 @@ func animate_constellation_lines(anim: String, delay: float):
 func _on_system_mouse_entered(system: Star_System):
 	if system.system_resource:
 		highlighted_system = system
+		print("System Resource: ", system.system_resource, " Name: ", system.system_resource.system_name)
 		update_ui(system.system_resource)
 		highlight_sprite.visible = true
 		highlight_sprite.global_transform.origin = system.global_transform.origin + Vector3(0, 0.5, 0)
 		animate_lines(system.global_transform.origin + Vector3(0, 0.5, 0))
+	else:
+		print("Error: No system resource for ", system.name)
 
 func _on_system_mouse_exited(system: Node3D):
 	if highlighted_system == system:
@@ -182,10 +182,24 @@ func _on_system_mouse_exited(system: Node3D):
 		system_info_panel.visible = false
 
 func update_ui(resource: StarSystemResource):
-	system_name_label.text = resource.system_name
-	difficulty_label.text = "Difficulty: %d" % resource.difficulty
-	progress_label.text = "Progress: 0 / %d" % resource.planets.size()
-	description_label.text = "Description: %s" % resource.description
+	if not resource:
+		print("Error: Null StarSystemResource")
+		return
+	
+	if not is_instance_valid(system_name_label):
+		print("Error: system_name_label is not valid")
+		return
+	
+	# Fetch progress from GameState
+	var completed_planets = 0
+	if resource.planets and "GameState" in get_tree().root:
+		var game_state = get_tree().root.get_node("GameState")
+		completed_planets = game_state.get_completed_planets_for_system(resource.system_name) if game_state else 0
+	
+	system_name_label.text = resource.system_name if resource.system_name else "Unknown System"
+	difficulty_label.text = "Difficulty: %d" % resource.difficulty if resource.difficulty else "Difficulty: -"
+	progress_label.text = "Progress: %d / %d" % [completed_planets, resource.planets.size()] if resource.planets else "Progress: -"
+	description_label.text = "Description: %s" % resource.description if resource.description else "Description: -"
 	locked_label.text = "Locked: %s" % ("Yes" if resource.locked else "No")
 
 func clear_ui():
@@ -242,6 +256,8 @@ func animate_lines(start_pos: Vector3):
 		0.0, 1.0, 0.25
 	)
 	
-	tween.tween_callback(func(): system_info_panel.visible = true)
+	tween.tween_callback(func(): 
+		system_info_panel.visible = true
+	)
 	active_tweens.append(tween)
 	tween.connect("finished", func(): active_tweens.erase(tween))

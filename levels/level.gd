@@ -15,6 +15,7 @@ extends Node3D
 @onready var ore_label: Label = $UI/HBoxContainer/VBoxContainer/OreLabel
 @onready var carried_ore_label: Label = $UI/HBoxContainer/VBoxContainer/CarriedOreLabel
 @onready var spawner_manager = $SpawnerManager
+@onready var construction_menu = $UI/ConstructionMenu
 
 var ground_size = Vector2(100, 100)
 
@@ -44,7 +45,6 @@ func _ready():
 	end_panel.visible = false
 	restart_button.connect("pressed", _on_restart_pressed)
 	quit_button.connect("pressed", _on_quit_pressed)
-	# Calculate total_waves from spawners
 	var max_waves = 0
 	for spawner in spawner_manager.get_children():
 		for wave_res in spawner.waves:
@@ -95,6 +95,8 @@ func _on_building_placed(building_name: String, _place_position: Vector3):
 			hq.health_changed.connect(_on_hq_health_changed)
 			hq_health_label.text = "HQ Health: %d" % hq.health
 			print("HQ placed, starting day/night cycle")
+		if construction_menu:
+			construction_menu.update_menu()  # Update menu to show new buildings
 	else:
 		if not has_hq:
 			return
@@ -133,7 +135,6 @@ func end_level(won: bool):
 	end_panel.visible = true
 	wave_label.text = ""
 	enemies_label.text = ""
-	# Record mission stats and complete planet
 	GameState.complete_planet(
 		planet_name, 
 		won, 

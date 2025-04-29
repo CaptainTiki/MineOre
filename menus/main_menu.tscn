@@ -117,6 +117,13 @@ theme_override_styles/normal = ExtResource("3_yjgyn")
 text = "Performance"
 alignment = 0
 
+[node name="ArchivesBn" type="Button" parent="Menu_Container/CenterContainer2/ButtonContainer"]
+layout_mode = 2
+theme = ExtResource("2_yjgyn")
+theme_override_styles/normal = ExtResource("3_yjgyn")
+text = "Archives"
+alignment = 0
+
 [node name="HSeparator" type="HSeparator" parent="Menu_Container/CenterContainer2/ButtonContainer"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_oblsv")

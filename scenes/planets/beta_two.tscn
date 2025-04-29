@@ -11,9 +11,8 @@ albedo_color = Color(0.914928, 0.463406, 0.270068, 1)
 [node name="BetaTwo" type="Area3D"]
 script = ExtResource("1_ebo2k")
 planet_name = "Beta Two"
-level_path = "res://levels/level_b2.tscn"
-system_name = "Beta"
 points_required = 3
+level_path = "res://levels/level_b2.tscn"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_x0q3j")

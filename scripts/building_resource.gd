@@ -17,3 +17,4 @@ class_name BuildingResource extends Resource
 @export var custom_script_path: String
 @export var upgrade_to: BuildingResource
 @export var upgrade_cost: int
+@export var dependencies: Array[String]  # Required buildings to unlock this one

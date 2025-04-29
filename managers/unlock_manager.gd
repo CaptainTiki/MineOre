@@ -1,4 +1,4 @@
-# UnlockManager.gd
+# res://scripts/unlock_manager.gd
 extends Node
 
 var level_unlocks: Array[LevelUnlock] = []
@@ -52,28 +52,30 @@ func unlock_buildings(buildings: Array[String]):
 	for building in buildings:
 		if building not in BuildingsManager.globally_unlocked_buildings:
 			BuildingsManager.globally_unlocked_buildings.append(building)
-			print("Unlocked building: ", building)
+			if building in BuildingsManager.locked_buildings:
+				BuildingsManager.locked_buildings.erase(building)
+			print("Unlocked building: %s" % building)
 
 func unlock_perks(perks: Array[String]):
 	for perk in perks:
 		if not PerksManager.is_perk_unlocked(perk):
 			PerksManager.unlock_perk(perk)
-			print("Unlocked perk: ", perk)
+			print("Unlocked perk: %s" % perk)
 
 func unlock_curses(curses: Array[String]):
 	for curse in curses:
 		if not CurseManager.is_curse_unlocked(curse):
 			CurseManager.unlock_curse(curse)
-			print("Unlocked curse: ", curse)
+			print("Unlocked curse: %s" % curse)
 
 func unlock_player_abilities(abilities: Array[String]):
 	for ability in abilities:
 		if not PlayerUnlockManager.is_ability_unlocked(ability):
 			PlayerUnlockManager.unlock_ability(ability)
-			print("Unlocked player ability: ", ability)
+			print("Unlocked player ability: %s" % ability)
 
 func unlock_planets(planets: Array[String]):
 	for planet in planets:
 		if not PlanetManager.is_planet_unlocked(planet):
 			PlanetManager.unlock_planet(planet)
-			print("Unlocked planet: ", planet)
+			print("Unlocked planet: %s" % planet)

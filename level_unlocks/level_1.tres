@@ -10,10 +10,19 @@ level_name = "Rookie"
 building_unlocks = Array[Dictionary]([{
 "clp_cost": 30,
 "id": "refinery"
+},{
+"clp_cost": 50,
+"id": "ordnance_facility"
+}, {
+"clp_cost": 40,
+"id": "minigun"
 }])
 perk_unlocks = Array[Dictionary]([{
 "clp_cost": 35,
 "id": "turret_fire_rate_1"
+}, {
+"clp_cost": 35,
+"id": "turret_damage_1"
 }])
 curse_unlocks = Array[Dictionary]([])
 player_unlocks = Array[Dictionary]([])

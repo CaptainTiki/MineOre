@@ -1,4 +1,4 @@
-# StoreManager.gd
+# res://scripts/store_manager.gd
 extends Node
 
 var purchased_items: Dictionary = {}  # e.g., {"building:refinery": true, "perk:player_speed_1": true}
@@ -13,11 +13,21 @@ func get_available_items(level: int) -> Dictionary:
 	}
 	for unlock in UnlockManager.level_unlocks:
 		if unlock.level <= level:
-			items.buildings.append_array(unlock.building_unlocks)
-			items.perks.append_array(unlock.perk_unlocks)
-			items.curses.append_array(unlock.curse_unlocks)
-			items.player_unlocks.append_array(unlock.player_unlocks)
-			items.planets.append_array(unlock.planet_unlocks)
+			for building in unlock.building_unlocks:
+				if not is_purchased("building", building.id):
+					items.buildings.append(building)
+			for perk in unlock.perk_unlocks:
+				if not is_purchased("perk", perk.id):
+					items.perks.append(perk)
+			for curse in unlock.curse_unlocks:
+				if not is_purchased("curse", curse.id):
+					items.curses.append(curse)
+			for player_unlock in unlock.player_unlocks:
+				if not is_purchased("player", player_unlock.id):
+					items.player_unlocks.append(player_unlock)
+			for planet in unlock.planet_unlocks:
+				if not is_purchased("planet", planet.id):
+					items.planets.append(planet)
 	return items
 
 func can_purchase(item_type: String, item_id: String, clp: int) -> bool:

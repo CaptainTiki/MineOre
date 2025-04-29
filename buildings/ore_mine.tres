@@ -19,4 +19,5 @@ is_locked = false
 tags = Array[String](["ore", "production"])
 custom_script_path = "res;//buildings/ore_mine/ore_mine.gd"
 upgrade_cost = 0
+dependencies = Array[String](["headquarters"])
 metadata/_custom_type_script = "uid://bbac14qb0h4o8"

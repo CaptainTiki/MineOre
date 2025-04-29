@@ -23,7 +23,7 @@ var preview_building_name = ""
 var preview_distance = 4.0
 var grid_size = 2.0
 var preview_material = null
-var rotation_speed = 5.0  # For controller-based rotation
+var rotation_speed = 5.0
 
 # Node references
 @onready var camera = get_node_or_null("../Camera")
@@ -40,7 +40,6 @@ func _ready():
 	print("Player initialized")
 
 func _process(_delta: float) -> void:
-	# Toggle construction menu
 	if Input.is_action_just_pressed("construction_menu"):
 		if construction_menu.visible:
 			construction_menu.hide_menu()
@@ -49,7 +48,6 @@ func _process(_delta: float) -> void:
 			construction_menu.show_menu()
 			cancel_placement()
 
-	# Handle placement interactions
 	if is_placing and preview_instance:
 		update_preview_position()
 		if Input.is_action_just_pressed("use_tool"):
@@ -57,7 +55,6 @@ func _process(_delta: float) -> void:
 		if Input.is_action_just_pressed("cancel"):
 			cancel_placement()
 
-	# Tool usage and interactions when not placing
 	if not is_placing and not construction_menu.visible:
 		if Input.is_action_just_pressed("use_tool"):
 			match current_tool:
@@ -68,14 +65,12 @@ func _process(_delta: float) -> void:
 		if Input.is_action_just_pressed("interact"):
 			emit_signal("interact")
 
-	# Tool switching
 	if Input.is_action_just_pressed("switch_tool_next"):
 		switch_tool_next()
 	if Input.is_action_just_pressed("switch_tool_prev"):
 		switch_tool_prev()
 
 func _physics_process(delta: float) -> void:
-	# Handle movement
 	var input = Vector3.ZERO
 	input.x = Input.get_axis("move_left", "move_right")
 	input.z = Input.get_axis("move_forward", "move_backward")
@@ -87,7 +82,6 @@ func _physics_process(delta: float) -> void:
 	position.x = clamp(position.x, -50, 50)
 	position.z = clamp(position.z, -50, 50)
 	
-	# Handle rotation
 	var is_using_controller = Input.get_joy_name(0) != ""
 	if is_using_controller:
 		var look_x = Input.get_axis("navigate_left", "navigate_right")
@@ -107,7 +101,6 @@ func _physics_process(delta: float) -> void:
 				var look_pos = intersect
 				look_at(Vector3(look_pos.x, global_position.y, look_pos.z), Vector3.UP)
 
-# Tool management
 func switch_tool_next():
 	var tools = [Tool.NONE, Tool.GUN, Tool.MINING_LASER]
 	var current_index = tools.find(current_tool)
@@ -126,7 +119,6 @@ func switch_tool(new_tool: Tool):
 	$MiningLaser.visible = (current_tool == Tool.MINING_LASER)
 	$MiningLaser/Cone.monitoring = (current_tool == Tool.MINING_LASER)
 
-# Tool actions
 func shoot_bullet():
 	var bullet = bullet_scene.instantiate()
 	var level = get_tree().root.get_node_or_null("Level")
@@ -144,7 +136,6 @@ func mine_ore():
 			carried_ore += 1
 			emit_signal("ore_carried", 1)
 
-# Building placement
 func start_placement(scene_path: String, building_name: String):
 	if is_placing:
 		cancel_placement()
@@ -182,7 +173,7 @@ func start_placement(scene_path: String, building_name: String):
 func update_preview_position():
 	if preview_instance:
 		var preview_pos = global_position + (-transform.basis.z.normalized() * preview_distance)
-		preview_pos.x = round(preview_pos.x / grid_size) * grid_size
+		preview_pos.x = round(preview_pos.x / 2.0 * grid_size) * grid_size
 		preview_pos.z = round(preview_pos.z / grid_size) * grid_size
 		preview_pos.y = 0
 		preview_instance.global_position = preview_pos
@@ -247,12 +238,16 @@ func place_building():
 				building.owner = level
 				if hq:
 					level.player_ore = hq.stored_ore
-				building.on_placed()  # Enable interactions
+				building.on_placed()
 				emit_signal("building_placed", preview_building_name, building.global_position)
+				BuildingsManager.register_building_placed(preview_building_name)  # Register placement
 				if preview_building_name == "silo" and hq:
 					hq.add_silo()
 				if BuildingsManager.building_configs.get(preview_building_name, {}).get("unique", false):
 					construction_menu.mark_unique_placed(preview_building_name)
+				# Update construction menu if open
+				if construction_menu and construction_menu.visible:
+					construction_menu.update_menu()
 			else:
 				emit_signal("placement_failed", preview_building_name, "Not enough ore")
 		else:

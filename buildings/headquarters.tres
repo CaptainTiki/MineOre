@@ -19,4 +19,5 @@ is_locked = false
 tags = Array[String](["hq"])
 custom_script_path = "res://buildings/headquarters/headquarters.gd"
 upgrade_cost = 0
+dependencies = Array[String]([])
 metadata/_custom_type_script = "uid://bbac14qb0h4o8"

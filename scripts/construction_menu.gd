@@ -47,7 +47,14 @@ func update_menu():
 		var config = BuildingsManager.building_configs[building]
 		var resource = BuildingsManager.get_building_resource(building)
 		if resource:
-			var ui_is_visible = (building in BuildingsManager.unlocked_buildings or not resource.is_researchable) and not resource.is_locked
+			# Check if building is unlocked, not locked, dependencies met, and purchased (if required)
+			var is_purchased = true
+			if building in ["refinery", "ordnance_facility", "minigun"]:
+				is_purchased = StoreManager.is_purchased("building", building)
+			var ui_is_visible = (building in BuildingsManager.unlocked_buildings and
+							   not resource.is_locked and
+							   BuildingsManager.are_dependencies_met(building) and
+							   is_purchased)
 			if ui_is_visible:
 				var button = Button.new()
 				button.text = "%s (%d ore)" % [resource.display_name, config.cost]

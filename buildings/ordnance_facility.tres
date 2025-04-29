@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="BuildingResource" load_steps=2 format=3 uid="uid://cbidcerdkdmch"]
+
+[ext_resource type="Script" uid="uid://bbac14qb0h4o8" path="res://scripts/building_resource.gd" id="1_5cle8"]
+
+[resource]
+script = ExtResource("1_5cle8")
+building_name = "ordnance_facility"
+display_name = "Ordnance Facility"
+scene_path = "res://buildings/ordnance_facility/ordnance_facility.tscn"
+category = ""
+build_cost = 5
+base_health = 8.0
+grid_extents = Vector2i(4, 4)
+is_unique = true
+is_researchable = false
+research_cost = 0
+research_description = ""
+is_locked = true
+tags = Array[String](["production"])
+custom_script_path = ""
+upgrade_cost = 0
+dependencies = Array[String](["headquarters"])

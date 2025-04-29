@@ -1,3 +1,4 @@
+# res://scenes/store_menu.gd
 extends Control
 
 @export var unaffordable_style: StyleBox
@@ -20,11 +21,9 @@ var selected_item: Dictionary = {} # {type: String, id: String}
 var item_buttons: Array[Button] = []
 
 func _ready():
-	# Ensure popup is hidden
 	purchase_popup.visible = false
 	selected_item = {}
 	
-	# Connect signals
 	buildings_tab.pressed.connect(_on_tab_pressed.bind("buildings"))
 	perks_tab.pressed.connect(_on_tab_pressed.bind("perks"))
 	curses_tab.pressed.connect(_on_tab_pressed.bind("curses"))
@@ -33,11 +32,9 @@ func _ready():
 	buy_button.pressed.connect(_on_buy_confirmed)
 	cancel_button.pressed.connect(_on_buy_cancelled)
 	
-	# Update CLP and populate store
 	update_clp_display()
 	_on_tab_pressed("buildings")
 	
-	# Set initial focus for controller navigation
 	buildings_tab.grab_focus()
 
 func _input(event):
@@ -49,8 +46,7 @@ func _input(event):
 	if event.is_action_pressed("leveldebug"):
 		GameState.clp += 150
 		update_clp_display()
-		_on_tab_pressed(current_tab) # Refresh store to update button states
-		print("Added 150 CLP. Total: %d" % GameState.clp)
+		_on_tab_pressed(current_tab)
 
 func update_clp_display():
 	clp_label.text = "CLP: %d" % GameState.clp
@@ -59,27 +55,22 @@ func _on_tab_pressed(tab: String):
 	current_tab = tab
 	populate_store()
 	
-	# Update tab visuals
 	buildings_tab.disabled = tab == "buildings"
 	perks_tab.disabled = tab == "perks"
 	curses_tab.disabled = tab == "curses"
 	player_unlocks_tab.disabled = tab == "player_unlocks"
 
 func populate_store():
-	# Clear existing items
 	for child in item_container.get_children():
 		child.queue_free()
 	item_buttons.clear()
 	
-	# Get available items
 	var available_items = StoreManager.get_available_items(GameState.player_level)
 	var items = available_items[current_tab]
 	
-	# Add items to container
 	for item in items:
 		add_store_item(current_tab, item.id, item.clp_cost)
 	
-	# Set up focus neighbors for controller navigation
 	for i in item_buttons.size():
 		var button = item_buttons[i]
 		if i > 0:
@@ -100,14 +91,12 @@ func add_store_item(item_type: String, item_id: String, clp_cost: int):
 	
 	if is_purchased:
 		button.disabled = true
-		# Use default disabled style (from ButtonTheme.tres)
 	elif not can_afford:
 		button.disabled = true
 		button.add_theme_stylebox_override("disabled", unaffordable_style)
 	else:
 		button.disabled = false
 	
-	# Connect signals
 	button.mouse_entered.connect(_on_item_hovered.bind(item_type, item_id))
 	button.focus_entered.connect(_on_item_hovered.bind(item_type, item_id))
 	button.pressed.connect(_on_item_selected.bind(normalized_type, item_id))
@@ -159,8 +148,8 @@ func _on_buy_confirmed():
 	if StoreManager.purchase_item(item_type, item_id):
 		print("Purchased %s: %s" % [item_type, item_id])
 		update_clp_display()
-		_on_buy_cancelled() # Hide popup
-		_on_tab_pressed(current_tab) # Refresh store
+		_on_buy_cancelled()
+		_on_tab_pressed(current_tab)
 	else:
 		print("Failed to purchase %s: %s" % [item_type, item_id])
 		_on_buy_cancelled()
@@ -178,15 +167,23 @@ func _on_buy_cancelled():
 func get_item_description(item_type: String, item_id: String) -> String:
 	match item_type:
 		"building":
-			var building = BuildingsManager.get_building_resource(item_id)
-			return building.research_description if building else "Unlocks " + item_id.capitalize()
+			match item_id:
+				"refinery":
+					return "Converts 2 raw ore into 1 refined ore every 5 seconds."
+				"ordnance_facility":
+					return "Unlocks Minigun Turrets for advanced defense."
+				"minigun":
+					return "High fire-rate turret for rapid enemy suppression."
+				_:
+					var building = BuildingsManager.get_building_resource(item_id)
+					return building.research_description if building and building.research_description else "Unlocks " + item_id.capitalize()
 		"perk":
 			var perk = PerksManager.get_perk_by_id(item_id)
 			return perk.description if perk else "Boosts " + item_id.capitalize()
 		"curse":
-			return "Applies " + item_id.capitalize() + " effect" # Placeholder
+			return "Applies " + item_id.capitalize() + " effect"
 		"player":
-			return "Grants " + item_id.capitalize() + " ability" # Placeholder
+			return "Grants " + item_id.capitalize() + " ability"
 	return "No description available"
 
 func get_item_cost(item_type: String, item_id: String) -> int:

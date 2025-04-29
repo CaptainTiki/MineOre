@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://deo6a22xw7hyb"]
+[gd_scene load_steps=37 format=3 uid="uid://deo6a22xw7hyb"]
 
 [ext_resource type="Script" uid="uid://r4esfi5mnbp1" path="res://StarMenu/star_menu.gd" id="1_bawdr"]
 [ext_resource type="Script" uid="uid://dpwfiplimgruh" path="res://StarMenu/star_map_view.gd" id="2_1sd4k"]
@@ -15,7 +15,12 @@
 [ext_resource type="PackedScene" uid="uid://dsdstadgt0cya" path="res://StarMenu/line_node.tscn" id="12_7xwej"]
 [ext_resource type="Shader" uid="uid://dj6xv4buhn5k8" path="res://shaders/star_two.gdshader" id="12_tklnn"]
 [ext_resource type="Texture2D" uid="uid://cankff3vb3x2b" path="res://assets/noise.jpg" id="13_6rj7k"]
+[ext_resource type="PackedScene" uid="uid://cwuxn3wuqgyot" path="res://scenes/planets/alpha_one.tscn" id="15_mka18"]
+[ext_resource type="PackedScene" uid="uid://m6uuy28dyy0p" path="res://scenes/planets/alpha_two.tscn" id="16_2c6ep"]
 [ext_resource type="PackedScene" uid="uid://dl6b4yo1gr0vq" path="res://scenes/planets/test2.glb" id="16_wlyw0"]
+[ext_resource type="PackedScene" uid="uid://cei8apdje0oue" path="res://scenes/planets/alpha_three.tscn" id="17_r00cw"]
+[ext_resource type="Script" uid="uid://7aiooamcrrxk" path="res://StarMenu/StarSystemResource.gd" id="18_mkmnx"]
+[ext_resource type="PackedScene" uid="uid://dd23dgl0xq2w1" path="res://scenes/planets/alpha_star.tscn" id="19_djhki"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8ydva"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -81,6 +86,16 @@ height = 2.4
 
 [sub_resource type="SphereMesh" id="SphereMesh_sw5rk"]
 
+[sub_resource type="Resource" id="Resource_xoo3n"]
+script = ExtResource("18_mkmnx")
+system_name = "Vulnatry"
+star_scene = ExtResource("19_djhki")
+planets = Array[PackedScene]([ExtResource("15_mka18"), ExtResource("16_2c6ep"), ExtResource("17_r00cw")])
+difficulty = 1
+description = "Average Yellow"
+locked = true
+metadata/_custom_type_script = "uid://7aiooamcrrxk"
+
 [sub_resource type="SphereMesh" id="SphereMesh_tklnn"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_6rj7k"]
@@ -118,7 +133,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SystemInfoPanel" type="Panel" parent="StarMapView/UI"]
-visible = false
 layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -129,7 +143,6 @@ offset_bottom = 420.0
 theme_override_styles/panel = SubResource("StyleBoxTexture_abc12")
 
 [node name="InfoContainer" type="VBoxContainer" parent="StarMapView/UI/SystemInfoPanel"]
-visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -183,10 +196,17 @@ offset_bottom = 40.0
 [node name="PlanetNameLabel" type="Label" parent="SystemView/UI/PlanetInfoPanel/InfoContainer"]
 layout_mode = 2
 
+[node name="DescriptionLabel" type="Label" parent="SystemView/UI/PlanetInfoPanel/InfoContainer"]
+layout_mode = 2
+text = "Description: -"
+
 [node name="DifficultyLabel" type="Label" parent="SystemView/UI/PlanetInfoPanel/InfoContainer"]
 layout_mode = 2
 
 [node name="TypeLabel" type="Label" parent="SystemView/UI/PlanetInfoPanel/InfoContainer"]
+layout_mode = 2
+
+[node name="PointsRequiredLabel" type="Label" parent="SystemView/UI/PlanetInfoPanel/InfoContainer"]
 layout_mode = 2
 
 [node name="LockedLabel" type="Label" parent="SystemView/UI/PlanetInfoPanel/InfoContainer"]
@@ -421,7 +441,7 @@ star_mesh = SubResource("SphereMesh_sw5rk")
 
 [node name="AlphaSystem2" parent="StarSystems" instance=ExtResource("9_703u0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.3685, 22.6653, 3.05176e-05)
-system_resource = ExtResource("3_703u0")
+system_resource = SubResource("Resource_xoo3n")
 star_mesh = SubResource("SphereMesh_tklnn")
 
 [node name="BetaSystem2" parent="StarSystems" instance=ExtResource("9_703u0")]

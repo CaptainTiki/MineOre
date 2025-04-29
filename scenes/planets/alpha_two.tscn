@@ -49,6 +49,7 @@ _data = {
 [node name="AlphaTwo" type="Area3D"]
 script = ExtResource("1_mb06c")
 planet_name = "Alpha Two"
+points_required = 1
 level_path = "res://levels/debug_level.tscn"
 planet_type = "Lush"
 waves = 5
