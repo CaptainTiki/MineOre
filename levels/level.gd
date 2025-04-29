@@ -28,6 +28,7 @@ var player_ore = 0
 var planet_name = "alpha_one"
 var has_hq = false
 var night_start_time = 0.0
+var mission_stats = {"ore_launched": 0, "time_taken": 0.0, "waves_survived": 0, "enemies_killed": 0}
 
 func _ready():
 	if not camera:
@@ -59,6 +60,7 @@ func _process(delta):
 		State.DAY:
 			if sun: sun.light_energy = 1.0
 			day_timer -= delta
+			mission_stats.time_taken += delta
 			if day_timer <= 0:
 				start_night()
 		State.NIGHT:
@@ -72,6 +74,9 @@ func _process(delta):
 			pass
 	
 	if Input.is_action_just_pressed("leveldebug"):
+		mission_stats.ore_launched = 30
+		mission_stats.waves_survived = 2
+		mission_stats.enemies_killed = 10
 		end_level(true)
 	
 	update_ui()
@@ -102,35 +107,47 @@ func start_day():
 		spawner_manager.end_night()
 	if wave_count >= total_waves:
 		end_level(true)
-	print("Starting day, timer: %.1f" % day_timer) # Debug
+	print("Starting day, timer: %.1f" % day_timer)
 
 func start_night():
 	wave_count += 1
+	mission_stats.waves_survived = wave_count
 	current_state = State.NIGHT
 	night_start_time = Time.get_ticks_msec() / 1000.0
 	if spawner_manager:
 		spawner_manager.start_night(wave_count)
-	print("Starting night, wave: %d" % wave_count) # Debug
+	print("Starting night, wave: %d" % wave_count)
 
 func end_level(won: bool):
 	if won:
 		current_state = State.WON
 		print("Level Complete! You Win!")
 		end_label.text = "Victory!"
-		GameState.complete_planet(planet_name)
+		$UI/EndPanel/RestartButton.visible = false
+		$UI/EndPanel/QuitButton.visible = false
 	else:
 		current_state = State.LOST
 		print("Game Over! HQ Destroyed!")
 		end_label.text = "Defeat!"
+		get_tree().paused = true
 	end_panel.visible = true
 	wave_label.text = ""
 	enemies_label.text = ""
-	get_tree().paused = true
+	# Record mission stats and complete planet
+	GameState.complete_planet(
+		planet_name, 
+		won, 
+		mission_stats.ore_launched, 
+		mission_stats.time_taken, 
+		mission_stats.waves_survived, 
+		mission_stats.enemies_killed
+	)
+	print("Changing to starmap")
 	await get_tree().create_timer(2.0).timeout
-	get_tree().change_scene_to_file("res://scenes/star_map.tscn")
+	get_tree().change_scene_to_file("res://StarMenu/star_menu.tscn")
 
 func _on_placement_failed(building_name: String, reason: String):
-	print("Placement failed for ", building_name, ": ", reason)
+	print("Placement failed for %s: %s" % [building_name, reason])
 	# TODO: Add UI popup or label to show failure reason to player
 
 func _on_hq_destroyed():
@@ -144,6 +161,7 @@ func _on_ore_carried(_amount):
 
 func _on_ore_deposited(amount):
 	player_ore += amount
+	mission_stats.ore_launched = player_ore
 	update_ui()
 
 func _on_restart_pressed():
@@ -151,7 +169,8 @@ func _on_restart_pressed():
 	get_tree().reload_current_scene()
 
 func _on_quit_pressed():
-	get_tree().change_scene_to_file("res://scenes/star_map.tscn")
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://StarMenu/star_menu.tscn")
 
 func update_ui():
 	if current_state == State.DAY:

@@ -20,7 +20,7 @@ var gib_scene = preload("res://scenes/gib.tscn")
 
 func _ready():
 	add_to_group("enemies")
-	target = get_tree().get_first_node_in_group("hq")
+	target = get_tree().get_first_node_in_group("headquarters")
 	nav_agent.path_desired_distance = attack_range
 	nav_agent.target_desired_distance = attack_range
 	nav_agent.avoidance_enabled = true  # Enable avoidance

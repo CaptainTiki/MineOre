@@ -54,6 +54,11 @@ func unlock_perk(perk_id: String):
 	else:
 		push_error("Perk not found: " + perk_id)
 
+func is_perk_unlocked(perk_id: String) -> bool:
+	if perk_id in perks:
+		return perks[perk_id].unlocked
+	return false
+
 func get_all_perks() -> Array:
 	return perks.values()
 
