@@ -40,6 +40,7 @@ func _ready():
 		player.building_placed.connect(_on_building_placed)
 		player.ore_carried.connect(_on_ore_carried)
 		player.placement_failed.connect(_on_placement_failed)
+		player.set_process_input(false)  # Disable player input during loading
 	else:
 		push_error("Player node not found")
 	end_panel.visible = false
@@ -50,6 +51,10 @@ func _ready():
 		for wave_res in spawner.waves:
 			max_waves = max(max_waves, wave_res.wave_counts.size())
 	total_waves = max(total_waves, max_waves)
+	
+	# Initialize enemy pool and wait for completion
+	spawner_manager.initialize_pool()
+	await spawner_manager.pool_ready
 	
 	update_ui()
 

@@ -44,12 +44,8 @@ func _on_planet_confirm():
 func _on_load_level_selected():
 	print("on load level selected")
 	var fade_rect = $FadeRect/ColorRect
-	var tween = create_tween()
-	tween.tween_property(fade_rect, "color", Color(0, 0, 0, 1), 0.5)
-	tween.tween_callback(func():
-		var new_level = load(current_planet.level_path)
-		get_tree().change_scene_to_packed(new_level)
-	)
+	LoadManager.next_level_path = current_planet.level_path
+	get_tree().change_scene_to_file("res://menus/loading_menu.tscn")
 
 func on_cancel_pressed():
 	match current_state:

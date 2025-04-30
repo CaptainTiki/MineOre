@@ -32,6 +32,22 @@ func validate_waves():
 			elif wave.wave_counts[i] < 0:
 				wave.wave_counts[i] = 0
 
+func get_max_wave_counts() -> Dictionary:
+	var max_counts = {"scrapper": 0, "striker": 0}
+	for wave_res in waves:
+		for i in range(wave_res.wave_counts.size()):
+			var count = wave_res.wave_counts[i]
+			var type = "scrapper" if wave_res.enemy_scene == get_enemy_scene("scrapper") else "striker"
+			max_counts[type] = max(max_counts[type], count)
+	return max_counts
+
+func get_enemy_scene(type: String) -> PackedScene:
+	for wave_res in waves:
+		var scene_type = "scrapper" if wave_res.enemy_scene == get_tree().get_root().get_node("Level").get_node("SpawnerManager").enemy_scenes.get("scrapper") else "striker"
+		if scene_type == type:
+			return wave_res.enemy_scene
+	return null
+
 func activate_for_wave(wave: int):
 	current_wave = wave
 	enemies_to_spawn.clear()
@@ -83,17 +99,14 @@ func get_random_position_in_area() -> Vector3:
 		if random_vec.length() <= radius:
 			pos += random_vec
 		else:
-			# Normalize to sphere surface and scale randomly
 			pos += random_vec.normalized() * randf_range(0.0, radius)
 	elif shape is CylinderShape3D:
 		var radius = shape.radius
 		var height = shape.height
-		# Pick a random point in the circular base (XZ plane)
 		var angle = randf_range(0.0, 2.0 * PI)
-		var r = radius * sqrt(randf_range(0.0, 1.0))  # Square root for uniform distribution
+		var r = radius * sqrt(randf_range(0.0, 1.0))
 		var x = r * cos(angle)
 		var z = r * sin(angle)
-		# Pick a random height along Y
 		var y = randf_range(-height / 2.0, height / 2.0)
 		pos += Vector3(x, y, z)
 	return pos
@@ -101,34 +114,29 @@ func get_random_position_in_area() -> Vector3:
 func try_spawn_at_position(pos: Vector3) -> bool:
 	if not area:
 		return false
-	# Create a physics query to check for overlapping bodies
 	var space_state = get_world_3d().direct_space_state
 	var shape = CylinderShape3D.new()
-	shape.radius = 1.0  # Minimum distance to avoid overlap (adjust based on enemy size)
+	shape.radius = 1.0
 	shape.height = 1.0
 	var query = PhysicsShapeQueryParameters3D.new()
 	query.shape = shape
-	query.transform = Transform3D(Basis(), pos + Vector3(0, 0.5, 0))  # Center at spawn position
-	query.collision_mask = 2  # Only check for enemies (collision layer 2)
+	query.transform = Transform3D(Basis(), pos + Vector3(0, 0.5, 0))
+	query.collision_mask = 2
 	
 	var result = space_state.intersect_shape(query)
 	if result.size() > 0:
-		return false  # Overlap detected, don't spawn
-	
-	# Proceed to spawn
-	var entry = enemies_to_spawn[0]
-	var enemy_scene = entry["enemy"]
-	if not enemy_scene:
-		enemies_to_spawn.remove_at(0)
 		return false
-	var enemy = enemy_scene.instantiate()
-	enemy.global_position = pos
-	get_tree().get_root().get_node("Level").add_child(enemy)
-	emit_signal("enemy_spawned", enemy)
-	entry["count"] -= 1
-	if entry["count"] <= 0:
-		enemies_to_spawn.remove_at(0)
-	if enemies_to_spawn.size() == 0:
-		timer.stop()
-		is_active = false
-	return true
+	
+	var entry = enemies_to_spawn[0]
+	var enemy = get_parent().request_enemy(entry["enemy"])
+	if enemy:
+		enemy.reset(pos)
+		emit_signal("enemy_spawned", enemy)
+		entry["count"] -= 1
+		if entry["count"] <= 0:
+			enemies_to_spawn.remove_at(0)
+		if enemies_to_spawn.size() == 0:
+			timer.stop()
+			is_active = false
+		return true
+	return false

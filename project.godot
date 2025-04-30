@@ -26,6 +26,7 @@ UnlockManager="*res://managers/unlock_manager.gd"
 StoreManager="*res://managers/store_manager.gd"
 StatsManager="*res://managers/stats_manager.gd"
 GameState="*res://managers/game_state.gd"
+LoadManager="*res://managers/load_manager.gd"
 
 [display]
 

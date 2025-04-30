@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+signal died
+
 var speed = 5.0
 var target = null
 var view_distance = 10.0
@@ -11,8 +13,8 @@ var damage = 1
 var attack_rate = 1.0
 var attack_timer = 0.0
 var health = 25
-var separation_distance = 1.0  # Minimum distance to keep from other enemies
-var attack_range = 1.5  # Distance to stop from target
+var separation_distance = 1.0
+var attack_range = 1.5
 @onready var nav_agent = $NavigationAgent3D
 @onready var damage_area = $DamageArea
 
@@ -23,11 +25,24 @@ func _ready():
 	target = get_tree().get_first_node_in_group("headquarters")
 	nav_agent.path_desired_distance = attack_range
 	nav_agent.target_desired_distance = attack_range
-	nav_agent.avoidance_enabled = true  # Enable avoidance
-	nav_agent.max_neighbors = 10  # Consider up to 10 nearby agents
-	nav_agent.neighbor_distance = 5.0  # Distance to check for neighbors
+	nav_agent.avoidance_enabled = true
+	nav_agent.max_neighbors = 10
+	nav_agent.neighbor_distance = 5.0
 	damage_area.body_entered.connect(_on_body_entered)
 	damage_area.body_exited.connect(_on_body_exited)
+	update_path()
+
+func reset(pos: Vector3):
+	global_position = pos
+	health = 25
+	velocity = Vector3.ZERO
+	target = get_tree().get_first_node_in_group("headquarters")
+	path = []
+	path_index = 0
+	path_update_timer = 0.0
+	attack_timer = 0.0
+	visible = true
+	set_physics_process(true)
 	update_path()
 
 func _physics_process(delta):
@@ -38,17 +53,16 @@ func _physics_process(delta):
 		path_update_timer = path_update_interval
 	
 	if target and is_instance_valid(target):
-		# Apply separation force
 		var separation = compute_separation()
 		velocity += separation
 		
 		if nav_agent.is_navigation_finished():
-			velocity = Vector3.ZERO  # Stop moving if at target
+			velocity = Vector3.ZERO
 		else:
 			var next_pos = nav_agent.get_next_path_position()
 			var move_dir = (next_pos - global_position).normalized()
 			velocity = move_dir * speed
-			nav_agent.set_velocity(velocity)  # Update velocity for avoidance
+			nav_agent.set_velocity(velocity)
 		
 		move_and_slide()
 		look_at_target(delta)
@@ -63,15 +77,15 @@ func compute_separation() -> Vector3:
 	var enemies = get_tree().get_nodes_in_group("enemies")
 	var count = 0
 	for enemy in enemies:
-		if enemy != self and is_instance_valid(enemy):
+		if enemy != self and is_instance_valid(enemy) and enemy.visible:
 			var dist = global_position.distance_to(enemy.global_position)
 			if dist < separation_distance and dist > 0:
 				var push = (global_position - enemy.global_position).normalized()
-				separation += push / max(dist, 0.1)  # Avoid division by zero
+				separation += push / max(dist, 0.1)
 				count += 1
 	if count > 0:
 		separation /= count
-		separation *= speed * 0.5  # Scale separation force
+		separation *= speed * 0.5
 	return separation
 
 func check_for_targets():
@@ -101,7 +115,7 @@ func check_for_targets():
 func update_path():
 	if target and is_instance_valid(target):
 		nav_agent.set_target_position(target.global_position)
-		path = []  # Clear manual path since we're using nav_agent
+		path = []
 		path_index = 0
 
 func look_at_target(delta):
@@ -120,7 +134,11 @@ func die():
 	var gib = gib_scene.instantiate()
 	gib.global_position = global_position
 	get_parent().add_child(gib)
-	queue_free()
+	global_position = Vector3(999, 999, 999)
+	visible = false
+	set_physics_process(false)
+	emit_signal("died")
+	# Don't queue_free(); returned to pool by SpawnerManager
 
 func _on_body_entered(body):
 	if body == target and body.has_method("take_damage"):

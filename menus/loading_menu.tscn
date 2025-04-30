@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://cngmyea5mre6a"]
+
+[ext_resource type="Script" uid="uid://cxeh421jadbam" path="res://menus/loading_menu.gd" id="1_4e30e"]
+[ext_resource type="FontFile" uid="uid://t5ooplu0p4w6" path="res://assets/fonts/Audiowide/Audiowide-Regular.ttf" id="1_gn3ar"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_4e30e"]
+font = ExtResource("1_gn3ar")
+font_size = 64
+
+[node name="LoadingMenu" type="CanvasLayer"]
+script = ExtResource("1_4e30e")
+
+[node name="BlackoutRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="LoadingLabel" type="Label" parent="BlackoutRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Loading..."
+label_settings = SubResource("LabelSettings_4e30e")
