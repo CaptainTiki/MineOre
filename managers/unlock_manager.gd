@@ -54,7 +54,7 @@ func unlock_buildings(buildings: Array[String]):
 			BuildingsManager.globally_unlocked_buildings.append(building)
 			if building in BuildingsManager.locked_buildings:
 				BuildingsManager.locked_buildings.erase(building)
-			print("Unlocked building: %s" % building)
+			print("Unlocked building: %s, globally_unlocked: %s, locked_buildings: %s" % [building, BuildingsManager.globally_unlocked_buildings, BuildingsManager.locked_buildings])
 
 func unlock_perks(perks: Array[String]):
 	for perk in perks:

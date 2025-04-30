@@ -10,7 +10,7 @@ var path_update_interval = 0.5
 var damage = 5
 var attack_rate = 0.5  # Damage every 1s
 var attack_timer = 0.0
-var health = 20
+var health = 45
 @onready var nav_agent = $NavigationAgent3D
 @onready var damage_area = $DamageArea
 

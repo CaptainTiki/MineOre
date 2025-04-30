@@ -173,7 +173,7 @@ func start_placement(scene_path: String, building_name: String):
 func update_preview_position():
 	if preview_instance:
 		var preview_pos = global_position + (-transform.basis.z.normalized() * preview_distance)
-		preview_pos.x = round(preview_pos.x / 2.0 * grid_size) * grid_size
+		preview_pos.x = round(preview_pos.x / grid_size) * grid_size
 		preview_pos.z = round(preview_pos.z / grid_size) * grid_size
 		preview_pos.y = 0
 		preview_instance.global_position = preview_pos
@@ -240,14 +240,13 @@ func place_building():
 					level.player_ore = hq.stored_ore
 				building.on_placed()
 				emit_signal("building_placed", preview_building_name, building.global_position)
-				BuildingsManager.register_building_placed(preview_building_name)  # Register placement
+				BuildingsManager.register_building_placed(preview_building_name)
 				if preview_building_name == "silo" and hq:
 					hq.add_silo()
 				if BuildingsManager.building_configs.get(preview_building_name, {}).get("unique", false):
 					construction_menu.mark_unique_placed(preview_building_name)
-				# Update construction menu if open
-				if construction_menu and construction_menu.visible:
-					construction_menu.update_menu()
+				if construction_menu:
+					construction_menu.update_menu()  # Update menu after placement
 			else:
 				emit_signal("placement_failed", preview_building_name, "Not enough ore")
 		else:

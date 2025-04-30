@@ -21,7 +21,7 @@ var ground_size = Vector2(100, 100)
 
 enum State { PLACING, DAY, NIGHT, WON, LOST }
 var current_state = State.PLACING
-var day_duration = 120.0
+var day_duration = 60.0
 var day_timer = 0.0
 var wave_count = 0
 var total_waves = 2
@@ -95,8 +95,6 @@ func _on_building_placed(building_name: String, _place_position: Vector3):
 			hq.health_changed.connect(_on_hq_health_changed)
 			hq_health_label.text = "HQ Health: %d" % hq.health
 			print("HQ placed, starting day/night cycle")
-		if construction_menu:
-			construction_menu.update_menu()  # Update menu to show new buildings
 	else:
 		if not has_hq:
 			return

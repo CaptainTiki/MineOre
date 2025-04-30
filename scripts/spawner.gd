@@ -3,7 +3,7 @@ extends Node3D
 signal enemy_spawned(enemy)
 
 @export var waves: Array[Spawn] = []
-@export var spawn_rate: float = 0.5
+@export var spawn_rate: float = 0.2
 @export var max_spawn_retries: int = 10  # Limit retries to prevent infinite loops
 
 var current_wave: int = 0

@@ -6,9 +6,9 @@ var bullet_scene = preload("res://scenes/he_bullet.tscn")
 @onready var gun = $Gun
 @onready var muzzle: Node3D = $Gun/Muzzle
 
-var base_fire_rate = 1.0
-var base_rotation_speed = 5.0
-var base_damage = 5.0
+var base_fire_rate = .75
+var base_rotation_speed = 6.0
+var base_damage = 20.0
 
 var fire_rate: float
 var rotation_speed: float

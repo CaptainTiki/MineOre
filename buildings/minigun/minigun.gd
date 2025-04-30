@@ -6,9 +6,9 @@ var bullet_scene = preload("res://scenes/bullet.tscn")
 @onready var gun = $Gun
 @onready var muzzle: Node3D = $Gun/Muzzle
 
-var base_fire_rate = 0.5  # Faster than Turret (1.0)
-var base_rotation_speed = 5.0
-var base_damage = 4.0  # Slightly lower than Turret (5.0) due to faster fire rate
+var base_fire_rate = 0.075
+var base_rotation_speed = 3.0
+var base_damage = 1.0
 
 var fire_rate: float
 var rotation_speed: float

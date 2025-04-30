@@ -19,7 +19,7 @@ metadata/_custom_type_script = "uid://brc5q7rkof4o0"
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ik2nu"]
 height = 1.0
-radius = 1.0
+radius = 4.0
 
 [node name="Spawner" type="Node3D"]
 script = ExtResource("1_2vbf6")

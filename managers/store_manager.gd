@@ -1,7 +1,7 @@
 # res://scripts/store_manager.gd
 extends Node
 
-var purchased_items: Dictionary = {}  # e.g., {"building:refinery": true, "perk:player_speed_1": true}
+var purchased_items: Dictionary = {}
 
 func get_available_items(level: int) -> Dictionary:
 	var items = {
@@ -33,7 +33,7 @@ func get_available_items(level: int) -> Dictionary:
 func can_purchase(item_type: String, item_id: String, clp: int) -> bool:
 	var key = item_type + ":" + item_id
 	if purchased_items.has(key):
-		return false  # Already purchased
+		return false
 	for unlock in UnlockManager.level_unlocks:
 		var unlocks = unlock.get(item_type + "_unlocks")
 		if unlocks == null:
@@ -61,6 +61,7 @@ func purchase_item(item_type: String, item_id: String) -> bool:
 			if item.id == item_id and GameState.clp >= item.clp_cost:
 				GameState.clp -= item.clp_cost
 				purchased_items[key] = true
+				print("Purchased %s: %s, purchased_items: %s" % [item_type, item_id, purchased_items])
 				match item_type:
 					"building":
 						UnlockManager.unlock_buildings([item_id])
