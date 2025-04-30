@@ -94,7 +94,7 @@ _surfaces = [{
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_455xb"]
 radius = 4.5
 
-[node name="HeadQuarters" type="StaticBody3D" groups=["headquarters"]]
+[node name="HeadQuarters" type="StaticBody3D" groups=["buildings", "headquarters"]]
 collision_layer = 64
 script = ExtResource("1_dwusy")
 resource = ExtResource("2_ef1bc")

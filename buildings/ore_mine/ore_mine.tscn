@@ -1,10 +1,10 @@
-[gd_scene load_steps=9 format=4 uid="uid://dnw8phtcorh15"]
+[gd_scene load_steps=14 format=4 uid="uid://dnw8phtcorh15"]
 
 [ext_resource type="Script" uid="uid://cwj5pq3r2y4j2" path="res://buildings/ore_mine/ore_mine.gd" id="1_1y6o8"]
 [ext_resource type="Resource" uid="uid://bfjmbasw11760" path="res://buildings/ore_mine.tres" id="2_7ay46"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_anvoc"]
-size = Vector3(0.334595, 0.613867, 0.332092)
+size = Vector3(1.0563, 2.95342, 0.332092)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1y6o8"]
 albedo_color = Color(0.517184, 0.517184, 0.517184, 1)
@@ -31,6 +31,31 @@ radius = 5.0
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_1y6o8"]
 radius = 2.5
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7ay46"]
+direction = Vector3(0, 0.5, 0)
+spread = 72.481
+initial_velocity_max = 1.0
+gravity = Vector3(0, 2.5, 0)
+
+[sub_resource type="Gradient" id="Gradient_ymrxj"]
+offsets = PackedFloat32Array(0, 0.535545, 1)
+colors = PackedColorArray(0.582, 0.475, 0.437, 0.607, 0.843997, 0.834803, 0.828688, 0.0966067, 0.933802, 0.923316, 0.916342, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xmr04"]
+gradient = SubResource("Gradient_ymrxj")
+fill = 1
+fill_from = Vector2(0.521368, 0.487179)
+fill_to = Vector2(0.478632, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fagkh"]
+transparency = 1
+blend_mode = 1
+albedo_texture = SubResource("GradientTexture2D_xmr04")
+billboard_mode = 2
+
+[sub_resource type="QuadMesh" id="QuadMesh_nhtbc"]
+material = SubResource("StandardMaterial3D_fagkh")
+
 [node name="OreMine" type="StaticBody3D"]
 collision_layer = 16
 collision_mask = 16
@@ -38,7 +63,7 @@ script = ExtResource("1_1y6o8")
 resource = ExtResource("2_7ay46")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00164795, 0.294356, -0.00283813)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0122223, 1.48194, -0.00283813)
 shape = SubResource("BoxShape3D_anvoc")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
@@ -79,19 +104,20 @@ transform = Transform3D(0.328143, 0, 0, 0, 0.344745, 0, 0, 0, 0.313584, 0.12822,
 size = Vector3(0.187996, 1.09017, 0.278564)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(3.2633, 0, 0, 0, 4.84416, 0, 0, 0, 3.63426, 0, 0, 0)
+transform = Transform3D(3.2633, 0, 0, 0, 4.84416, 0, 0, 0, 3.63426, 0, 0.106934, 0)
 mesh = SubResource("ArrayMesh_8rvg4")
 
-[node name="OreDetection" type="Area3D" parent="."]
+[node name="OreDetection" type="Area3D" parent="." groups=["buildings"]]
+collision_layer = 0
+collision_mask = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="OreDetection"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.481293, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512338, 0)
 shape = SubResource("CylinderShape3D_8rvg4")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
 [node name="UIPanel" type="Panel" parent="UILayer"]
-visible = false
 custom_minimum_size = Vector2(100, 50)
 anchors_preset = 8
 anchor_left = 0.5
@@ -128,3 +154,8 @@ collision_layer = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CollectionArea"]
 shape = SubResource("CylinderShape3D_1y6o8")
+
+[node name="SmokeEffect" type="GPUParticles3D" parent="."]
+lifetime = 0.5
+process_material = SubResource("ParticleProcessMaterial_7ay46")
+draw_pass_1 = SubResource("QuadMesh_nhtbc")

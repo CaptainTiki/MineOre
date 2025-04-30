@@ -17,7 +17,6 @@ func load_buildings():
 		var file_name = dir.get_next()
 		while file_name != "":
 			if file_name.ends_with(".tres"):
-				print("Loading building: %s" % file_name)
 				var resource = load("res://buildings/" + file_name) as BuildingResource
 				if resource:
 					var building_name = resource.building_name
@@ -37,14 +36,12 @@ func load_buildings():
 				else:
 					push_warning("Failed to load resource: %s" % file_name)
 			file_name = dir.get_next()
-		print("Loaded building_configs: %s" % building_configs.keys())
 	else:
 		push_error("Failed to open res://buildings/")
 
 func register_building_placed(building_name: String):
 	if building_name in building_configs and building_name not in built_buildings:
 		built_buildings.append(building_name)
-		print("Registered building: %s, built_buildings: %s" % [building_name, built_buildings])
 
 func reset_for_mission():
 	unlocked_buildings.clear()
@@ -57,18 +54,14 @@ func reset_for_mission():
 			unlocked_buildings.append(building_name)
 		else:
 			locked_buildings.append(building_name)
-	print("Reset mission buildings: %s, locked_buildings: %s" % [unlocked_buildings, locked_buildings])
 
 func are_dependencies_met(building_name: String) -> bool:
 	if building_name not in building_configs:
-		print("Dependency check failed: %s not in building_configs" % building_name)
 		return false
 	var config = building_configs[building_name]
 	for dep in config.dependencies:
 		if dep not in built_buildings:
-			print("Dependency check failed: %s requires %s, built_buildings: %s" % [building_name, dep, built_buildings])
 			return false
-	print("Dependencies met for %s" % building_name)
 	return true
 
 func get_building_resource(building_name: String) -> BuildingResource:

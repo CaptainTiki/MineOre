@@ -15,6 +15,7 @@ var health = 45
 @onready var damage_area = $DamageArea
 
 var gib_scene = preload("res://scenes/gib.tscn")
+var is_alive = false
 
 func _ready():
 	add_to_group("enemies")
@@ -28,6 +29,7 @@ func _ready():
 	damage_area.body_entered.connect(_on_body_entered)
 	damage_area.body_exited.connect(_on_body_exited)
 	update_path()
+	is_alive = false
 
 func _physics_process(delta):
 	check_for_targets()
@@ -105,6 +107,7 @@ func die():
 	var gib = preload("res://scenes/gib.tscn").instantiate()
 	gib.global_position = global_position
 	get_parent().add_child(gib)
+	is_alive = false
 	queue_free()
 
 func _on_body_entered(body):

@@ -20,8 +20,8 @@ _surfaces = [{
 }]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5uy6h"]
-radius = 0.477031
-height = 1.01759
+radius = 0.507438
+height = 1.01488
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_7p1mj"]
 radius = 2.0
@@ -40,11 +40,10 @@ mesh = SubResource("CapsuleMesh_md0e3")
 material = SubResource("StandardMaterial3D_4ra3w")
 
 [node name="CSGBakedMeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.153576, 0)
 mesh = SubResource("ArrayMesh_6xk8f")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.632484, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.508667, 0)
 shape = SubResource("CapsuleShape3D_5uy6h")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]

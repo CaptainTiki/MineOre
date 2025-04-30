@@ -21,7 +21,7 @@ radius = 8.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_74yvu"]
 
-[node name="Minigun" type="StaticBody3D"]
+[node name="Minigun" type="StaticBody3D" groups=["buildings"]]
 collision_mask = 4
 script = ExtResource("1_xyz89")
 resource = ExtResource("2_abc90")

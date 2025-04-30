@@ -3,6 +3,7 @@ extends Node
 signal wave_started(wave)
 signal pool_ready
 
+var total_enemies_killed: int = 0
 var current_wave: int = 0
 var is_night: bool = false
 var enemy_pool: Dictionary = {
@@ -75,8 +76,10 @@ func request_enemy(enemy_scene: PackedScene) -> Node:
 func _on_enemy_died(enemy: Node, type: String):
 	enemy.global_position = Vector3(999, 999, 999)
 	enemy.visible = false
+	enemy.is_alive = false
 	enemy.set_physics_process(false)
 	enemy_pool[type].append(enemy)
+	total_enemies_killed += 1
 
 func start_night(wave: int):
 	if not is_night:
@@ -105,3 +108,6 @@ func has_active_spawners() -> bool:
 		if spawner.get("is_active") == true:
 			return true
 	return false
+
+func get_total_enemies_killed() -> int:
+	return total_enemies_killed

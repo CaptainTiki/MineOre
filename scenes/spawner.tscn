@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cx6uhjibhnfip"]
+[gd_scene load_steps=9 format=3 uid="uid://cx6uhjibhnfip"]
 
 [ext_resource type="Script" uid="uid://bkmm1dr373vbq" path="res://scripts/spawner.gd" id="1_2vbf6"]
 [ext_resource type="Script" uid="uid://brc5q7rkof4o0" path="res://scripts/spawn.gd" id="2_tx2ig"]
@@ -21,6 +21,11 @@ metadata/_custom_type_script = "uid://brc5q7rkof4o0"
 height = 1.0
 radius = 4.0
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_6bbd6"]
+top_radius = 4.0
+bottom_radius = 4.0
+height = 0.5
+
 [node name="Spawner" type="Node3D"]
 script = ExtResource("1_2vbf6")
 waves = Array[ExtResource("2_tx2ig")]([SubResource("Resource_cmhla"), SubResource("Resource_4wbs5")])
@@ -31,3 +36,6 @@ waves = Array[ExtResource("2_tx2ig")]([SubResource("Resource_cmhla"), SubResourc
 shape = SubResource("CylinderShape3D_ik2nu")
 
 [node name="Timer" type="Timer" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_6bbd6")

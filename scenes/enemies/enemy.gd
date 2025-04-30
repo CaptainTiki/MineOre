@@ -15,6 +15,8 @@ var attack_timer = 0.0
 var health = 25
 var separation_distance = 1.0
 var attack_range = 1.5
+var is_alive = false
+
 @onready var nav_agent = $NavigationAgent3D
 @onready var damage_area = $DamageArea
 
@@ -30,6 +32,7 @@ func _ready():
 	nav_agent.neighbor_distance = 5.0
 	damage_area.body_entered.connect(_on_body_entered)
 	damage_area.body_exited.connect(_on_body_exited)
+	is_alive = false
 	update_path()
 
 func reset(pos: Vector3):
@@ -44,6 +47,7 @@ func reset(pos: Vector3):
 	visible = true
 	set_physics_process(true)
 	update_path()
+	is_alive = true
 
 func _physics_process(delta):
 	check_for_targets()
@@ -138,6 +142,7 @@ func die():
 	visible = false
 	set_physics_process(false)
 	emit_signal("died")
+	is_alive = false
 	# Don't queue_free(); returned to pool by SpawnerManager
 
 func _on_body_entered(body):

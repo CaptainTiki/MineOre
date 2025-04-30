@@ -50,14 +50,9 @@ func update_menu():
 			var is_purchased = true
 			if building in ["refinery", "ordnance_facility", "minigun"]:
 				is_purchased = StoreManager.is_purchased("building", building)
-				print("Checking %s: is_purchased=%s" % [building, is_purchased])
 			var ui_is_visible = (building in BuildingsManager.unlocked_buildings and
 							   BuildingsManager.are_dependencies_met(building) and
 							   is_purchased)
-			print("Building %s: ui_is_visible=%s, unlocked=%s, is_locked=%s, deps_met=%s" % [
-				building, ui_is_visible, building in BuildingsManager.unlocked_buildings,
-				resource.is_locked, BuildingsManager.are_dependencies_met(building)
-			])
 			if ui_is_visible:
 				var button = Button.new()
 				button.text = "%s (%d ore)" % [resource.display_name, config.cost]

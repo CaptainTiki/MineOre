@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://cgj6byok0secm"]
+
+[ext_resource type="Script" uid="uid://bgdgxakfpufb2" path="res://scenes/mining_effect.gd" id="1_hhfli"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g2els"]
+lifetime_randomness = 0.19
+direction = Vector3(1, -1, 0)
+spread = 57.366
+initial_velocity_max = 4.0
+linear_accel_min = -4.82
+linear_accel_max = 3.96
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7u13p"]
+transparency = 1
+blend_mode = 1
+albedo_color = Color(0.77, 0.35, 0.424, 0.5)
+emission_enabled = true
+emission = Color(0.537011, 0.537011, 0.537011, 1)
+emission_energy_multiplier = 0.52
+billboard_mode = 1
+
+[sub_resource type="SphereMesh" id="SphereMesh_g2els"]
+material = SubResource("StandardMaterial3D_7u13p")
+radius = 0.05
+height = 0.1
+radial_segments = 6
+rings = 3
+
+[node name="MiningEffect" type="GPUParticles3D"]
+transform = Transform3D(0.998423, -0.0472425, -0.0303435, 0.0261995, -0.0859932, 0.995951, -0.0496606, -0.995175, -0.0846198, 0, 0, 0)
+emitting = false
+amount = 30
+amount_ratio = 0.2196
+lifetime = 0.3
+one_shot = true
+explosiveness = 0.25
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_g2els")
+draw_pass_1 = SubResource("SphereMesh_g2els")
+script = ExtResource("1_hhfli")

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b410wfw5c6lx7"]
+
+[ext_resource type="Script" uid="uid://cbwh6qkk24l62" path="res://scenes/gun.gd" id="1_x77fm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g2els"]
+albedo_color = Color(0.0962047, 0.0962048, 0.0962047, 1)
+
+[node name="Gun" type="Node3D"]
+script = ExtResource("1_x77fm")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00368941, -0.0212402, -0.87177)
+size = Vector3(0.194275, 0.248535, 0.485474)
+material = SubResource("StandardMaterial3D_g2els")

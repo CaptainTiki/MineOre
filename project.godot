@@ -39,6 +39,10 @@ window/stretch/mode="canvas_items"
 
 enabled=PackedStringArray()
 
+[global_group]
+
+buildings=""
+
 [input]
 
 leveldebug={

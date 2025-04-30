@@ -13,7 +13,10 @@ var is_active: bool = false
 @onready var area = $Area3D
 @onready var timer = $Timer
 
+@onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D
+
 func _ready():
+	mesh_instance_3d.queue_free()
 	timer.wait_time = spawn_rate
 	timer.connect("timeout", _on_timer_timeout)
 	validate_waves()

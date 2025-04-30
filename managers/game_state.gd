@@ -1,8 +1,9 @@
-# GameState.gd
+# res://scripts/game_state.gd
 extends Node
 
 var player_level: int = 1
 var player_xp: int = 0
+var player_rank: int = 0
 var clp: int = 0  # Corporate Loyalty Points
 var completed_planets: Array[String] = []  # List of completed planet names
 var planet_completion_points: int = 0  # Points for unlocking new systems/planets
@@ -18,9 +19,16 @@ func add_xp(amount: int):
 		var next_level_xp = UnlockManager.get_xp_for_level(player_level + 1)
 		if next_level_xp != -1 and player_xp >= next_level_xp:
 			player_level += 1
-			print("Leveled up to level %d - New store tab unlocked!" % player_level)
+			player_rank = min(player_level - 1, 3)  # Max rank index is 3 (Executive Miner)
+			print("Leveled up to level %d - New store tab unlocked! Rank: %d" % [player_level, player_rank])
 		else:
 			break
+
+func update_level(level: int, points: int, rank: int):
+	player_level = level
+	player_xp = points
+	player_rank = rank
+	print("Updated level: %d, XP: %d, Rank: %d" % [level, points, rank])
 
 func complete_mission(ore_launched: int, time_taken: float, waves_survived: int, enemies_killed: int) -> Dictionary:
 	var clp_earned = ore_launched * 10

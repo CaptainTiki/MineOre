@@ -86,7 +86,9 @@ func take_damage(amount: float):
 	if amount > 0:
 		health -= amount
 		emit_signal("under_attack", resource.building_name)
+		print(str(resource.building_name) + " taking damage!")
 		if health <= 0:
+			print(str(resource.building_name) + " destroyed!")
 			_on_destroyed()
 
 func can_upgrade() -> bool:
@@ -115,5 +117,6 @@ func upgrade():
 			queue_free()
 
 func _on_destroyed():
-	emit_signal("destroyed", resource.building_name if resource else name)
+	print(str(resource.building_name) + " emitting destroyed signal!!")
+	emit_signal("destroyed")
 	queue_free()

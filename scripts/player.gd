@@ -1,5 +1,6 @@
 # res://scripts/player.gd
 extends CharacterBody3D
+class_name Player
 
 # Signals for game events
 signal ore_carried(amount)
@@ -11,7 +12,6 @@ signal interact
 enum Tool { NONE, GUN, MINING_LASER }
 var current_tool = Tool.NONE
 var speed = 5.0
-var bullet_scene = preload("res://scenes/bullet.tscn")
 var carry_capacity = 20
 var carried_ore = 0
 
@@ -28,18 +28,20 @@ var rotation_speed = 5.0
 # Node references
 @onready var camera = get_node_or_null("../Camera")
 @onready var construction_menu = get_tree().get_root().get_node_or_null("Level/UI/ConstructionMenu")
+@onready var gun = $Gun
+@onready var mining_laser = $MiningLaser
 
 func _ready():
 	Input.action_release("use_tool")
 	add_to_group("player")
-	$Gun.visible = false
-	$MiningLaser.visible = false
-	$MiningLaser/Cone.monitoring = false
+	gun.visible = false
+	mining_laser.visible = false
+	mining_laser.cone.monitoring = false
 	if not camera:
 		camera = get_tree().root.get_node_or_null("Level/Camera")
 	print("Player initialized")
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("construction_menu"):
 		if construction_menu.visible:
 			construction_menu.hide_menu()
@@ -56,12 +58,10 @@ func _process(_delta: float) -> void:
 			cancel_placement()
 
 	if not is_placing and not construction_menu.visible:
-		if Input.is_action_just_pressed("use_tool"):
-			match current_tool:
-				Tool.GUN:
-					shoot_bullet()
-				Tool.MINING_LASER:
-					mine_ore()
+		if Input.is_action_pressed("use_tool"):
+			use_tool(true)
+		elif Input.is_action_just_released("use_tool"):
+			use_tool(false)
 		if Input.is_action_just_pressed("interact"):
 			emit_signal("interact")
 
@@ -115,26 +115,16 @@ func switch_tool_prev():
 
 func switch_tool(new_tool: Tool):
 	current_tool = new_tool
-	$Gun.visible = (current_tool == Tool.GUN)
-	$MiningLaser.visible = (current_tool == Tool.MINING_LASER)
-	$MiningLaser/Cone.monitoring = (current_tool == Tool.MINING_LASER)
+	gun.visible = (current_tool == Tool.GUN)
+	mining_laser.visible = (current_tool == Tool.MINING_LASER)
+	mining_laser.cone.monitoring = (current_tool == Tool.MINING_LASER)
 
-func shoot_bullet():
-	var bullet = bullet_scene.instantiate()
-	var level = get_tree().root.get_node_or_null("Level")
-	level.add_child(bullet)
-	bullet.global_position = $Gun.global_position
-	var bullet_speed = 20.0
-	var forward_dir = -transform.basis.z.normalized()
-	bullet.velocity = forward_dir * bullet_speed
-
-func mine_ore():
-	var bodies = $MiningLaser/Cone.get_overlapping_bodies()
-	for body in bodies:
-		if body.is_in_group("ores") and carried_ore < carry_capacity:
-			body.queue_free()
-			carried_ore += 1
-			emit_signal("ore_carried", 1)
+func use_tool(is_pressed: bool):
+	match current_tool:
+		Tool.GUN:
+			gun.use_tool(self, is_pressed)
+		Tool.MINING_LASER:
+			mining_laser.use_tool(self, is_pressed)
 
 func start_placement(scene_path: String, building_name: String):
 	if is_placing:
@@ -166,7 +156,6 @@ func start_placement(scene_path: String, building_name: String):
 	
 	var grid_extents = preview_instance.grid_extents if preview_instance else Vector2i(4, 4)
 	is_placing = true
-	print("Placement started for ", building_name, " with grid extents ", grid_extents)
 	
 	update_preview_position()
 
@@ -264,4 +253,3 @@ func cancel_placement():
 	preview_building_name = ""
 	preview_distance = 4.0
 	preview_material = null
-	print("Placement cancelled")

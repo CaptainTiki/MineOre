@@ -20,7 +20,7 @@ _surfaces = [{
 [sub_resource type="BoxShape3D" id="BoxShape3D_lakrb"]
 size = Vector3(2, 1, 2)
 
-[node name="OrdnanceFacility" type="StaticBody3D"]
+[node name="OrdnanceFacility" type="StaticBody3D" groups=["buildings"]]
 collision_mask = 4
 script = ExtResource("1_abc12")
 resource = ExtResource("2_def34")

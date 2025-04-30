@@ -1,6 +1,8 @@
 # res://scripts/level.gd
 extends Node3D
 
+signal start_day
+
 @onready var player = $Player
 @onready var camera = $Camera
 @onready var day_timer_label = $UI/HBoxContainer/VBoxContainer2/DayTimerLabel
@@ -21,7 +23,7 @@ var ground_size = Vector2(100, 100)
 
 enum State { PLACING, DAY, NIGHT, WON, LOST }
 var current_state = State.PLACING
-var day_duration = 60.0
+var day_duration = 10.0
 var day_timer = 0.0
 var wave_count = 0
 var total_waves = 2
@@ -29,7 +31,8 @@ var player_ore = 0
 var planet_name = "alpha_one"
 var has_hq = false
 var night_start_time = 0.0
-var mission_stats = {"ore_launched": 0, "time_taken": 0.0, "waves_survived": 0, "enemies_killed": 0}
+var mission_stats = {"ore_launched": 0, "time_taken": 0.0, "waves_survived": 0, "enemies_killed": 0, "buildings_destroyed": 0}
+var enemy_count = 0
 
 func _ready():
 	if not camera:
@@ -52,6 +55,11 @@ func _ready():
 			max_waves = max(max_waves, wave_res.wave_counts.size())
 	total_waves = max(total_waves, max_waves)
 	
+	# Connect building destruction signals
+	for building in get_tree().get_nodes_in_group("buildings"):
+		if building.has_signal("destroyed"):
+			building.destroyed.connect(_on_building_destroyed)
+	
 	# Initialize enemy pool and wait for completion
 	spawner_manager.initialize_pool()
 	await spawner_manager.pool_ready
@@ -61,7 +69,7 @@ func _ready():
 func _process(delta):
 	match current_state:
 		State.PLACING:
-			if sun: sun.light_energy = 0.5
+			if sun: sun.light_energy = 0.75
 		State.DAY:
 			if sun: sun.light_energy = 1.0
 			day_timer -= delta
@@ -69,19 +77,23 @@ func _process(delta):
 			if day_timer <= 0:
 				start_night()
 		State.NIGHT:
-			if sun: sun.light_energy = 0.3
+			if sun: sun.light_energy = 0.25
+			mission_stats.time_taken += delta
 			var time_since_night = Time.get_ticks_msec() / 1000.0 - night_start_time
-			var enemy_count = get_tree().get_nodes_in_group("enemies").size()
+			enemy_count = 0
+			for enemy in get_tree().get_nodes_in_group("enemies"):
+				if enemy.get("is_alive") == true:
+					enemy_count += 1
 			if time_since_night > 1.0:
 				if enemy_count == 0 and wave_count > 0 and not spawner_manager.has_active_spawners():
-					start_day()
+					start_day_func()
 		State.WON, State.LOST:
 			pass
 	
 	if Input.is_action_just_pressed("leveldebug"):
 		mission_stats.ore_launched = 30
 		mission_stats.waves_survived = 2
-		mission_stats.enemies_killed = 10
+		mission_stats.enemies_killed = spawner_manager.get_total_enemies_killed() + 10
 		end_level(true)
 	
 	update_ui()
@@ -89,7 +101,7 @@ func _process(delta):
 func assign_planet(passed_in_name: String):
 	planet_name = passed_in_name
 
-func _on_building_placed(building_name: String, _place_position: Vector3):
+func _on_building_placed(building_name: String, place_position: Vector3):
 	if building_name == "headquarters":
 		has_hq = true
 		current_state = State.DAY
@@ -103,15 +115,23 @@ func _on_building_placed(building_name: String, _place_position: Vector3):
 	else:
 		if not has_hq:
 			return
-		update_ui()
+		# Find recently placed building by position
+		for building in get_tree().get_nodes_in_group("buildings"):
+			if building.global_position.distance_to(place_position) < 0.1:
+				if building.has_signal("destroyed"):
+					building.destroyed.connect(_on_building_destroyed)
+					print("Connected destroyed signal for %s at %s" % [building_name, place_position])
+				break
+	update_ui()
 
-func start_day():
+func start_day_func():
 	current_state = State.DAY
 	day_timer = day_duration
 	if spawner_manager:
 		spawner_manager.end_night()
 	if wave_count >= total_waves:
 		end_level(true)
+	start_day.emit()
 	print("Starting day, timer: %.1f" % day_timer)
 
 func start_night():
@@ -124,20 +144,22 @@ func start_night():
 	print("Starting night, wave: %d" % wave_count)
 
 func end_level(won: bool):
+	mission_stats.enemies_killed = spawner_manager.get_total_enemies_killed()
 	if won:
 		current_state = State.WON
 		print("Level Complete! You Win!")
-		end_label.text = "Victory!"
-		$UI/EndPanel/RestartButton.visible = false
-		$UI/EndPanel/QuitButton.visible = false
+		# Show end mission screen
+		var end_mission = preload("res://menus/end_mission.tscn").instantiate()
+		add_child(end_mission)
+		end_mission.display_results(mission_stats, true)
 	else:
 		current_state = State.LOST
 		print("Game Over! HQ Destroyed!")
 		end_label.text = "Defeat!"
 		get_tree().paused = true
-	end_panel.visible = true
-	wave_label.text = ""
-	enemies_label.text = ""
+		end_panel.visible = true
+		wave_label.text = ""
+		enemies_label.text = ""
 	GameState.complete_planet(
 		planet_name, 
 		won, 
@@ -146,9 +168,6 @@ func end_level(won: bool):
 		mission_stats.waves_survived, 
 		mission_stats.enemies_killed
 	)
-	print("Changing to starmap")
-	await get_tree().create_timer(2.0).timeout
-	get_tree().change_scene_to_file("res://StarMenu/star_menu.tscn")
 
 func _on_placement_failed(building_name: String, reason: String):
 	print("Placement failed for %s: %s" % [building_name, reason])
@@ -167,6 +186,10 @@ func _on_ore_deposited(amount):
 	player_ore += amount
 	mission_stats.ore_launched = player_ore
 	update_ui()
+
+func _on_building_destroyed():
+	mission_stats.buildings_destroyed += 1
+	print("Building destroyed, total: %d" % mission_stats.buildings_destroyed)
 
 func _on_restart_pressed():
 	get_tree().paused = false
@@ -188,6 +211,6 @@ func update_ui():
 	elif current_state == State.PLACING:
 		day_timer_label.text = "Place HQ"
 	wave_label.text = "Wave: %d/%d" % [wave_count, total_waves]
-	enemies_label.text = "Enemies: %d" % get_tree().get_nodes_in_group("enemies").size()
+	enemies_label.text = "Enemies: %d" % enemy_count
 	ore_label.text = "Stored: %d" % player_ore
 	carried_ore_label.text = "Carried: %d" % player.carried_ore
