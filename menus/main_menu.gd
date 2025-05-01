@@ -1,9 +1,11 @@
 extends Control
 
-@onready var star_map_bn: Button = $Menu_Container/CenterContainer2/ButtonContainer/StarMapBn
-@onready var store_bn: Button = $Menu_Container/CenterContainer2/ButtonContainer/StoreBn
-@onready var perf_review_bn: Button = $Menu_Container/CenterContainer2/ButtonContainer/PerfReviewBn
-@onready var exit_bn: Button = $Menu_Container/CenterContainer2/ButtonContainer/ExitBn
+@onready var star_map_bn: Button = $MarginContainer/Menu_Container/CenterContainer2/ButtonContainer/StarMapBn
+@onready var store_bn: Button = $MarginContainer/Menu_Container/CenterContainer2/ButtonContainer/StoreBn
+@onready var perf_review_bn: Button = $MarginContainer/Menu_Container/CenterContainer2/ButtonContainer/PerfReviewBn
+@onready var archives_bn: Button = $MarginContainer/Menu_Container/CenterContainer2/ButtonContainer/ArchivesBn
+@onready var exit_bn: Button = $MarginContainer/Menu_Container/CenterContainer2/ButtonContainer/ExitBn
+
 
 
 func _ready():
