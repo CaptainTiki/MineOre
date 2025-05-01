@@ -9,6 +9,8 @@ var current_system_node: Star_System
 var is_camera_moving = false
 var active_tweens: Array[Tween] = []
 
+@onready var gpu_particles_3d: GPUParticles3D = $GPUParticles3D
+
 @onready var star_map_view = $StarMapView
 @onready var system_view = $SystemView
 @onready var planet_view = $PlanetView

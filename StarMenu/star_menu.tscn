@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://deo6a22xw7hyb"]
+[gd_scene load_steps=39 format=3 uid="uid://deo6a22xw7hyb"]
 
 [ext_resource type="Script" uid="uid://r4esfi5mnbp1" path="res://StarMenu/star_menu.gd" id="1_bawdr"]
 [ext_resource type="Script" uid="uid://dpwfiplimgruh" path="res://StarMenu/star_map_view.gd" id="2_1sd4k"]
@@ -17,7 +17,6 @@
 [ext_resource type="Texture2D" uid="uid://cankff3vb3x2b" path="res://assets/noise.jpg" id="13_6rj7k"]
 [ext_resource type="PackedScene" uid="uid://cwuxn3wuqgyot" path="res://scenes/planets/alpha_one.tscn" id="15_mka18"]
 [ext_resource type="PackedScene" uid="uid://m6uuy28dyy0p" path="res://scenes/planets/alpha_two.tscn" id="16_2c6ep"]
-[ext_resource type="PackedScene" uid="uid://dl6b4yo1gr0vq" path="res://scenes/planets/test2.glb" id="16_wlyw0"]
 [ext_resource type="PackedScene" uid="uid://cei8apdje0oue" path="res://scenes/planets/alpha_three.tscn" id="17_r00cw"]
 [ext_resource type="Script" uid="uid://7aiooamcrrxk" path="res://StarMenu/StarSystemResource.gd" id="18_mkmnx"]
 [ext_resource type="PackedScene" uid="uid://dd23dgl0xq2w1" path="res://scenes/planets/alpha_star.tscn" id="19_djhki"]
@@ -43,6 +42,24 @@ emission = Color(0.169245, 0.169245, 0.169245, 1)
 [sub_resource type="QuadMesh" id="QuadMesh_sw5rk"]
 material = SubResource("StandardMaterial3D_fp76q")
 size = Vector2(1000, 1000)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_nl80l"]
+emission_shape = 3
+emission_box_extents = Vector3(500, 500, 500)
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nl80l"]
+albedo_color = Color(0.563, 0.453, 0.319, 0.486)
+emission_enabled = true
+emission = Color(0.886067, 0.88461, 0.746671, 1)
+emission_energy_multiplier = 1.72
+
+[sub_resource type="SphereMesh" id="SphereMesh_mka18"]
+material = SubResource("StandardMaterial3D_nl80l")
+radius = 0.25
+height = 0.5
+radial_segments = 8
+rings = 4
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_abc12"]
 texture = ExtResource("4_703u0")
@@ -113,18 +130,29 @@ transform = Transform3D(-0.036205, -0.0206527, -0.999131, -0.842254, -0.537471, 
 light_energy = 0.5
 shadow_enabled = true
 
-[node name="Starfield" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
-mesh = SubResource("QuadMesh_sw5rk")
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 350)
 near = 0.005
+
+[node name="Starfield" type="MeshInstance3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -360)
+mesh = SubResource("QuadMesh_sw5rk")
+skeleton = NodePath("../..")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -352.49)
+amount = 1000
+lifetime = 0.01
+speed_scale = 0.0
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_nl80l")
+draw_pass_1 = SubResource("SphereMesh_mka18")
 
 [node name="StarMapView" type="Node3D" parent="."]
 script = ExtResource("2_1sd4k")
 
 [node name="UI" type="Control" parent="StarMapView"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -216,7 +244,6 @@ layout_mode = 2
 script = ExtResource("4_k4xme")
 
 [node name="UI" type="Control" parent="PlanetView"]
-visible = false
 layout_mode = 3
 anchors_preset = 6
 anchor_left = 1.0
@@ -277,6 +304,7 @@ offset_bottom = 8.0
 script = ExtResource("5_q7svf")
 
 [node name="MarginContainer" type="MarginContainer" parent="PerksView"]
+visible = false
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
@@ -481,8 +509,6 @@ end_node = NodePath("../../StarSystems/BetaSystem2")
 [node name="LineNode6" parent="ConstellationLines" instance=ExtResource("12_7xwej")]
 start_node = NodePath("../../StarSystems/AlphaSystem2")
 end_node = NodePath("../../StarSystems/GammaSystem2")
-
-[node name="test2" parent="." instance=ExtResource("16_wlyw0")]
 
 [node name="FadeRect" type="CanvasLayer" parent="."]
 visible = false

@@ -7,6 +7,7 @@ signal ore_carried(amount)
 signal building_placed(building_name, position)
 signal placement_failed(building_name, reason)
 signal interact
+signal destroyed  # Added for targeting system
 
 # Tool enumeration and properties
 enum Tool { NONE, GUN, MINING_LASER }
@@ -14,6 +15,7 @@ var current_tool = Tool.NONE
 var speed = 5.0
 var carry_capacity = 20
 var carried_ore = 0
+var targeted_by: Array[Node] = []  # Array to track enemies targeting the player
 
 # Building placement variables
 var is_placing = false
@@ -253,3 +255,11 @@ func cancel_placement():
 	preview_building_name = ""
 	preview_distance = 4.0
 	preview_material = null
+
+# Targeting management methods
+func add_targeting_enemy(enemy: Node):
+	if not targeted_by.has(enemy):
+		targeted_by.append(enemy)
+
+func remove_targeting_enemy(enemy: Node):
+	targeted_by.erase(enemy)

@@ -7,9 +7,10 @@ var player_rank: int = 0
 var clp: int = 0  # Corporate Loyalty Points
 var completed_planets: Array[String] = []  # List of completed planet names
 var planet_completion_points: int = 0  # Points for unlocking new systems/planets
+var planet_stats: Dictionary = {}  # planet_name -> {play_count, shortest_time, max_waves, high_score}
 
 func _ready():
-	# Clear purchased items on game load - we can fill this out later from the serializer
+	# Clear purchased items on game load
 	StoreManager.purchased_items.clear()
 	print("Cleared purchased items for debug")
 
@@ -38,15 +39,30 @@ func complete_mission(ore_launched: int, time_taken: float, waves_survived: int,
 	var xp_earned = ore_launched * 5 + waves_survived * 10 + enemies_killed * 2
 	return {"clp": clp_earned, "xp": xp_earned}
 
-func complete_planet(planet_name: String, success: bool, ore_launched: int, time_taken: float, waves_survived: int, enemies_killed: int):
+func complete_planet(planet_name: String, success: bool, ore_launched: int, time_taken: float, waves_survived: int, enemies_killed: int, bonus_points: int):
 	var rewards = complete_mission(ore_launched, time_taken, waves_survived, enemies_killed)
+	
+	# Update planet stats
+	if not planet_stats.has(planet_name):
+		planet_stats[planet_name] = {
+			"play_count": 0,
+			"shortest_time": -1.0,  # -1 means no completion
+			"max_waves": 0,
+			"high_score": 0
+		}
+	planet_stats[planet_name].play_count += 1
 	if success:
 		if planet_name in completed_planets:
 			print("Planet %s already completed" % planet_name)
-			return
-		completed_planets.append(planet_name)
-		planet_completion_points += 1
-		PlanetManager.unlock_planet(planet_name)  # Unlocks planets based on points
+		else:
+			completed_planets.append(planet_name)
+			planet_completion_points += 1
+			PlanetManager.unlock_planet(planet_name)
+		# Update shortest time (only if completed)
+		if planet_stats[planet_name].shortest_time == -1.0 or time_taken < planet_stats[planet_name].shortest_time:
+			planet_stats[planet_name].shortest_time = time_taken
+		planet_stats[planet_name].max_waves = max(planet_stats[planet_name].max_waves, waves_survived)
+		planet_stats[planet_name].high_score = max(planet_stats[planet_name].high_score, bonus_points)
 	else:
 		# Partial rewards for failure (50% CLP and XP)
 		rewards.clp = int(rewards.clp * 0.5)

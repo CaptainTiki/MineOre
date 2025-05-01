@@ -2,10 +2,11 @@
 extends Node3D
 
 var mining_effect_scene = preload("res://scenes/mining_effect.tscn")
+var ore_chunk_scene = preload("res://scenes/ore_chunk.tscn")  # New preload
 var mining_timer = 0.0
-var mining_rate = 1.0 # Seconds per ore
+var mining_rate = 0.3  # Seconds per ore
 var particle_timer = 0.0
-var particle_rate = 0.2 # Seconds between particle spawns
+var particle_rate = 0.2  # Seconds between particle spawns
 var is_mining = false
 var current_ore_node = null
 @onready var laser_beam = $LaserBeam
@@ -55,6 +56,12 @@ func _process(delta: float):
 			if player.carried_ore < player.carry_capacity:
 				player.carried_ore += 1
 				player.emit_signal("ore_carried", 1)
+				# Spawn ore chunk
+				var ore_chunk = ore_chunk_scene.instantiate()
+				var level = player.get_tree().root.get_node("Level")
+				level.add_child(ore_chunk)
+				if ore_chunk and current_ore_node:
+					ore_chunk.global_position = current_ore_node.global_position
 				mining_timer = 0.0
 			else:
 				stop_mining()

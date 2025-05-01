@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bxofwjwynhjho"]
+[gd_scene load_steps=18 format=3 uid="uid://bxofwjwynhjho"]
 
 [ext_resource type="Script" uid="uid://3l10w3x0w03r" path="res://levels/level.gd" id="1_f3rnd"]
 [ext_resource type="Script" uid="uid://dphpdmx8vikda" path="res://scripts/camera_3d.gd" id="2_jeowh"]
@@ -36,13 +36,7 @@ filter_baking_aabb = AABB(-55, -10, -55, 110, 20, 110)
 [sub_resource type="Resource" id="Resource_6ckx4"]
 script = ExtResource("11_8h4gn")
 enemy_scene = ExtResource("12_1ub6n")
-wave_counts = Array[int]([10, 23])
-metadata/_custom_type_script = "uid://brc5q7rkof4o0"
-
-[sub_resource type="Resource" id="Resource_1ub6n"]
-script = ExtResource("11_8h4gn")
-enemy_scene = ExtResource("12_1ub6n")
-wave_counts = Array[int]([14, 27])
+wave_counts = Array[int]([3, 5, 7, 12, 17])
 metadata/_custom_type_script = "uid://brc5q7rkof4o0"
 
 [node name="Level" type="Node3D"]
@@ -312,5 +306,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.363, 0.25, -37.806)
 waves = Array[ExtResource("11_8h4gn")]([SubResource("Resource_6ckx4")])
 
 [node name="Spawner2" parent="SpawnerManager" instance=ExtResource("10_8h4gn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.829, 0.25, -5.592)
-waves = Array[ExtResource("11_8h4gn")]([SubResource("Resource_1ub6n")])
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.0568, 0.25, -35.4971)
+waves = Array[ExtResource("11_8h4gn")]([SubResource("Resource_6ckx4")])
+
+[node name="Spawner3" parent="SpawnerManager" instance=ExtResource("10_8h4gn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.1764, 0.25, -0.8232)
+waves = Array[ExtResource("11_8h4gn")]([SubResource("Resource_6ckx4")])
+
+[node name="Spawner4" parent="SpawnerManager" instance=ExtResource("10_8h4gn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.4245, 0.249996, -12.7949)
+waves = Array[ExtResource("11_8h4gn")]([SubResource("Resource_6ckx4")])
+
+[node name="Spawner5" parent="SpawnerManager" instance=ExtResource("10_8h4gn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5843, 0.249996, 37.8647)
+waves = Array[ExtResource("11_8h4gn")]([SubResource("Resource_6ckx4")])

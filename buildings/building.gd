@@ -7,8 +7,10 @@ signal under_attack(building_name: String)
 
 @export var resource: BuildingResource
 @export var grid_extents: Vector2i
+
 var health: float
 var is_placed: bool = false  # Tracks if the building is placed
+var targeted_by: Array[Node] = []  # Array to track enemies targeting this building
 
 @onready var interact_area = get_node_or_null("InteractArea")
 @onready var ui_panel = get_node_or_null("UILayer/UIPanel")  # Optional UI panel
@@ -86,7 +88,6 @@ func take_damage(amount: float):
 	if amount > 0:
 		health -= amount
 		emit_signal("under_attack", resource.building_name)
-		print(str(resource.building_name) + " taking damage!")
 		if health <= 0:
 			print(str(resource.building_name) + " destroyed!")
 			_on_destroyed()
@@ -117,6 +118,13 @@ func upgrade():
 			queue_free()
 
 func _on_destroyed():
-	print(str(resource.building_name) + " emitting destroyed signal!!")
-	emit_signal("destroyed")
+	emit_signal("destroyed", resource.building_name)
 	queue_free()
+
+# Targeting management methods
+func add_targeting_enemy(enemy: Node):
+	if not targeted_by.has(enemy):
+		targeted_by.append(enemy)
+
+func remove_targeting_enemy(enemy: Node):
+	targeted_by.erase(enemy)

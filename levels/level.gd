@@ -23,7 +23,7 @@ var ground_size = Vector2(100, 100)
 
 enum State { PLACING, DAY, NIGHT, WON, LOST }
 var current_state = State.PLACING
-var day_duration = 10.0
+var day_duration = 45.0
 var day_timer = 0.0
 var wave_count = 0
 var total_waves = 2
@@ -111,7 +111,6 @@ func _on_building_placed(building_name: String, place_position: Vector3):
 			hq.hq_destroyed.connect(_on_hq_destroyed)
 			hq.health_changed.connect(_on_hq_health_changed)
 			hq_health_label.text = "HQ Health: %d" % hq.health
-			print("HQ placed, starting day/night cycle")
 	else:
 		if not has_hq:
 			return
@@ -120,7 +119,6 @@ func _on_building_placed(building_name: String, place_position: Vector3):
 			if building.global_position.distance_to(place_position) < 0.1:
 				if building.has_signal("destroyed"):
 					building.destroyed.connect(_on_building_destroyed)
-					print("Connected destroyed signal for %s at %s" % [building_name, place_position])
 				break
 	update_ui()
 
@@ -132,7 +130,6 @@ func start_day_func():
 	if wave_count >= total_waves:
 		end_level(true)
 	start_day.emit()
-	print("Starting day, timer: %.1f" % day_timer)
 
 func start_night():
 	wave_count += 1
@@ -141,7 +138,6 @@ func start_night():
 	night_start_time = Time.get_ticks_msec() / 1000.0
 	if spawner_manager:
 		spawner_manager.start_night(wave_count)
-	print("Starting night, wave: %d" % wave_count)
 
 func end_level(won: bool):
 	mission_stats.enemies_killed = spawner_manager.get_total_enemies_killed()
@@ -151,7 +147,17 @@ func end_level(won: bool):
 		# Show end mission screen
 		var end_mission = preload("res://menus/end_mission.tscn").instantiate()
 		add_child(end_mission)
+		var bonus_points = (mission_stats.enemies_killed * 10) + (int(mission_stats.time_taken / 60) * 100) - (mission_stats.buildings_destroyed * 50)
 		end_mission.display_results(mission_stats, true)
+		GameState.complete_planet(
+			planet_name, 
+			won, 
+			mission_stats.ore_launched, 
+			mission_stats.time_taken, 
+			mission_stats.waves_survived, 
+			mission_stats.enemies_killed,
+			bonus_points
+		)
 	else:
 		current_state = State.LOST
 		print("Game Over! HQ Destroyed!")
@@ -160,14 +166,15 @@ func end_level(won: bool):
 		end_panel.visible = true
 		wave_label.text = ""
 		enemies_label.text = ""
-	GameState.complete_planet(
-		planet_name, 
-		won, 
-		mission_stats.ore_launched, 
-		mission_stats.time_taken, 
-		mission_stats.waves_survived, 
-		mission_stats.enemies_killed
-	)
+		GameState.complete_planet(
+			planet_name, 
+			won, 
+			mission_stats.ore_launched, 
+			mission_stats.time_taken, 
+			mission_stats.waves_survived, 
+			mission_stats.enemies_killed,
+			0  # No bonus points for loss
+		)
 
 func _on_placement_failed(building_name: String, reason: String):
 	print("Placement failed for %s: %s" % [building_name, reason])
@@ -189,7 +196,6 @@ func _on_ore_deposited(amount):
 
 func _on_building_destroyed():
 	mission_stats.buildings_destroyed += 1
-	print("Building destroyed, total: %d" % mission_stats.buildings_destroyed)
 
 func _on_restart_pressed():
 	get_tree().paused = false

@@ -42,6 +42,11 @@ enabled=PackedStringArray()
 [global_group]
 
 buildings=""
+environment=""
+ores=""
+player=""
+headquarters=""
+turret=""
 
 [input]
 

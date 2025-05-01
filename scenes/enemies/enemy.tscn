@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=4 uid="uid://uycj3qqetng5"]
+[gd_scene load_steps=8 format=4 uid="uid://uycj3qqetng5"]
 
 [ext_resource type="Script" uid="uid://ce3f7rwlvw1q6" path="res://scenes/enemies/enemy.gd" id="1_7p1mj"]
 
@@ -24,7 +24,12 @@ radius = 0.507438
 height = 1.01488
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_7p1mj"]
+height = 1.0
 radius = 2.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_6xk8f"]
+height = 1.0
+radius = 5.0
 
 [node name="Enemy" type="CharacterBody3D" groups=["enemies"]]
 collision_layer = 2
@@ -54,4 +59,13 @@ collision_layer = 2
 collision_mask = 29
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DamageArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("CylinderShape3D_7p1mj")
+
+[node name="SightArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 65
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SightArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("CylinderShape3D_6xk8f")

@@ -1,30 +1,31 @@
+# res://scripts/enemy.gd
 extends CharacterBody3D
+class_name Enemy
 
 signal died
 
-var speed = 5.0
-var target = null
+var speed = 3.5
 var view_distance = 10.0
-var path = []
-var path_index = 0
-var path_update_timer = 0.0
-var path_update_interval = 0.5
-var damage = 1
+var damage = 6
 var attack_rate = 1.0
 var attack_timer = 0.0
 var health = 25
-var separation_distance = 1.0
+var separation_distance = 3.0
 var attack_range = 1.5
 var is_alive = false
+var current_target: Node = null
+var path_update_timer = 0.0
+var path_update_interval = 0.5
+var targeted_by_turrets: Array[Node] = []  # Array to track turrets targeting this enemy
 
 @onready var nav_agent = $NavigationAgent3D
 @onready var damage_area = $DamageArea
+@onready var sight_area = $SightArea  # Area3D for vision detection
 
 var gib_scene = preload("res://scenes/gib.tscn")
 
 func _ready():
 	add_to_group("enemies")
-	target = get_tree().get_first_node_in_group("headquarters")
 	nav_agent.path_desired_distance = attack_range
 	nav_agent.target_desired_distance = attack_range
 	nav_agent.avoidance_enabled = true
@@ -32,31 +33,33 @@ func _ready():
 	nav_agent.neighbor_distance = 5.0
 	damage_area.body_entered.connect(_on_body_entered)
 	damage_area.body_exited.connect(_on_body_exited)
+	sight_area.body_entered.connect(_on_sight_area_body_entered)
 	is_alive = false
-	update_path()
+	set_physics_process(false)
+	set_process(false)
+	select_target()
 
 func reset(pos: Vector3):
 	global_position = pos
 	health = 25
 	velocity = Vector3.ZERO
-	target = get_tree().get_first_node_in_group("headquarters")
-	path = []
-	path_index = 0
+	current_target = null
+	targeted_by_turrets.clear()
 	path_update_timer = 0.0
 	attack_timer = 0.0
 	visible = true
 	set_physics_process(true)
-	update_path()
+	set_process(true)
+	select_target()
 	is_alive = true
 
 func _physics_process(delta):
-	check_for_targets()
 	path_update_timer -= delta
 	if path_update_timer <= 0:
 		update_path()
 		path_update_timer = path_update_interval
 	
-	if target and is_instance_valid(target):
+	if current_target and is_instance_valid(current_target):
 		var separation = compute_separation()
 		velocity += separation
 		
@@ -92,39 +95,62 @@ func compute_separation() -> Vector3:
 		separation *= speed * 0.5
 	return separation
 
-func check_for_targets():
-	var player = get_tree().get_first_node_in_group("player")
-	var buildings = get_tree().get_nodes_in_group("turrets") + get_tree().get_nodes_in_group("mines")
-	var closest_dist = view_distance + 1
-	var new_target = target
-	
-	if player and is_instance_valid(player):
-		var dist = global_position.distance_to(player.global_position)
-		if dist < view_distance and dist < closest_dist:
-			closest_dist = dist
-			new_target = player
-	
-	for building in buildings:
-		if building and is_instance_valid(building):
-			var dist = global_position.distance_to(building.global_position)
-			if dist < view_distance and dist < closest_dist:
-				closest_dist = dist
-				new_target = building
-	
-	if new_target != target:
-		target = new_target
-		update_path()
-		path_update_timer = 0.0
+func set_target(new_target: Node):
+	if current_target and is_instance_valid(current_target):
+		current_target.remove_targeting_enemy(self)
+		if current_target.has_signal("destroyed"):
+			current_target.disconnect("destroyed", _on_target_destroyed)
+	current_target = new_target
+	if current_target:
+		current_target.add_targeting_enemy(self)
+		if current_target.has_signal("destroyed"):
+			current_target.connect("destroyed", _on_target_destroyed)
+
+func _on_target_destroyed(_building_name: String = ""):
+	var hq = get_tree().get_first_node_in_group("headquarters")
+	if hq:
+		current_target = hq
+	else:
+		current_target = null
+	select_target()
+
+func _on_sight_area_body_entered(body: Node):
+	if body == self or not is_potential_target(body):
+		return
+	if should_switch_target(body):
+		select_target()
+
+func is_potential_target(body: Node) -> bool:
+	return body.is_in_group("buildings") or body.is_in_group("player")
+
+func should_switch_target(new_body: Node) -> bool:
+	if not current_target:
+		return true
+	return new_body.targeted_by.size() < current_target.targeted_by.size()
+
+func select_target():
+	var potential_targets = sight_area.get_overlapping_bodies().filter(func(body):
+		return is_potential_target(body)
+	)
+	if potential_targets.is_empty():
+		var hq = get_tree().get_first_node_in_group("headquarters")
+		if hq:
+			set_target(hq)
+		else:
+			set_target(null)
+		return
+	potential_targets.sort_custom(func(a, b):
+		return a.targeted_by.size() < b.targeted_by.size()
+	)
+	set_target(potential_targets[0])
 
 func update_path():
-	if target and is_instance_valid(target):
-		nav_agent.set_target_position(target.global_position)
-		path = []
-		path_index = 0
+	if current_target and is_instance_valid(current_target):
+		nav_agent.set_target_position(current_target.global_position)
 
 func look_at_target(delta):
-	if target and is_instance_valid(target):
-		var target_pos = target.global_position
+	if current_target and is_instance_valid(current_target):
+		var target_pos = current_target.global_position
 		var look_dir = (target_pos - global_position).normalized()
 		var target_angle = atan2(-look_dir.x, -look_dir.z)
 		rotation.y = lerp_angle(rotation.y, target_angle, delta * 5.0)
@@ -135,6 +161,12 @@ func take_damage(amount):
 		die()
 
 func die():
+	if current_target and is_instance_valid(current_target):
+		current_target.remove_targeting_enemy(self)
+	for turret in targeted_by_turrets.duplicate():
+		if is_instance_valid(turret):
+			turret.set_target(null)
+	targeted_by_turrets.clear()
 	var gib = gib_scene.instantiate()
 	gib.global_position = global_position
 	get_parent().add_child(gib)
@@ -146,7 +178,7 @@ func die():
 	# Don't queue_free(); returned to pool by SpawnerManager
 
 func _on_body_entered(body):
-	if body == target and body.has_method("take_damage"):
+	if body == current_target and body.has_method("take_damage"):
 		attack_overlapping_targets()
 
 func _on_body_exited(_body):
@@ -161,3 +193,11 @@ func attack_overlapping_targets():
 func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3):
 	velocity = safe_velocity
 	move_and_slide()
+
+# Turret targeting management
+func add_targeting_turret(turret: Node):
+	if not targeted_by_turrets.has(turret):
+		targeted_by_turrets.append(turret)
+
+func remove_targeting_turret(turret: Node):
+	targeted_by_turrets.erase(turret)

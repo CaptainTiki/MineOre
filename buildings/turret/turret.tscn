@@ -40,7 +40,7 @@ _surfaces = [{
 "vertex_data": PackedByteArray("i2aBPc6n1j6OZoG9AAAAAM6n1j4AAAAA1nKSMM6n1j4EALe9i2aBPS57eD6OZoG9BAC3PS57eD4AAAAAi2aBPc6n1j6OZoG9BAC3Pc6n1j4AAAAAAAAAAM6n1j4AAAAAi2aBPc6n1j6OZoG9BAC3Pc6n1j4AAAAAi2aBPc6n1j6OZoG9BAC3PS57eD4AAAAAjWaBPS57eD6NZoE9PzSGsS57eD4EALc9jWaBPc6n1j6NZoE9BAC3PS57eD4AAAAAjWaBPS57eD6NZoE9BAC3Pc6n1j4AAAAAjWaBPc6n1j6NZoE9BAC3Pc6n1j4AAAAAjWaBPS57eD6NZoE9PzSGsc6n1j4EALc9jWaBPc6n1j6NZoE9PzSGsS57eD4EALc9AAAAAM6n1j4AAAAAjWaBPc6n1j6NZoE9PzSGsc6n1j4EALc9BAC3Pc6n1j4AAAAAjWaBPc6n1j6NZoE9AAAAAM6n1j4AAAAAi2aBPc6n1j6OZoG91nKSMM6n1j4EALe9i2aBPS57eD6OZoG91nKSMC57eD4EALe9i2aBPS57eD6OZoG91nKSMM6n1j4EALe9BAC3vS57eD4/NAayjWaBvS57eD6MZoG9BAC3vc6n1j4/NAay1nKSMC57eD4EALe9jWaBvc6n1j6MZoG9jWaBvS57eD6MZoG9jWaBvc6n1j6MZoG91nKSMC57eD4EALe91nKSMM6n1j4EALe9jWaBvc6n1j6MZoG9BAC3vc6n1j4/NAayjWaBvS57eD6MZoG9AAAAAM6n1j4AAAAAPzSGsc6n1j4EALc9jWaBvc6n1j6NZoE9AAAAAM6n1j4AAAAAjWaBvc6n1j6NZoE9BAC3vc6n1j4/NAayjWaBvc6n1j6NZoE9PzSGsc6n1j4EALc9jWaBvS57eD6NZoE9BAC3vc6n1j4/NAayjWaBvc6n1j6NZoE9BAC3vS57eD4/NAayBAC3vc6n1j4/NAayjWaBvc6n1j6MZoG9AAAAAM6n1j4AAAAAPzSGsS57eD4EALc9jWaBvS57eD6NZoE9PzSGsc6n1j4EALc9jWaBvS57eD6NZoE9BAC3vS57eD4/NAayjWaBvc6n1j6NZoE91nKSMM6n1j4EALe9AAAAAM6n1j4AAAAAjWaBvc6n1j6MZoG9/3///wAAQS3/f///AABBLf9///8AAEEt///VyAAAaiT//4aPAADDB///KbcAAJQb/3///wAAvhL/f///AAC+Ev9///8AAL4Sd/D/f///wwf//ym3AACUG///ho8AAMMH1cj/f9VI/7+Gj/9/hw//vym3/38pN/+///+Gj4aP/7/VyP9/1Uj/v3fw/394cP+/Kbf/fyk3/7938P9/eHD/v9XI/3/VSP+/eHD/fwAAwscpt/9/KTf/v4aP/3+HD/+//3///30l/7//f///fSX/v/9///99Jf+//3///4Ja/7//f///glr/v/9///+CWv+///8ptym3/7///3fwd/D/v///1cjVyP+/AAB38P//wsf//9XI1cj/v///d/B38P+/hw//fwAAO/gAACm3//9q5AAAho///zv4AAB38P//wscAANXI//+U2wAAKbf//2rkAADVyP//lNsAAHfw///Cx///d/B38P+/AADVyP//lNsAAIaP//87+AAAKbf//2rk/3///wAAvdL/f///AAC90v9///8AAL3S/3///wAAQO3/f///AABA7f9///8AAEDtKTf/fwAAauR4cP9/AADCx9VI/38AAJTbAACGj///O/gpN/9/AABq5IcP/38AADv4/3///4Ja/z//f///glr/P/9///+CWv8/ho//f4cP/7/VSP9/AACU23hw/38AAMLH1Uj/fwAAlNuHD/9/AAA7+Ck3/38AAGrk/3///30l/z//f///fSX/P/9///99Jf8/")
 }]
 
-[node name="Turret" type="StaticBody3D" groups=["buildings"]]
+[node name="Turret" type="StaticBody3D" groups=["buildings", "turret"]]
 collision_mask = 0
 script = ExtResource("1_x3mc5")
 resource = ExtResource("2_h47lq")
@@ -82,7 +82,7 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.46297, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 shape = SubResource("CylinderShape3D_x3mc5")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
