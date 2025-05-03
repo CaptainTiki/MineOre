@@ -213,25 +213,23 @@ func place_building():
 			if preview_building_name != "headquarters" and cost > 0:
 				withdrawn = hq.withdraw_ore(cost)
 			if withdrawn == cost or preview_building_name == "headquarters":
-				var building = load(preview_scene_path).instantiate()
-				building.global_position = preview_instance.global_position
-				building.resource = BuildingsManager.get_building_resource(preview_building_name)
-				var mesh = building.get_node("MeshInstance3D")
-				if mesh:
-					mesh.material_override = null
+				# Instance the construction scene
+				var construction = load("res://buildings/building_construction_scene.tscn").instantiate()
+				construction.global_position = preview_instance.global_position
+				construction.building_resource = BuildingsManager.get_building_resource(preview_building_name)
+				construction.final_building_scene = load(preview_scene_path)
+				
 				var buildings_node = level.get_node_or_null("Buildings")
 				if not buildings_node:
 					buildings_node = Node3D.new()
 					buildings_node.name = "Buildings"
 					level.add_child(buildings_node)
 					buildings_node.owner = level
-				buildings_node.add_child(building)
-				building.owner = level
-				if hq:
-					level.player_ore = hq.stored_ore
-				building.on_placed()
-				emit_signal("building_placed", preview_building_name, building.global_position)
-				BuildingsManager.register_building_placed(preview_building_name)
+				buildings_node.add_child(construction)
+				construction.owner = level
+
+				emit_signal("building_placed", preview_building_name, construction.global_position)
+				
 				if preview_building_name == "silo" and hq:
 					hq.add_silo()
 				if BuildingsManager.building_configs.get(preview_building_name, {}).get("unique", false):

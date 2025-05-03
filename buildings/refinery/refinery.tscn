@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://cvo6xil1jbbob"]
+[gd_scene load_steps=13 format=4 uid="uid://cvo6xil1jbbob"]
 
 [ext_resource type="Script" uid="uid://dk8r1cy5hbd17" path="res://buildings/refinery/refinery.gd" id="1_so7c3"]
 [ext_resource type="Resource" uid="uid://cq4owotjmaede" path="res://buildings/refinery.tres" id="2_xit7p"]
@@ -69,6 +69,28 @@ _surfaces = [{
 "vertex_data": PackedByteArray("FxX3PURRoD9m+E8+18CAPURRoD8wZ68+G+ucvURRoD9m+E8+HOucvURRoD9A/Mw+18CAPURRoD8wZ68+18CAPThpgj4wZ68+18CAPURRoD8wZ68+FxX3PURRoD9m+E8+FxX3PThpgj5m+E8+1cCAPURRoD/WRII9FxX3PURRoD9m+E8+G+ucvURRoD9m+E8+FxX3PURRoD9m+E8+1cCAPURRoD/WRII9CwqePZPiCz+y+Mg91cCAPZPiCz/WRII91cCAPURRoD/WRII9G+ucvURRoD+gCb87CwqePZPiCz+y+Mg91cCAPURRoD/WRII91cCAPZPiCz/WRII9FxX3PURRoD9m+E8+CwqePZPiCz+y+Mg9CwqePThpgj6y+Mg9iEtdvpMeVj/aRII9iEtdvkRRoD/aRII9WotdvpMeVj//eIM9WotdvpMeVj//eIM90zqMvjhpgj5l+E8+Wotdvjhpgj7/eIM9Ubkivjhpgj56fiM9ANzBvZPiCz817lk8UbkivpMeVj96fiM9ANzBvZPiCz817lk8Ubkivjhpgj56fiM9ANzBvThpgj417lk8hktdvjhpgj4wZ68+0zqMvjhpgj5l+E8+0zqMvkRRoD9l+E8+HOucvThpgj5A/Mw+hktdvjhpgj4wZ68+hktdvkRRoD8wZ68+HOucvURRoD9A/Mw+18CAPThpgj4wZ68+HOucvThpgj5A/Mw+0zqMvjhpgj5l+E8+WotdvpMeVj//eIM9iEtdvkRRoD/aRII9G+ucvZPiCz+gCb87UbkivpMeVj96fiM9ANzBvZPiCz817lk8VHWKvZPiCz+osBw8G+ucvURRoD+gCb87G+ucvZPiCz+gCb87VHWKvZPiCz+osBw81cCAPZPiCz/WRII9G+ucvURRoD+gCb87UbkivpMeVj96fiM9G+ucvZPiCz+gCb87G+ucvURRoD+gCb87ZFMjvpMeVj/AfSQ9iEtdvkRRoD/aRII9iEtdvpMeVj/aRII9FxX3PThpgj5m+E8+18CAPThpgj4wZ68+18CAPURRoD8wZ68+UbkivpMeVj96fiM9G+ucvURRoD+gCb87ZFMjvpMeVj/AfSQ9ZFMjvpMeVj/AfSQ9G+ucvURRoD+gCb87iEtdvkRRoD/aRII9G+ucvURRoD+gCb87G+ucvURRoD9m+E8+iEtdvkRRoD/aRII9G+ucvURRoD+gCb871cCAPURRoD/WRII9G+ucvURRoD9m+E8+iEtdvkRRoD/aRII90zqMvkRRoD9l+E8+0zqMvjhpgj5l+E8+0zqMvkRRoD9l+E8+hktdvkRRoD8wZ68+hktdvjhpgj4wZ68+hktdvkRRoD8wZ68+HOucvURRoD9A/Mw+HOucvThpgj5A/Mw+0zqMvkRRoD9l+E8+iEtdvkRRoD/aRII9G+ucvURRoD9m+E8+G+ucvURRoD9m+E8+hktdvkRRoD8wZ68+0zqMvkRRoD9l+E8+G+ucvURRoD9m+E8+HOucvURRoD9A/Mw+hktdvkRRoD8wZ68+G+ucvURRoD9m+E8+18CAPURRoD8wZ68+HOucvURRoD9A/Mw+CwqePThpgj6y+Mg9FxX3PThpgj5m+E8+FxX3PURRoD9m+E8+/3///4Ja/7//f///glr/v/9///+CWv+/ho//f4cP/7/VyP9/1Uj/vym3/38pN/+/1cj/f9VI/7////WV9ZX/v3fw/394cP+//3///wAAvhL/f///AAC+Ev9///8AAL4S///1lQAA+wr//ym3AABqZObe/3///4wQ///VyNXI/7///ym3Kbf/v/7/AAD+//+/5t7/f///jBD//ym3AABqZP//1cgAAJRb///1lQAA+wrm3v9///+MEH/z/3///z8GAAD/v////98AALK6//+l4gAA+or//4H6AAD6iv//gfoAAPWV///6ioBz/39/8/8/////v/+//78AAIvE//+43f7/fwx/8/+/AACLxP//uN3///+//7//vwAAfYj//7/7KTf/fwAAauQAAPWV///6iocP/38AADv4eHD/fwAAwscpN/9/AABq5NVI/38AAJTbho//f4cP/78pt/9/KTf/v3hw/38AAMLHAAD1lf//+ooAAPqK//+B+gAAsrr//6XiAAB38P//wsf+/38Mf/P/vwAAi8T//7jd//+B2oHa/7/+/wAA/v//vwAAd/D//8LH//+B2oHa/7///9XI1cj/v/7/AAD+//+//v9/DH/z/78AAHfw///Cx/7/AAD+//+/AAB9Jf//QK0AALK6//+l4gAA/7/////fd/D/f3hw/78pt/9/KTf/v9XI/3/VSP+//v9/DH/z/7/+/wAA/v//vwAAfSX//0CtAAB9Jf//QK3+/wAA/v//vwAAsrr//6Xi/3///30l/z//f///fSX/P/9///99Jf8//3///wAAQS3/f///AABBLf9///8AAEEtAACyuv//peKHD/9/AAA7+AAA9ZX///qKhw//fwAAO/jVSP9/AACU2yk3/38AAGrk1Uj/fwAAlNuGj/9/hw//v3hw/38AAMLH/3///4Ja/z//f///glr/P/9///+CWv8//3///wAAQO3/f///AABA7f9///8AAEDt/3///wAAvdL/f///AAC90v9///8AAL3S/3///30l/7//f///fSX/v/9///99Jf+/f/P/f///PwZ38P9////DB///9ZUAAPsK")
 }]
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xit7p"]
+angle_min = -63.7
+angle_max = 63.2
+gravity = Vector3(0, 1.2, 0)
+turbulence_enabled = true
+turbulence_noise_strength = 0.15
+turbulence_noise_scale = 0.1
+turbulence_noise_speed = Vector3(0, 1, 0)
+turbulence_noise_speed_random = 0.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_205dn"]
+transparency = 1
+blend_mode = 1
+albedo_color = Color(0.212, 0.212, 0.212, 0.127)
+
+[sub_resource type="SphereMesh" id="SphereMesh_v3or2"]
+material = SubResource("StandardMaterial3D_205dn")
+radius = 0.1
+height = 0.2
+radial_segments = 6
+rings = 4
+
 [node name="Refinery" type="StaticBody3D" groups=["buildings"]]
 script = ExtResource("1_so7c3")
 resource = ExtResource("2_xit7p")
@@ -135,3 +157,11 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.265767, 1.33949, 0.0827124)
+amount = 64
+lifetime = 1.82
+randomness = 0.29
+process_material = SubResource("ParticleProcessMaterial_xit7p")
+draw_pass_1 = SubResource("SphereMesh_v3or2")

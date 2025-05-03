@@ -11,11 +11,15 @@ signal under_attack(building_name: String)
 var health: float
 var is_placed: bool = false  # Tracks if the building is placed
 var targeted_by: Array[Node] = []  # Array to track enemies targeting this building
+var is_constructed: bool = false
+var construction_timer: Timer
+var construction_materials: Array = []
 
 @onready var interact_area = get_node_or_null("InteractArea")
 @onready var ui_panel = get_node_or_null("UILayer/UIPanel")  # Optional UI panel
 @onready var camera = get_tree().get_root().get_node_or_null("Level/Camera")
 @onready var player = get_tree().get_root().get_node_or_null("Level/Player")
+@onready var mesh_instance = get_node("MeshInstance3D")  # Adjust if path varies
 
 func _init():
 	add_to_group("buildings")

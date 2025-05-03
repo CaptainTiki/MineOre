@@ -5,12 +5,10 @@ class_name BuildingResource extends Resource
 @export var scene_path: String
 @export var category: String
 @export var build_cost: int
+@export var construction_time: float = 0.0  # Time in seconds to construct
 @export var base_health: float
 @export var grid_extents: Vector2i
-@export var is_unique: bool
-@export var is_researchable: bool
-@export var research_cost: int
-@export var research_description: String
+@export var is_unique: bool  # Can only be built once in a level
 @export var is_locked: bool
 @export var icon: Texture2D
 @export var tags: Array[String]

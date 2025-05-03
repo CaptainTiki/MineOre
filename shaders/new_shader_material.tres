@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bg116kkuca37a"]
+
+[ext_resource type="Shader" uid="uid://bpmwvflvjodib" path="res://shaders/construction_shader.gdshader" id="1_vo683"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_vo683")
+shader_parameter/progress = 0.0
+shader_parameter/min_y = -1.0
+shader_parameter/max_y = 1.0
+shader_parameter/hologram_color = Color(0, 0.5, 1, 0.5)
+shader_parameter/glow_intensity = 1.0
+shader_parameter/scanline_speed = 2.0
+shader_parameter/scanline_density = 10.0
+shader_parameter/flicker_frequency = 1.0
+shader_parameter/final_color = Color(1, 1, 1, 1)
+shader_parameter/blend_range = 0.1
