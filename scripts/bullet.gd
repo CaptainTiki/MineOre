@@ -1,7 +1,7 @@
 extends Area3D
 
 var velocity = Vector3.ZERO
-var damage = 23
+var damage = 8
 var lifetime = 5.0
 
 func _ready():

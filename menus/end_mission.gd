@@ -67,5 +67,5 @@ func _check_level_up():
 	print("Level: %d, XP: %d, Rank: %s" % [current_level, current_points, ranks[current_rank]])
 
 func _on_main_menu_pressed():
-	get_tree().paused = false
+	LevelManager.stop()
 	get_tree().change_scene_to_file("res://StarMenu/star_menu.tscn")

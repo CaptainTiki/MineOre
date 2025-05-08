@@ -4,6 +4,7 @@ class_name Building extends StaticBody3D
 signal destroyed(building_name: String)
 signal under_attack(building_name: String)
 signal health_changed(health: float, max_health: float)
+signal placed(building_name: String, position: Vector3)
 
 @export var resource: BuildingResource
 @export var grid_extents: Vector2i
@@ -22,7 +23,6 @@ var construction_materials: Array = []
 
 @onready var camera = get_tree().get_root().get_node_or_null("Level/Camera")
 @onready var player = get_tree().get_root().get_node_or_null("Level/Player")
-@onready var level = get_tree().get_root().get_node_or_null("Level")
 
 func _init():
 	add_to_group("buildings")
@@ -39,7 +39,7 @@ func _ready():
 				var size = collision_shape.shape.size
 				grid_extents = Vector2i(ceil(size.x / 2.0) * 2, ceil(size.z / 2.0) * 2)
 	else:
-		push_error("Building %s has no resource assigned" % resource.building_name)
+		push_error("Building %s has no resource assigned" % (resource.building_name if resource else "null"))
 	
 	if interact_area and player:
 		player.interact.connect(_on_player_interact)
@@ -58,8 +58,11 @@ func _ready():
 		health_bar.set_process(health < max_health)
 		update_health_bar()
 	
-	if level:
-		destroyed.connect(level._on_building_destroyed)
+	if resource and resource.building_name == "headquarters":
+		if not placed.is_connected(LevelManager._on_hq_placed):
+			placed.connect(LevelManager._on_hq_placed)
+		if not destroyed.is_connected(LevelManager._on_building_destroyed):
+			destroyed.connect(LevelManager._on_building_destroyed)
 
 func _process(_delta: float):
 	if health_bar and health_bar.visible and camera:
@@ -82,7 +85,7 @@ func _on_body_entered(body):
 	if body.is_in_group("player"):
 		if not player:
 			return
-		if ui_container and is_placed and not BuildingsManager.is_placing:
+		if ui_container and is_placed and not BuildingsManager.is_placing_bldg():
 			ui_container.visible = true
 			update_ui()
 
@@ -109,8 +112,13 @@ func on_placed():
 		interact_area.monitorable = true
 	BuildingsManager.register_building_placed(self)
 	emit_signal("health_changed", health, max_health)
+	if resource and resource.building_name == "headquarters":
+		emit_signal("placed", resource.building_name, global_position)
+		print("HQ placed, emitted placed signal")
 
 func take_damage(amount: float):
+	print("building damaged " + str(amount))
+	print("health left: " + str(health - amount))
 	if amount > 0:
 		health = max(0, health - amount)
 		emit_signal("under_attack", resource.building_name)

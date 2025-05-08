@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://iy8nye7xljak"]
+[gd_scene load_steps=10 format=3 uid="uid://iy8nye7xljak"]
 
 [ext_resource type="Script" uid="uid://xfq5lf8h2fvr" path="res://scripts/build_repair_tool.gd" id="1_av1bv"]
 [ext_resource type="Shader" uid="uid://b2okn0nbqqc3y" path="res://shaders/repair_beam.gdshader" id="2_b4voq"]
 [ext_resource type="Shader" uid="uid://0ptukaxtr3ao" path="res://shaders/laserbeam.gdshader" id="3_hpmvf"]
+[ext_resource type="PackedScene" uid="uid://x7foxbnlqbrt" path="res://scenes/construction_menu.tscn" id="4_b4voq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rlstd"]
 albedo_color = Color(0.421345, 0.528101, 0.183138, 1)
@@ -59,3 +60,8 @@ material = SubResource("ShaderMaterial_o1r7b")
 target_position = Vector3(0, 0, -2)
 collision_mask = 64
 debug_shape_thickness = 5
+
+[node name="ConstructionMenu" parent="." instance=ExtResource("4_b4voq")]
+unique_name_in_owner = true
+offset_top = -250.0
+offset_bottom = 250.0

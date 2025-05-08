@@ -1,25 +1,24 @@
-[gd_scene load_steps=7 format=4 uid="uid://c5k0bnah32yn4"]
+[gd_scene load_steps=10 format=4 uid="uid://c5k0bnah32yn4"]
 
 [ext_resource type="Script" uid="uid://bfgdg7adxcb0k" path="res://buildings/launch_pad/launch_pad.gd" id="1_launch"]
 [ext_resource type="Script" uid="uid://bbac14qb0h4o8" path="res://scripts/building_resource.gd" id="2_2mmy5"]
 
 [sub_resource type="Resource" id="Resource_x8hsf"]
 script = ExtResource("2_2mmy5")
-name = "launch_pad"
+building_name = ""
 display_name = "Launch Pad"
 scene_path = "res://buildings/launch_pad/launch_pad.tscn"
 category = "endgame"
 build_cost = 10
+construction_time = 0.0
 base_health = 5.0
 grid_extents = Vector2i(0, 0)
 is_unique = true
-is_researchable = true
-research_cost = 10
-research_description = "Enables planetary launches of resources"
 is_locked = true
 tags = Array[String](["endgame", "win"])
 custom_script_path = "res://buildings/launch_pad/launch_pad.gd"
 upgrade_cost = 0
+dependencies = Array[String]([])
 metadata/_custom_type_script = "uid://bbac14qb0h4o8"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_launch"]
@@ -27,6 +26,8 @@ size = Vector3(3, 1, 3)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mg42m"]
 albedo_color = Color(0.450648, 0.450648, 0.450648, 1)
+metallic = 0.46
+roughness = 0.49
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_3lcb2"]
 _surfaces = [{
@@ -40,12 +41,32 @@ _surfaces = [{
 "vertex_data": PackedByteArray("2xlwPwBgs77hK3G/AAD0uwBgs74AAFY73v/zuwBgs74Ataq/AAi9PwAAAL8Azru/AAi9PwBA3L4Azru/APC+vwBA3L4Azru/AAi9PwBA3L4Azru/2xlwPwBA3L7hK3G/3v/zuwBA3L4Ataq/AAi9PwBA3L4Azru/ACyqPwBA3L4AAFY72xlwPwBA3L7hK3G/AAi9PwBA3L4ApLw/AAi9PwBA3L4Azru/AAi9PwAAAL8Azru/APC+vwAAAL8ApLw/AAi9PwAAAL8ApLw/AAi9PwAAAL8Azru/AAi9PwBA3L4ApLw/AAi9PwAAAL8ApLw/APC+vwAAAL8ApLw/AAi9PwAAAL8ApLw/AAi9PwBA3L4ApLw/AAi9PwAAAL8Azru/AAi9PwBA3L4ApLw/ACyqPwBA3L4AAFY7AAi9PwBA3L4Azru/AAi9PwBA3L4ApLw/fQD0uwBA3L4Ai6s/3hlwPwBA3L7e13I/3hlwPwBA3L7e13I/ACyqPwBA3L4AAFY7AAi9PwBA3L4ApLw/3v/zuwBA3L4Ataq/2xlwPwBA3L7hK3G/3v/zuwBgs74Ataq/AAi9PwBA3L4Azru/3v/zuwBA3L4Ataq/APC+vwBA3L4Azru/2xlwPwBgs77hK3G/3v/zuwBgs74Ataq/2xlwPwBA3L7hK3G/2xlwPwBA3L7hK3G/ACyqPwBA3L4AAFY72xlwPwBgs77hK3G/ACyqPwBgs74AAFY7AAD0uwBgs74AAFY72xlwPwBgs77hK3G/ACyqPwBgs74AAFY72xlwPwBgs77hK3G/ACyqPwBA3L4AAFY73hlwPwBA3L7e13I/fQD0uwBA3L4Ai6s/3hlwPwBgs77e13I/fQD0uwBgs74Ai6s/3hlwPwBgs77e13I/fQD0uwBA3L4Ai6s/AAD0uwBgs74AAFY73hlwPwBgs77e13I/fQD0uwBgs74Ai6s/ACyqPwBA3L4AAFY73hlwPwBA3L7e13I/ACyqPwBgs74AAFY73hlwPwBgs77e13I/ACyqPwBgs74AAFY73hlwPwBA3L7e13I/ACyqPwBgs74AAFY73hlwPwBgs77e13I/AAD0uwBgs74AAFY73+lzvwBgs77dK3G/ABSsvwBgs74K/lU73+lzvwBA3L7dK3G/3+lzvwBA3L7dK3G/ABSsvwBA3L4K/lU7APC+vwBA3L4Azru/APC+vwBA3L4Azru/3v/zuwBA3L4Ataq/3+lzvwBA3L7dK3G/APC+vwBA3L4Azru/ABSsvwBA3L4K/lU7APC+vwBA3L4ApLw/AAi9PwAAAL8Azru/APC+vwBA3L4Azru/APC+vwAAAL8Azru/APC+vwAAAL8ApLw/AAi9PwAAAL8Azru/APC+vwAAAL8Azru/APC+vwBA3L4Azru/APC+vwBA3L4ApLw/APC+vwAAAL8ApLw/APC+vwBA3L4ApLw/ABSsvwBA3L4K/lU73ulzvwBA3L7e13I/APC+vwBA3L4ApLw/3ulzvwBA3L7e13I/fQD0uwBA3L4Ai6s/APC+vwBA3L4ApLw/AAi9PwBA3L4ApLw/APC+vwAAAL8ApLw/APC+vwBA3L4ApLw/fQD0uwBA3L4Ai6s/AAi9PwBA3L4ApLw/ABSsvwBA3L4K/lU73+lzvwBA3L7dK3G/ABSsvwBgs74K/lU7APC+vwAAAL8ApLw/APC+vwAAAL8Azru/APC+vwBA3L4Azru/ABSsvwBgs74K/lU73+lzvwBgs77dK3G/AAD0uwBgs74AAFY73+lzvwBA3L7dK3G/3v/zuwBA3L4Ataq/3+lzvwBgs77dK3G/3v/zuwBgs74Ataq/3+lzvwBgs77dK3G/3v/zuwBA3L4Ataq/3v/zuwBgs74Ataq/AAD0uwBgs74AAFY73+lzvwBgs77dK3G/3ulzvwBA3L7e13I/ABSsvwBA3L4K/lU73ulzvwBgs77e13I/ABSsvwBgs74K/lU73ulzvwBgs77e13I/ABSsvwBA3L4K/lU7AAD0uwBgs74AAFY73ulzvwBgs77e13I/ABSsvwBgs74K/lU7fQD0uwBA3L4Ai6s/3ulzvwBA3L7e13I/fQD0uwBgs74Ai6s/3ulzvwBgs77e13I/fQD0uwBgs74Ai6s/3ulzvwBA3L7e13I/AAD0uwBgs74AAFY7fQD0uwBgs74Ai6s/3ulzvwBgs77e13I//3///wAAQS3/f///AABBLf9///8AAEEt/////wAA/z//////AAD/P/////8AAP8//3///wAAAAD/f///AAAAAP9///8AAAAA/3///wAAAAD/f/////8AAP9///8AAAAA////f/9//n////9//3/+f////3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//3//////AAD/f/////8AAP9///8AAAAA/3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9//////wAAAAB38P//wsf//9XI1cj/v///d/B38P+//3///wAAAAD/f///AAAAAP9///8AAAAA//8ptym3/7///3fwd/D/v///1cjVyP+////VyAAAaiT//4aPAADDB///KbcAAJQb/3///wAAvhL/f///AAC+Ev9///8AAL4Sd/D/f///wwf//ym3AACUG///ho8AAMMH1cj/f9VI/7+Gj/9/hw//vym3/38pN/+/eHD/fwAAwscpt/9/KTf/v4aP/3+HD/+//3///30l/7//f///fSX/v/9///99Jf+///+Gj4aP/7/VyP9/1Uj/v3fw/394cP+/Kbf/fyk3/7938P9/eHD/v9XI/3/VSP+//3///4Ja/7//f///glr/v/9///+CWv+/AADVyP//lNsAAIaP//87+AAAKbf//2rk/3///wAAAAD/f/////8AAP9///8AAAAA/3///wAAAAD/f///AAAAAP9///8AAAAA/3///wAAAAD/f/////8AAP9///8AAAAA/////wAA/z//////AAD/P/////8AAP8//38AAP//AAD/fwAA//8AAP9/AAD//wAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//3///wAAAAD/f/////8AAP9///8AAAAA/3///wAAAAD/f///AAAAAP9//////wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3///wAAAAD/f/////8AAP9//////wAAhw//fwAAO/gAACm3//9q5AAAho///zv4AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3///4Ja/z//f///glr/P/9///+CWv8/AAApt///auQAAHfw///CxwAA1cj//5Tb//938Hfw/78AANXI//+U2wAAd/D//8LH/3///30l/z//f///fSX/P/9///99Jf8/1Uj/fwAAlNuHD/9/AAA7+Ck3/38AAGrkAACGj///O/gpN/9/AABq5IcP/38AADv4/3///wAAQO3/f///AABA7f9///8AAEDtho//f4cP/7/VSP9/AACU23hw/38AAMLHKTf/fwAAauR4cP9/AADCx9VI/38AAJTb/3///wAAvdL/f///AAC90v9///8AAL3S")
 }]
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_2mmy5"]
+radius = 4.5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2mmy5"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x8hsf"]
+bg_color = Color(0, 0.8428, 3.85046e-07, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.0253638, 0.0253638, 0.0253638, 1)
+
 [node name="LaunchPad" type="StaticBody3D" groups=["launch_pad"]]
-collision_layer = 16
+collision_layer = 64
 script = ExtResource("1_launch")
 resource = SubResource("Resource_x8hsf")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.497025, 0)
 shape = SubResource("BoxShape3D_launch")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
@@ -61,24 +82,42 @@ radius = 1.33691
 height = 0.122925
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.501099, 0)
 mesh = SubResource("ArrayMesh_3lcb2")
 
-[node name="UILayer" type="CanvasLayer" parent="."]
+[node name="InteractArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.06406, 0)
+collision_layer = 16
+collision_mask = 17
 
-[node name="LaunchPanel" type="Panel" parent="UILayer"]
-custom_minimum_size = Vector2(300, 400)
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+shape = SubResource("CylinderShape3D_2mmy5")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/LaunchPanel"]
+[node name="UILayer2" type="CanvasLayer" parent="."]
+
+[node name="HealthBar" type="ProgressBar" parent="UILayer2"]
+custom_minimum_size = Vector2(100, 10)
+offset_top = 54.0
+offset_right = 100.0
+offset_bottom = 64.0
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_2mmy5")
+theme_override_styles/fill = SubResource("StyleBoxFlat_x8hsf")
+value = 100.0
+show_percentage = false
+
+[node name="UIPanel" type="Panel" parent="UILayer2"]
+custom_minimum_size = Vector2(100, 50)
+offset_right = 100.0
+offset_bottom = 50.0
+
+[node name="LaunchLabel" type="Label" parent="UILayer2/UIPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="LaunchLabel" type="Label" parent="UILayer/LaunchPanel/VBoxContainer"]
-layout_mode = 2
-text = "Label"
+text = "Ore: 0"
 horizontal_alignment = 1
+vertical_alignment = 1

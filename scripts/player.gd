@@ -31,6 +31,8 @@ func _ready():
 	build_repair_tool.visible = false
 	if not camera:
 		camera = get_tree().root.get_node_or_null("Level/Camera")
+	if not ore_carried.is_connected(LevelManager._on_ore_carried):
+		ore_carried.connect(LevelManager._on_ore_carried)
 	print("Player initialized")
 
 func _process(delta: float) -> void:
@@ -106,7 +108,6 @@ func use_tool(is_pressed: bool):
 		Tool.BUILD_REPAIR:
 			build_repair_tool.use_tool(self, is_pressed)
 
-# Targeting management methods
 func add_targeting_enemy(enemy: Node):
 	if not targeted_by.has(enemy):
 		targeted_by.append(enemy)

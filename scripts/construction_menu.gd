@@ -23,8 +23,7 @@ func _ready():
 	visible = false
 	if not player:
 		push_error("Player node not found in ConstructionMenu")
-	else:
-		BuildingsManager.building_placed.connect(_on_building_placed)
+	BuildingsManager.building_placed.connect(_on_building_placed)
 	update_menu()
 
 func _input(_event):

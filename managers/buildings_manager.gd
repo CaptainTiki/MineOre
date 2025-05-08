@@ -12,11 +12,6 @@ var is_placing: bool = false
 
 func _ready():
 	load_buildings()
-	var construction_menu = get_tree().get_root().get_node_or_null("Level/UI/ConstructionMenu")
-	if construction_menu:
-		construction_menu.building_placed.connect(_on_construction_menu_building_placed)
-	else:
-		push_error("ConstructionMenu not found in BuildingsManager")
 
 func load_buildings():
 	var dir = DirAccess.open("res://buildings/")
@@ -47,7 +42,6 @@ func load_buildings():
 		push_error("Failed to open res://buildings/")
 
 func _on_construction_menu_building_placed(building_name: String, position: Vector3):
-	# Wait for the construction to complete and the final building to be instantiated
 	var construction_node = get_tree().root.get_node_or_null("Level/Buildings").get_children().filter(
 		func(node): return node is Node3D and node.global_position == position and node.building_resource and node.building_resource.building_name == building_name
 	).pop_front()

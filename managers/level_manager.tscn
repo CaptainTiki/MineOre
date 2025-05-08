@@ -1,0 +1,115 @@
+[gd_scene load_steps=2 format=3 uid="uid://wqecs367xk4v"]
+
+[ext_resource type="Script" uid="uid://btdjr5eu1qxie" path="res://managers/level_manager.gd" id="1_2tlyh"]
+
+[node name="LevelManager" type="Node"]
+script = ExtResource("1_2tlyh")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 77.0
+grow_horizontal = 2
+
+[node name="VBoxContainer" type="HBoxContainer" parent="UI/HBoxContainer"]
+custom_minimum_size = Vector2(640, 32)
+layout_mode = 2
+
+[node name="OreLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 32)
+layout_mode = 2
+text = "Ore: 00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CarriedOreLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 32)
+layout_mode = 2
+text = "Ore: 00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HQHealthLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 32)
+layout_mode = 2
+text = "Base HP: 99"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI/HBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+alignment = 2
+
+[node name="DayTimerLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "DayTimer"
+horizontal_alignment = 2
+
+[node name="WaveLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wave Number"
+horizontal_alignment = 2
+
+[node name="EnemiesLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Enemies Left"
+horizontal_alignment = 2
+
+[node name="EndPanel" type="Panel" parent="UI"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="EndLabel" type="Label" parent="UI/EndPanel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 106.0
+offset_top = 39.0
+offset_right = 169.0
+offset_bottom = 62.0
+text = "Victory!!"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="UI/EndPanel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 101.0
+offset_top = 128.0
+offset_right = 173.0
+offset_bottom = 159.0
+text = "Restart?"
+
+[node name="QuitButton" type="Button" parent="UI/EndPanel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 112.0
+offset_top = 93.0
+offset_right = 158.0
+offset_bottom = 124.0
+text = "Quit!"

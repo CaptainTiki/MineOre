@@ -18,23 +18,22 @@ var is_player_in_interact_area = false
 func _ready():
 	super._ready()
 	add_to_group("ore_mines")
-	if level:
-		level.connect("start_day", _on_start_day)
+	LevelManager.connect("start_day", _on_start_day)
 	ui_panel.visible = false
 	smoke_effect.emitting = false
 	print("Ore Mine initialized at %s" % global_position)
 
 func _process(delta):
-	if not is_active or not is_placed or not level:
+	if not is_active or not is_placed:
 		return
-	if level.current_state == level.State.DAY:
+	if LevelManager.current_state == LevelManager.State.DAY:
 		smoke_effect.emitting = true
 	else:
 		smoke_effect.emitting = false
 	super._process(delta)
 
 func _on_start_day():
-	if not is_active or not is_placed or not hq or level.current_state != level.State.DAY:
+	if not is_active or not is_placed or not hq or LevelManager.current_state != LevelManager.State.DAY:
 		return
 	var ore_nodes = ore_detection.get_overlapping_bodies().filter(func(body): return body.is_in_group("ores"))
 	var bonus_ore = ore_nodes.size()

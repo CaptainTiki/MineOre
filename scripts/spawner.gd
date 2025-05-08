@@ -36,18 +36,22 @@ func validate_waves():
 				wave.wave_counts[i] = 0
 
 func get_max_wave_counts() -> Dictionary:
-	var max_counts = {"scrapper": 0, "striker": 0}
+	var max_counts = {}  # Key: String (resource path), Value: int
 	for wave_res in waves:
-		for i in range(wave_res.wave_counts.size()):
-			var count = wave_res.wave_counts[i]
-			var type = "scrapper" if wave_res.enemy_scene == get_enemy_scene("scrapper") else "striker"
-			max_counts[type] = max(max_counts[type], count)
+		var scene = wave_res.enemy_scene
+		if scene:
+			var scene_path = scene.resource_path
+			var max_count = 0
+			for count in wave_res.wave_counts:
+				max_count = max(max_count, count)
+			max_counts[scene_path] = max_counts.get(scene_path, 0) + max_count
+		else:
+			print("Warning: Invalid enemy_scene in wave resource")
 	return max_counts
 
-func get_enemy_scene(type: String) -> PackedScene:
+func get_enemy_scene(scene_path: String) -> PackedScene:
 	for wave_res in waves:
-		var scene_type = "scrapper" if wave_res.enemy_scene == get_tree().get_root().get_node("Level").get_node("SpawnerManager").enemy_scenes.get("scrapper") else "striker"
-		if scene_type == type:
+		if wave_res.enemy_scene and wave_res.enemy_scene.resource_path == scene_path:
 			return wave_res.enemy_scene
 	return null
 

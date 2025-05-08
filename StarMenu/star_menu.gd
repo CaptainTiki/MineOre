@@ -46,7 +46,7 @@ func _on_planet_confirm():
 func _on_load_level_selected():
 	print("on load level selected")
 	var fade_rect = $FadeRect/ColorRect
-	LoadManager.next_level_path = current_planet.level_path
+	LevelManager.level_path = current_planet.level_path
 	get_tree().change_scene_to_file("res://menus/loading_menu.tscn")
 
 func on_cancel_pressed():

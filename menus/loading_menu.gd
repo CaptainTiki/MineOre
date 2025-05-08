@@ -4,7 +4,7 @@ var loader = null
 
 func _ready():
 	print("loading scene loaded")
-	var path = LoadManager.next_level_path
+	var path = LevelManager.level_path
 	if path == "":
 		print("Error: No level path set")
 		return
@@ -14,7 +14,7 @@ func _ready():
 	label_tween.tween_property($ColorRect/Label, "modulate", Color(1, 1, 1, 1), 0.5)
 
 func _process(_delta):
-	var path = LoadManager.next_level_path
+	var path = LevelManager.level_path
 	var status = ResourceLoader.load_threaded_get_status(path)
 	if status == ResourceLoader.THREAD_LOAD_LOADED:
 		var packed_scene = ResourceLoader.load_threaded_get(path)

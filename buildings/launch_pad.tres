@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BuildingResource" load_steps=2 format=3 uid="uid://bs3v15oqb08c8"]
+
+[ext_resource type="Script" uid="uid://bbac14qb0h4o8" path="res://scripts/building_resource.gd" id="1_d6tkx"]
+
+[resource]
+script = ExtResource("1_d6tkx")
+building_name = "launch_pad"
+display_name = "Launch Pad"
+scene_path = "res://buildings/launch_pad/launch_pad.tscn"
+category = "Unique"
+build_cost = 1
+construction_time = 15.0
+base_health = 68.0
+grid_extents = Vector2i(4, 4)
+is_unique = true
+is_locked = false
+tags = Array[String](["resource", "unique"])
+custom_script_path = "res://buildings/launch_pad/launch_pad.gd"
+upgrade_cost = 0
+dependencies = Array[String](["headquarters"])

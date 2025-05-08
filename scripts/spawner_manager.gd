@@ -6,79 +6,98 @@ signal pool_ready
 var total_enemies_killed: int = 0
 var current_wave: int = 0
 var is_night: bool = false
-var enemy_pool: Dictionary = {
-	"scrapper": [],
-	"striker": []
-	# Add "worm" later
-}
-var max_pool_size_per_type: Dictionary = {
-	"scrapper": 0,
-	"striker": 0
-}
-var enemy_scenes: Dictionary = {}  # Maps type to PackedScene
+var enemy_pool: Dictionary = {}  # Key: String (resource path), Value: Array[Node] (enemies)
+var max_pool_size_per_scene: Dictionary = {}  # Key: String (resource path), Value: int
+var enemy_scenes: Dictionary = {}  # Key: String (resource path), Value: PackedScene
 
 func _ready():
 	print("SpawnerManager ready, awaiting night signal")
 
 func initialize_pool():
-	# Calculate max enemies needed per type across all spawners
+	# Clear existing pool and sizes
+	enemy_pool.clear()
+	max_pool_size_per_scene.clear()
+	enemy_scenes.clear()
+
+	# Calculate max enemies needed per scene across all spawners
 	for spawner in get_children():
 		if spawner.has_method("get_max_wave_counts"):
 			var max_counts = spawner.get_max_wave_counts()
-			for type in max_counts:
-				max_pool_size_per_type[type] += max_counts[type]
-	
-	# Add 20% buffer and instantiate enemies
-	for type in max_pool_size_per_type:
-		var count = ceil(max_pool_size_per_type[type] * 1.2)
-		var scene = get_spawner_enemy_scene(type)
+			for scene_path in max_counts:
+				if scene_path and not enemy_scenes.has(scene_path):
+					var scene = load(scene_path) as PackedScene
+					if scene:
+						enemy_scenes[scene_path] = scene
+					else:
+						print("Warning: Failed to load scene at ", scene_path)
+				max_pool_size_per_scene[scene_path] = max_pool_size_per_scene.get(scene_path, 0) + max_counts[scene_path]
+
+	# Initialize pool with 20% buffer for each scene
+	for scene_path in enemy_scenes:
+		print("createing enemy")
+		var count = ceil(max_pool_size_per_scene[scene_path] * 1.2)
+		enemy_pool[scene_path] = []
+		var scene = enemy_scenes[scene_path]
 		if scene:
-			enemy_scenes[type] = scene
 			for i in range(count):
 				var enemy = scene.instantiate()
-				get_tree().get_root().get_node("Level").add_child(enemy)
+				get_tree().get_root().get_node("Level/Enemies").add_child(enemy)
 				enemy.global_position = Vector3(999, 999, 999)
 				enemy.visible = false
 				enemy.set_physics_process(false)
-				enemy_pool[type].append(enemy)
-				enemy.connect("died", Callable(self, "_on_enemy_died").bind(enemy, type))
-	print("Enemy pool initialized: ", max_pool_size_per_type)
+				enemy_pool[scene_path].append(enemy)
+				enemy.connect("died", Callable(self, "_on_enemy_died").bind(enemy, scene_path))
+			print("Initialized pool for scene ", scene_path, ": ", count, " enemies")
+		else:
+			print("Warning: Skipping pool init for invalid scene ", scene_path)
+
 	await get_tree().create_timer(0.1).timeout  # Brief delay to spread load
 	emit_signal("pool_ready")
 
-func get_spawner_enemy_scene(type: String) -> PackedScene:
-	# Find a spawner with the enemy scene for the type
+func get_spawner_enemy_scene(scene_path: String) -> PackedScene:
+	# Return the scene if it exists in any spawner's waves
 	for spawner in get_children():
 		if spawner.has_method("get_enemy_scene"):
-			var scene = spawner.get_enemy_scene(type)
-			if scene:
-				return scene
+			var found_scene = spawner.get_enemy_scene(scene_path)
+			if found_scene:
+				return found_scene
 	return null
 
 func request_enemy(enemy_scene: PackedScene) -> Node:
-	var type = "scrapper" if enemy_scene == enemy_scenes.get("scrapper") else "striker"
-	if enemy_pool[type].size() > 0:
-		return enemy_pool[type].pop_back()
+	var scene_path = enemy_scene.resource_path if enemy_scene else ""
+	if not scene_path or not enemy_pool.has(scene_path):
+		print("Warning: Invalid or missing scene path ", scene_path)
+		return null
+
+	# Check if the scene is in the pool
+	if enemy_pool[scene_path].size() > 0:
+		return enemy_pool[scene_path].pop_back()
+	
 	# Fallback: instantiate new enemy (with cap)
-	if max_pool_size_per_type[type] < 50:  # Hard cap to avoid runaway memory
-		var enemy = enemy_scenes[type].instantiate()
+	if max_pool_size_per_scene.get(scene_path, 0) < 50:  # Hard cap to avoid runaway memory
+		var enemy = enemy_scene.instantiate()
+		get_tree().get_root().get_node("Level/Enemies").add_child(enemy)
 		enemy.global_position = Vector3(999, 999, 999)
 		enemy.visible = false
 		enemy.set_physics_process(false)
-		get_tree().get_root().get_node("Level").add_child(enemy)
-		enemy.connect("died", Callable(self, "_on_enemy_died").bind(enemy, type))
-		max_pool_size_per_type[type] += 1
+		enemy.connect("died", Callable(self, "_on_enemy_died").bind(enemy, scene_path))
+		max_pool_size_per_scene[scene_path] = max_pool_size_per_scene.get(scene_path, 0) + 1
+		print("Instantiated new enemy for ", scene_path, ", new pool size: ", max_pool_size_per_scene[scene_path])
 		return enemy
-	print("Warning: No ", type, " enemies available in pool")
+	
+	print("Warning: No enemies available for scene ", scene_path)
 	return null
 
-func _on_enemy_died(enemy: Node, type: String):
+func _on_enemy_died(enemy: Node, scene_path: String):
 	enemy.global_position = Vector3(999, 999, 999)
 	enemy.visible = false
 	enemy.is_alive = false
 	enemy.set_physics_process(false)
-	enemy_pool[type].append(enemy)
-	total_enemies_killed += 1
+	if enemy_pool.has(scene_path):
+		enemy_pool[scene_path].append(enemy)
+		total_enemies_killed += 1
+	else:
+		print("Error: Scene path ", scene_path, " not found in enemy_pool. Cannot return enemy to pool.")
 
 func start_night(wave: int):
 	if not is_night:

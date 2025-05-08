@@ -6,7 +6,7 @@ class_name BuildRepairTool
 @onready var repair_beam = $RepairBeam
 @onready var raycast = $RayCast3D
 @onready var mesh_instance_3d: CSGBox3D = $RepairBeam/MeshInstance3D
-@onready var construction_menu = get_tree().get_root().get_node_or_null("Level/UI/ConstructionMenu")
+@onready var construction_menu = %ConstructionMenu
 
 var repair_effect_scene = preload("res://scenes/repair_effect.tscn")
 var repair_timer = 0.0

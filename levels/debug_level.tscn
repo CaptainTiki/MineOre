@@ -1,10 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://bxofwjwynhjho"]
+[gd_scene load_steps=17 format=3 uid="uid://bxofwjwynhjho"]
 
 [ext_resource type="Script" uid="uid://3l10w3x0w03r" path="res://levels/level.gd" id="1_f3rnd"]
 [ext_resource type="Script" uid="uid://dphpdmx8vikda" path="res://scripts/camera_3d.gd" id="2_jeowh"]
 [ext_resource type="PackedScene" uid="uid://dmrcwwqgtkirs" path="res://scenes/ore.tscn" id="3_0jxns"]
 [ext_resource type="PackedScene" uid="uid://defrigbi7ac0e" path="res://scenes/player.tscn" id="4_aex51"]
-[ext_resource type="PackedScene" uid="uid://x7foxbnlqbrt" path="res://scenes/construction_menu.tscn" id="5_jeowh"]
 [ext_resource type="PackedScene" uid="uid://c1nss5yhgkpt1" path="res://scenes/environment/ground_debug.tscn" id="6_1ub6n"]
 [ext_resource type="PackedScene" uid="uid://byu2rmwgu3q8m" path="res://scenes/environment/rock_1.tscn" id="6_lf5ei"]
 [ext_resource type="PackedScene" uid="uid://dcrlkm0x81w4g" path="res://scenes/environment/rock_2_big.tscn" id="7_1ub6n"]
@@ -98,110 +97,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.41017, -0.0352186, 22.4213
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.3704, 0.00389552, 1.10491)
 
 [node name="Particles" type="Node3D" parent="."]
-
-[node name="UI" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 77.0
-grow_horizontal = 2
-
-[node name="VBoxContainer" type="HBoxContainer" parent="UI/HBoxContainer"]
-custom_minimum_size = Vector2(640, 32)
-layout_mode = 2
-
-[node name="OreLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(128, 32)
-layout_mode = 2
-text = "Ore: 00"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CarriedOreLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(128, 32)
-layout_mode = 2
-text = "Ore: 00"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HQHealthLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(128, 32)
-layout_mode = 2
-text = "Base HP: 99"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="UI/HBoxContainer"]
-custom_minimum_size = Vector2(500, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 4
-alignment = 2
-
-[node name="DayTimerLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-text = "DayTimer"
-horizontal_alignment = 2
-
-[node name="WaveLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-text = "Wave Number"
-horizontal_alignment = 2
-
-[node name="EnemiesLabel" type="Label" parent="UI/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-text = "Enemies Left"
-horizontal_alignment = 2
-
-[node name="EndPanel" type="Panel" parent="UI"]
-visible = false
-custom_minimum_size = Vector2(300, 200)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="EndLabel" type="Label" parent="UI/EndPanel"]
-layout_mode = 0
-offset_left = 106.0
-offset_top = 39.0
-offset_right = 169.0
-offset_bottom = 62.0
-text = "Victory!!"
-horizontal_alignment = 1
-
-[node name="RestartButton" type="Button" parent="UI/EndPanel"]
-layout_mode = 0
-offset_left = 101.0
-offset_top = 128.0
-offset_right = 173.0
-offset_bottom = 159.0
-text = "Restart?"
-
-[node name="QuitButton" type="Button" parent="UI/EndPanel"]
-layout_mode = 0
-offset_left = 112.0
-offset_top = 93.0
-offset_right = 158.0
-offset_bottom = 124.0
-text = "Quit!"
-
-[node name="ConstructionMenu" parent="UI" instance=ExtResource("5_jeowh")]
-layout_mode = 1
-offset_top = -250.0
-offset_bottom = 250.0
 
 [node name="NavRegion" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_gjl0y")
