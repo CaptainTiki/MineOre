@@ -36,13 +36,12 @@ func initialize_pool():
 			enemy_scenes[type] = scene
 			for i in range(count):
 				var enemy = scene.instantiate()
+				get_tree().get_root().get_node("Level").add_child(enemy)
 				enemy.global_position = Vector3(999, 999, 999)
 				enemy.visible = false
 				enemy.set_physics_process(false)
-				get_tree().get_root().get_node("Level").add_child(enemy)
 				enemy_pool[type].append(enemy)
 				enemy.connect("died", Callable(self, "_on_enemy_died").bind(enemy, type))
-	
 	print("Enemy pool initialized: ", max_pool_size_per_type)
 	await get_tree().create_timer(0.1).timeout  # Brief delay to spread load
 	emit_signal("pool_ready")

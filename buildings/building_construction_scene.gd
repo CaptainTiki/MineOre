@@ -1,32 +1,29 @@
+# res://buildings/building_construction_scene.gd
 extends Node3D
 
-@export var final_building_scene: PackedScene
-@export var building_resource: BuildingResource
 @onready var construction_timer = $ConstructionTimer
 @onready var mesh_instance = $MeshInstance3D
 @onready var construction_shader = preload("res://shaders/construction_shader.gdshader")
-var original_materials: Array = []  # Store original materials
 
-func _ready():
+var original_materials: Array = []
+var final_building_scene: PackedScene
+var building_resource: BuildingResource
+
+func load_construction_node(): 
 	if building_resource and final_building_scene:
-		# Extract mesh from final building
 		var temp_building = final_building_scene.instantiate()
 		var building_mesh_instance = temp_building.get_node("MeshInstance3D")
 		if building_mesh_instance and building_mesh_instance.mesh:
 			mesh_instance.mesh = building_mesh_instance.mesh
-			print("Mesh assigned: ", mesh_instance.mesh.get_path())
-			# Store original materials
 			original_materials.clear()
 			for i in range(building_mesh_instance.mesh.get_surface_count()):
 				var material = building_mesh_instance.mesh.surface_get_material(i)
 				original_materials.append(material)
-				print("Surface ", i, " material: ", material)
 		else:
 			print("Error: No MeshInstance3D or mesh found in final building")
 		temp_building.queue_free()
 
-		# Set timer duration
-		construction_timer.wait_time = max(building_resource.construction_time, 0.0)
+		construction_timer.wait_time = max(building_resource.construction_time, 0.01)
 		construction_timer.start()
 		setup_construction_shader()
 	else:
@@ -41,12 +38,10 @@ func setup_construction_shader():
 		var shader = construction_shader
 		if shader:
 			construction_material.shader = shader
-			print("Shader loaded for surface ", i)
 		else:
 			print("Error: Failed to load shader at res://shaders/construction_shader.tres")
 			continue
 		
-		# Set shader parameters
 		construction_material.set_shader_parameter("hologram_color", Color(0, 0.5, 1.0, 0.5))
 		construction_material.set_shader_parameter("glow_intensity", 0.65)
 		construction_material.set_shader_parameter("scanline_speed", 6.0)
@@ -59,7 +54,6 @@ func setup_construction_shader():
 		construction_material.set_shader_parameter("max_y", aabb.position.y + aabb.size.y)
 		
 		mesh_instance.set_surface_override_material(i, construction_material)
-		print("Applied shader material to surface ", i)
 
 func _process(_delta):
 	if construction_timer.time_left > 0:
@@ -71,12 +65,14 @@ func _process(_delta):
 
 func _on_construction_timer_timeout():
 	if final_building_scene:
+		var buildings_node = get_tree().root.get_node("Level/Buildings")
 		var final_building = final_building_scene.instantiate()
+		buildings_node.add_child(final_building)
 		final_building.global_position = global_position
 		final_building.resource = building_resource
-		var buildings_node = get_tree().root.get_node("Level/Buildings")
-		buildings_node.add_child(final_building)
+		
 		final_building.owner = get_tree().root.get_node("Level")
+		print("Construction complete: %s" % building_resource.building_name)
 		final_building.on_placed()
 		queue_free()
 	else:

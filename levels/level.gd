@@ -40,12 +40,17 @@ func _ready():
 	else:
 		camera.set_player(player)
 	if player:
-		player.building_placed.connect(_on_building_placed)
 		player.ore_carried.connect(_on_ore_carried)
-		player.placement_failed.connect(_on_placement_failed)
 		player.set_process_input(false)  # Disable player input during loading
 	else:
 		push_error("Player node not found")
+	if construction_menu:
+		construction_menu.building_placed.connect(_on_building_placed)
+		construction_menu.placement_failed.connect(_on_placement_failed)
+	else:
+		push_error("ConstructionMenu node not found")
+	if not end_panel:
+		push_error("EndPanel node not found")
 	end_panel.visible = false
 	restart_button.connect("pressed", _on_restart_pressed)
 	quit_button.connect("pressed", _on_quit_pressed)
@@ -59,6 +64,8 @@ func _ready():
 	for building in get_tree().get_nodes_in_group("buildings"):
 		if building.has_signal("destroyed"):
 			building.destroyed.connect(_on_building_destroyed)
+			if building.resource and building.resource.building_name == "headquarters":
+				building.destroyed.connect(_on_hq_destroyed)
 	
 	# Initialize enemy pool and wait for completion
 	spawner_manager.initialize_pool()
@@ -102,7 +109,7 @@ func assign_planet(passed_in_name: String):
 	planet_name = passed_in_name
 
 func _on_building_placed(building_name: String, place_position: Vector3):
-	if building_name == "headquarters":
+	if building_name == "headquarters" and not has_hq:
 		has_hq = true
 		current_state = State.DAY
 		day_timer = day_duration
@@ -111,16 +118,10 @@ func _on_building_placed(building_name: String, place_position: Vector3):
 			hq.hq_destroyed.connect(_on_hq_destroyed)
 			hq.health_changed.connect(_on_hq_health_changed)
 			hq_health_label.text = "HQ Health: %d" % hq.health
-	else:
-		if not has_hq:
-			return
-		# Find recently placed building by position
-		for building in get_tree().get_nodes_in_group("buildings"):
-			if building.global_position.distance_to(place_position) < 0.1:
-				if building.has_signal("destroyed"):
-					building.destroyed.connect(_on_building_destroyed)
-				break
-	update_ui()
+			print("HQ placed at %s, connected signals" % place_position)
+		else:
+			push_warning("HQ node not found at Buildings/HeadQuarters")
+		update_ui()
 
 func start_day_func():
 	current_state = State.DAY
@@ -144,7 +145,6 @@ func end_level(won: bool):
 	if won:
 		current_state = State.WON
 		print("Level Complete! You Win!")
-		# Show end mission screen
 		var end_mission = preload("res://menus/end_mission.tscn").instantiate()
 		add_child(end_mission)
 		var bonus_points = (mission_stats.enemies_killed * 10) + (int(mission_stats.time_taken / 60) * 100) - (mission_stats.buildings_destroyed * 50)
@@ -173,14 +173,15 @@ func end_level(won: bool):
 			mission_stats.time_taken, 
 			mission_stats.waves_survived, 
 			mission_stats.enemies_killed,
-			0  # No bonus points for loss
+			0
 		)
 
 func _on_placement_failed(building_name: String, reason: String):
 	print("Placement failed for %s: %s" % [building_name, reason])
 	# TODO: Add UI popup or label to show failure reason to player
 
-func _on_hq_destroyed():
+func _on_hq_destroyed(_building_name: String):
+	print("HQ destroyed, triggering end_level")
 	end_level(false)
 
 func _on_hq_health_changed(health):
@@ -194,7 +195,7 @@ func _on_ore_deposited(amount):
 	mission_stats.ore_launched = player_ore
 	update_ui()
 
-func _on_building_destroyed():
+func _on_building_destroyed(_building_name: String):
 	mission_stats.buildings_destroyed += 1
 
 func _on_restart_pressed():

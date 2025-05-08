@@ -1,8 +1,8 @@
-# res://buildings/headquarters/headquarters.gd
+# res://buildings/headquarters/head_quarters.gd
 extends Building
 
 signal hq_destroyed
-signal health_changed(health)
+signal ore_deposited(amount: int)
 
 var stored_ore = 0
 var base_max_ore = 20
@@ -13,15 +13,13 @@ var silo_count = 0
 
 func _ready():
 	super._ready()
-	is_placed = true  # HQ is always interactive
 	if interact_area:
 		interact_area.monitoring = true
 		interact_area.monitorable = true
-	var panel = get_ui_panel()
-	if panel:
-		panel.visible = false  # Will show when player enters
+	if ui_container:
+		ui_container.visible = false
+	health_changed.connect(_on_health_changed)
 	update_ui()
-	emit_signal("health_changed", health)
 
 func _on_interact():
 	if player and player.carried_ore > 0:
@@ -30,17 +28,21 @@ func _on_interact():
 		if to_deposit > 0:
 			stored_ore += to_deposit
 			player.carried_ore -= to_deposit
-			player.emit_signal("ore_deposited", to_deposit)
+			emit_signal("ore_deposited", to_deposit)
 			update_ui()
 			print("Deposited %d ore to HQ. Stored: %d/%d" % [to_deposit, stored_ore, max_ore])
 
+func _on_health_changed(_health: float, _max_health: float):
+	update_ui()
+
 func update_ui():
 	if deposit_label:
-		deposit_label.text = "Ore: %d/%d\nPress F" % [stored_ore, max_ore]
+		var health_percent = (health / max_health * 100)
+		deposit_label.text = "Ore: %d/%d\nHealth: %.0f%%" % [stored_ore, max_ore, health_percent]
+	super.update_ui()
 
 func take_damage(amount):
 	super.take_damage(amount)
-	emit_signal("health_changed", health)
 	if health <= 0:
 		emit_signal("hq_destroyed")
 

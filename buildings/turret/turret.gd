@@ -30,6 +30,7 @@ func _ready():
 	select_target()
 
 func _process(delta):
+	super._process(delta)
 	if not gun or not muzzle:
 		return
 	if current_target and is_instance_valid(current_target):
@@ -60,11 +61,13 @@ func _on_target_died():
 	select_target()
 
 func _on_body_entered(body):
+	super._on_body_entered(body)
 	if body.is_in_group("enemies"):
 		if not current_target or should_switch_target(body):
 			select_target()
 
 func _on_body_exited(body):
+	super._on_body_exited(body)
 	if body == current_target:
 		current_target = null
 		select_target()

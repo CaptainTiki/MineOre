@@ -6,10 +6,10 @@ signal died
 
 var speed = 3.5
 var view_distance = 10.0
-var damage = 6
-var attack_rate = 1.0
+var damage = 3
+var attack_rate = 2.0
 var attack_timer = 0.0
-var health = 25
+var health = 8
 var separation_distance = 3.0
 var attack_range = 1.5
 var is_alive = false
@@ -168,8 +168,8 @@ func die():
 			turret.set_target(null)
 	targeted_by_turrets.clear()
 	var gib = gib_scene.instantiate()
-	gib.global_position = global_position
 	get_parent().add_child(gib)
+	gib.global_position = global_position
 	global_position = Vector3(999, 999, 999)
 	visible = false
 	set_physics_process(false)

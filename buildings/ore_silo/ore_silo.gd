@@ -13,13 +13,10 @@ func _ready():
 		print("Silo added at %s" % global_position)
 
 func take_damage(amount):
-	health -= amount
 	if health <= 0:
-		emit_signal("silo_destroyed")
 		if hq and hq.has_method("remove_silo"):
 			hq.remove_silo()
-		queue_free()
-	print("Silo health: %d" % health)
+	super.take_damage(amount)
 
 func _on_destroyed():
 	if hq and hq.has_method("remove_silo"):

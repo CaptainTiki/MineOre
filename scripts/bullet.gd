@@ -1,7 +1,7 @@
 extends Area3D
 
 var velocity = Vector3.ZERO
-var damage = 50
+var damage = 23
 var lifetime = 5.0
 
 func _ready():
@@ -19,4 +19,7 @@ func _process(delta):
 func _on_body_entered(body):
 	if body.is_in_group("enemies"):
 		body.take_damage(damage)
-		queue_free()
+	else:
+		if body.has_method("take_damage"):
+			body.take_damage(damage)
+	queue_free()

@@ -1,0 +1,61 @@
+[gd_scene load_steps=9 format=3 uid="uid://iy8nye7xljak"]
+
+[ext_resource type="Script" uid="uid://xfq5lf8h2fvr" path="res://scripts/build_repair_tool.gd" id="1_av1bv"]
+[ext_resource type="Shader" uid="uid://b2okn0nbqqc3y" path="res://shaders/repair_beam.gdshader" id="2_b4voq"]
+[ext_resource type="Shader" uid="uid://0ptukaxtr3ao" path="res://shaders/laserbeam.gdshader" id="3_hpmvf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rlstd"]
+albedo_color = Color(0.421345, 0.528101, 0.183138, 1)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3vyb7"]
+direction = Vector3(0, 0, -1)
+spread = 2.0
+initial_velocity_min = 1.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ekdhv"]
+render_priority = 0
+shader = ExtResource("2_b4voq")
+shader_parameter/glow_color = Color(0.67183, 0.540832, 0.425864, 1)
+shader_parameter/pulse_speed = 16.0
+shader_parameter/glow_intensity = 1.75
+
+[sub_resource type="SphereMesh" id="SphereMesh_vtyvk"]
+material = SubResource("ShaderMaterial_ekdhv")
+radius = 0.025
+height = 0.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o1r7b"]
+render_priority = 0
+shader = ExtResource("3_hpmvf")
+shader_parameter/glow_color = Color(0.2, 0.8, 1, 1)
+shader_parameter/pulse_speed = 12.0
+shader_parameter/glow_intensity = 1.5
+
+[node name="BuildRepairTool" type="Node3D"]
+script = ExtResource("1_av1bv")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00368941, -0.0212402, -0.87177)
+size = Vector3(0.194275, 0.248535, 0.485474)
+material = SubResource("StandardMaterial3D_rlstd")
+
+[node name="RepairBeam" type="GPUParticles3D" parent="."]
+transform = Transform3D(0.999848, 0, 0.0174524, 5.55112e-17, 1, -3.55271e-15, -0.0174524, 0, 0.999848, 0, 0, 0)
+amount = 30
+amount_ratio = 0.2
+lifetime = 0.5
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_3vyb7")
+draw_pass_1 = SubResource("SphereMesh_vtyvk")
+
+[node name="MeshInstance3D" type="CSGBox3D" parent="RepairBeam"]
+transform = Transform3D(0.999848, 0, -0.0174524, 6.5007e-18, 1, 3.55314e-15, 0.0174524, 0, 0.999848, 0.0115256, -0.0212402, -0.871702)
+size = Vector3(0.05, 0.05, 2)
+material = SubResource("ShaderMaterial_o1r7b")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, -2)
+collision_mask = 64
+debug_shape_thickness = 5

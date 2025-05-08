@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://defrigbi7ac0e"]
+[gd_scene load_steps=9 format=3 uid="uid://defrigbi7ac0e"]
 
 [ext_resource type="Script" uid="uid://brilo3cicayn0" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="PackedScene" uid="uid://b410wfw5c6lx7" path="res://scenes/gun.tscn" id="2_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://cpysti7bfdlkc" path="res://scenes/mining_laser.tscn" id="3_dqkch"]
+[ext_resource type="PackedScene" uid="uid://iy8nye7xljak" path="res://scenes/build_repair_tool.tscn" id="4_dqkch"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g2els"]
 
@@ -39,6 +40,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.543953, 0)
 
 [node name="MiningLaser" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_dqkch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.567091, 0)
+player = NodePath("..")
+
+[node name="BuildRepairTool" parent="." node_paths=PackedStringArray("player") instance=ExtResource("4_dqkch")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.559822, 0)
 player = NodePath("..")
 
 [node name="InteractArea" type="Area3D" parent="."]

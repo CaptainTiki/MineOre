@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://ch0q4haku44k8"]
+[gd_scene load_steps=16 format=4 uid="uid://ch0q4haku44k8"]
 
 [ext_resource type="Script" uid="uid://cxy7ilx8od5nf" path="res://buildings/headquarters/head_quarters.gd" id="1_dwusy"]
 [ext_resource type="Resource" uid="uid://84hrxsghewgd" path="res://buildings/headquarters.tres" id="2_ef1bc"]
@@ -94,8 +94,25 @@ _surfaces = [{
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_455xb"]
 radius = 4.5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ef1bc"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_13726"]
+bg_color = Color(0, 0.8428, 3.85046e-07, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.0253638, 0.0253638, 0.0253638, 1)
+
 [node name="HeadQuarters" type="StaticBody3D" groups=["buildings", "headquarters"]]
 collision_layer = 64
+collision_mask = 3
 script = ExtResource("1_dwusy")
 resource = ExtResource("2_ef1bc")
 
@@ -171,10 +188,21 @@ shape = SubResource("CylinderShape3D_455xb")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
+[node name="HealthBar" type="ProgressBar" parent="UILayer"]
+custom_minimum_size = Vector2(100, 10)
+offset_top = 54.0
+offset_right = 100.0
+offset_bottom = 64.0
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_ef1bc")
+theme_override_styles/fill = SubResource("StyleBoxFlat_13726")
+value = 100.0
+show_percentage = false
+
 [node name="UIPanel" type="Panel" parent="UILayer"]
 custom_minimum_size = Vector2(100, 50)
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 100.0
+offset_bottom = 50.0
 
 [node name="DepositLabel" type="Label" parent="UILayer/UIPanel"]
 layout_mode = 1
